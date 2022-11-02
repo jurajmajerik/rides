@@ -10,21 +10,20 @@ svg.setAttribute('style', 'border:solid 0.5px lightgray;');
 const gridCount = 27; // # squares in each direction
 const squareSize = gridSize / gridCount;
 
-const coords = {};
-
+const mapPoints = {};
+const roadElems = {};
 for (let x = 0; x < gridCount; x += 1) {
   for (let y = 0; y < gridCount; y += 1) {
-    coords[`${x}:${y}`] = true;
-
+    mapPoints[`${x}:${y}`] = true;
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('width', squareSize);
     rect.setAttribute('height', squareSize);
     rect.setAttribute('x', x * squareSize);
     rect.setAttribute('y', y * squareSize);
-    // rect.setAttribute('stroke', 'black');
-    // rect.setAttribute('stroke-width', 0.1);
     rect.setAttribute('fill', 'white');
 
+    roadElems[`${x}:${y}`] = rect;
+    
     rect.addEventListener('click', () => {
       console.log(x, y);
     });
@@ -38,13 +37,12 @@ const drawObstacle = (xStart, xEnd, yStart, yEnd, color) => {
   while (x <= xEnd) {
     let y = yStart;
     while (y <= yEnd) {
+      mapPoints[`${x}:${y}`] = false;
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.setAttribute('width', squareSize);
       rect.setAttribute('height', squareSize);
       rect.setAttribute('x', x * squareSize);
       rect.setAttribute('y', y * squareSize);
-      // rect.setAttribute('stroke', 'black');
-      // rect.setAttribute('stroke-width', 0.1);
       rect.setAttribute('fill', color || '#d77a61');
       rect.setAttribute('stroke', color || '#d77a61');
       
@@ -55,7 +53,6 @@ const drawObstacle = (xStart, xEnd, yStart, yEnd, color) => {
     x += 1;
   }
 };
-
 obstacles.forEach(args => {
   drawObstacle(...args);
 });

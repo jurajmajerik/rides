@@ -24,6 +24,6 @@ nohup sudo ./server &
 duration=$SECONDS
 
 echo
-msg "$(($duration / 60)) in minutes and $(($duration % 60)) seconds."
-msg "Deploy finished \nPress Enter to exit"
+msg "Deploy finished in $(($duration / 60)) in minutes and $(($duration % 60)) seconds."
+msg "Press Enter to exit"
 read

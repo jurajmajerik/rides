@@ -8,16 +8,16 @@ msg () {
 msg "stopping server!"
 sudo pkill server
 
-echo -e "pulling from github \n -------------------- \n"
+msg "pulling from github"
 rm nohup.out
 git pull
 
-echo -e "building \n -------------------- \n"
+msg "building"
 go build
 
-echo -e "starting \n -------------------- \n"
+msg "starting"
 nohup sudo ./server &
 
 echo
-echo -e "starting \n Deploy finished \n Press Enter to exit"
+msg "Deploy finished \n Press Enter to exit"
 read

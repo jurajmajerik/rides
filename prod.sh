@@ -1,7 +1,21 @@
 #!/bin/bash
 cd $HOME/server
 
-echo -e "stopping server \n -------------------- \n"
+msg() {
+  txt=""
+  for i in {1..5}
+    do
+      if $i
+      then
+        txt="${txt}${$i} \n -------------------- \n "
+      else
+        break
+      fi
+    done
+  echo -e $txt
+}
+
+msg "stopping server!"
 sudo pkill server
 
 echo -e "pulling from github \n -------------------- \n"
@@ -14,6 +28,5 @@ echo -e "starting \n -------------------- \n"
 nohup sudo ./server &
 
 echo
-echo "Command finished"
-echo "Press Enter to exit."
+echo -e "starting \n Deploy finished \n Press Enter to exit"
 read

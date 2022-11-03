@@ -1,18 +1,8 @@
 #!/bin/bash
 cd $HOME/server
 
-msg() {
-  txt=""
-  for i in {1..5}
-    do
-      if $i
-      then
-        txt="${txt}${$i} \n -------------------- \n "
-      else
-        break
-      fi
-    done
-  echo -e $txt
+msg () {
+  echo -e "${$1} \n -------------------- \n "
 }
 
 msg "stopping server!"

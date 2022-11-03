@@ -3,7 +3,6 @@ SECONDS=0
 
 cd $HOME/server
 
-
 msg () {
   echo -e "$1\n--------------------\n"
 }

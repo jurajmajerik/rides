@@ -13,7 +13,7 @@ go build
 echo -e "starting \n --------------------"
 sudo ./server &
 
-printf
-printf "Command finished, exit status: $status"
-printf "Press Enter to exit."
+echo
+echo "Command finished"
+echo "Press Enter to exit."
 read

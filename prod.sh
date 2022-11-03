@@ -11,7 +11,7 @@ echo -e "building \n -------------------- \n"
 go build
 
 echo -e "starting \n -------------------- \n"
-sudo ./server &
+nohup sudo ./server &
 
 echo
 echo "Command finished"

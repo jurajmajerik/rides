@@ -2,7 +2,7 @@
 cd $HOME/server
 
 msg () {
-  echo -e "${$1} \n -------------------- \n "
+  echo -e "$1 \n -------------------- \n "
 }
 
 msg "stopping server!"

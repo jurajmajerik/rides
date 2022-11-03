@@ -1,18 +1,19 @@
 #!/bin/bash
 cd $HOME/server
-echo "----stopping server"
+
+echo -e "stopping server \n --------------------"
 sudo pkill server
 
-echo "----pulling"
+echo -e "pulling from github \n --------------------"
 git pull
 
-echo "----building"
+echo -e "building \n --------------------"
 go build
 
-echo "----starting"
+echo -e "starting \n --------------------"
 sudo ./server &
 
-echo
-echo "Command finished, exit status: $status"
-echo "Press Enter to exit."
+printf
+printf "Command finished, exit status: $status"
+printf "Press Enter to exit."
 read

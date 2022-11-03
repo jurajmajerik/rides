@@ -5,7 +5,7 @@ msg () {
   echo -e "$1\n--------------------\n"
 }
 
-msg "stopping server!"
+msg "stopping server"
 sudo pkill server
 
 msg "pulling from github"

@@ -9,6 +9,7 @@ msg "stopping server!"
 sudo pkill server
 
 echo -e "pulling from github \n -------------------- \n"
+rm nohup.out
 git pull
 
 echo -e "building \n -------------------- \n"

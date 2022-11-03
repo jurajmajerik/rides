@@ -2,7 +2,7 @@
 cd $HOME/server
 
 msg () {
-  echo -e "$1 \n -------------------- \n "
+  echo -e "$1 \n -------------------- \n"
 }
 
 msg "stopping server!"
@@ -19,5 +19,5 @@ msg "starting"
 nohup sudo ./server &
 
 echo
-msg "Deploy finished \n Press Enter to exit"
+msg "Deploy finished \nPress Enter to exit"
 read

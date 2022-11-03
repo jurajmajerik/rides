@@ -1,5 +1,8 @@
 #!/bin/bash
+SECONDS=0
+
 cd $HOME/server
+
 
 msg () {
   echo -e "$1\n--------------------\n"
@@ -17,6 +20,9 @@ go build
 
 msg "starting"
 nohup sudo ./server &
+
+duration=$SECONDS
+echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
 
 echo
 msg "Deploy finished \nPress Enter to exit"

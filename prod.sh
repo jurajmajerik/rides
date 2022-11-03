@@ -1,14 +1,14 @@
 #!/bin/bash
 SECONDS=0
 
-cd $HOME/server
+cd $HOME/app
 
 msg () {
   echo -e "$1\n--------------------\n"
 }
 
-msg "stopping server"
-sudo pkill server
+msg "stopping app"
+sudo pkill app
 
 msg "pulling from github"
 rm nohup.out
@@ -18,7 +18,7 @@ msg "building"
 go build
 
 msg "starting"
-nohup sudo ./server &
+nohup sudo ./app &
 
 duration=$SECONDS
 

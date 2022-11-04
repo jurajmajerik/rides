@@ -11,14 +11,13 @@ msg "stopping app"
 sudo pkill app
 
 msg "pulling from github"
-rm nohup.out
 git pull
 
 msg "building"
 go build
 
 msg "starting"
-nohup sudo ./app &
+nohup sudo ./app &>/dev/null &
 
 duration=$SECONDS
 

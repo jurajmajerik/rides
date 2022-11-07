@@ -7,16 +7,16 @@ msg () {
   echo -e "$1\n--------------------\n"
 }
 
-msg "stopping app"
+msg "Stopping app"
 sudo pkill app
 
-msg "pulling from github"
+msg "Pulling from GitHub"
 git pull
 
-msg "building"
+msg "Building Go binary"
 go build
 
-msg "starting"
+msg "Starting server"
 nohup sudo ./app &>/dev/null &
 
 duration=$SECONDS

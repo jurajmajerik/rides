@@ -10,24 +10,21 @@ svg.setAttribute('style', 'border:solid 0.5px lightgray;');
 const gridCount = 50; // No. of squares in each direction
 const squareSize = gridSize / gridCount;
 
-const coords = {};
+const points = {};
 const roadRects = {};
 
 const drawHelper = (() => {
   let count = 0;
-
-  // minX, maxX, minY, maxY
   let minX = null, maxX = null, minY = null, maxY = null;
 
   const allCoords = [];
 
   const highlightObstacle = () => {
-
     let x = minX;
     while (x <= maxX) {
       let y = minY;
       while (y <= maxY) {
-        const rect = coords[`${x}:${y}`];
+        const rect = points[`${x}:${y}`];
         rect.setAttribute('fill', 'gray');
         y += 1;
       }
@@ -57,7 +54,7 @@ const drawHelper = (() => {
 for (let x = 0; x < gridCount; x += 1) {
   for (let y = 0; y < gridCount; y += 1) {
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    coords[`${x}:${y}`] = rect;
+    points[`${x}:${y}`] = rect;
     rect.setAttribute('width', squareSize);
     rect.setAttribute('height', squareSize);
     rect.setAttribute('x', x * squareSize);
@@ -78,7 +75,7 @@ const drawObstacle = (xStart, xEnd, yStart, yEnd, color) => {
   while (x <= xEnd) {
     let y = yStart;
     while (y <= yEnd) {
-      coords[`${x}:${y}`] = false;
+      points[`${x}:${y}`] = false;
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.setAttribute('width', squareSize);
       rect.setAttribute('height', squareSize);

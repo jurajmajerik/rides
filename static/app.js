@@ -11,7 +11,6 @@ const gridCount = 50; // No. of squares in each direction
 const squareSize = gridSize / gridCount;
 
 const points = {};
-const roadRects = {};
 
 const drawHelper = (() => {
   let count = 0;

@@ -63,6 +63,12 @@ for (let x = 0; x < gridCount; x += 1) {
     // Record coordinates
     rect.addEventListener('click', () => {
       drawHelper(x, y);
+
+      const node = nodes[`${x}:${y}`];
+      Object.keys(node).forEach(coords => {
+        const rect = points[coords];
+        rect.setAttribute('fill', 'red');
+      });
     });
 
     svg.appendChild(rect);

@@ -15,6 +15,7 @@ sudo docker build --tag app .
 
 msg "Stopping Docker container"
 sudo docker stop app
+sudo docker rm app
 
 msg "Starting Docker container"
 sudo docker run \

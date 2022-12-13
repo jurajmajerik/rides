@@ -4,7 +4,7 @@ SECONDS=0
 cd $HOME/app
 
 msg () {
-  echo -e "$1\n--------------------\n"
+  echo -e "\n$1\n--------------------\n"
 }
 
 msg "Pulling from GitHub"

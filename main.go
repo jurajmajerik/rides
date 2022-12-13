@@ -11,6 +11,7 @@ func getData(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	fmt.Println("test")
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/data", getData)
 

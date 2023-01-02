@@ -4,31 +4,20 @@ SECONDS=0
 cd $HOME/app
 
 msg () {
-  echo -e "\n$1\n--------------------\n"
+  echo -e "$1\n--------------------\n"
 }
+
+msg "Stopping app"
+sudo pkill app
 
 msg "Pulling from GitHub"
 git pull
 
-msg "Building Docker image"
-sudo docker build --tag app .
+msg "Building Go binary"
+go build
 
-msg "Stopping Docker container"
-sudo docker stop app
-sudo docker rm app
-
-msg "Starting Docker container"
-sudo docker run \
--d \
---name app \
---expose 443 \
--p 443:443 \
--v /etc/letsencrypt:/etc/letsencrypt \
--e SERVER_ENV=PROD \
-app
-
-msg "Pruning stale Docker images"
-sudo docker image prune -f
+msg "Starting server"
+nohup sudo ./app &>/dev/null &
 
 duration=$SECONDS
 

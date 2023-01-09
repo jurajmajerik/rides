@@ -28,7 +28,7 @@ sudo docker run \
 app
 
 msg "Starting Postgres container"
-docker run -d \
+sudo docker run -d \
 --name db-postgres \
 -p 5432:5432 \
 --mount type=volume,src=app-db,target=/var/lib/postgresql/data \

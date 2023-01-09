@@ -17,7 +17,7 @@ msg "Stopping Docker container"
 sudo docker stop app
 sudo docker rm app
 
-msg "Starting Docker container"
+msg "Starting app container"
 sudo docker run \
 -d \
 --name app \
@@ -26,6 +26,14 @@ sudo docker run \
 -v /etc/letsencrypt:/etc/letsencrypt \
 -e SERVER_ENV=PROD \
 app
+
+msg "Starting Postgres container"
+docker run -d \
+--name db-postgres \
+-p 5432:5432 \
+--mount type=volume,src=app-db,target=/var/lib/postgresql/data \
+-e POSTGRES_PASSWORD=mysecretpassword \
+postgres:15.1-alpine
 
 msg "Pruning stale Docker images"
 sudo docker image prune -f

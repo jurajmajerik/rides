@@ -5,6 +5,7 @@ WORKDIR /app
 COPY go.mod ./
 COPY *.go ./
 COPY static ./static
+COPY db ./db
 
 RUN go build -o /main
 

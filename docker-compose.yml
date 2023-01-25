@@ -1,0 +1,19 @@
+services:
+  app:
+    image: app
+    ports:
+      - 8080:8080
+    environment:
+      SERVER_ENV: DEV
+  db:
+    image: postgres:15.1-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - app-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+
+volumes:
+  app-db:
+    external: true

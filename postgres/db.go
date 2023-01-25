@@ -14,7 +14,7 @@ var Connection *sql.DB
 func InitDB() {
 	connStr := fmt.Sprintf(
 		"user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
-		"postgres", "mysecretpassword", "localhost", 5432, "postgres",
+		"postgres", "mysecretpassword", "db", 5432, "postgres",
 	)
 
 	var err error

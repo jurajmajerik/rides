@@ -13,12 +13,11 @@ git pull
 msg "Building Docker image"
 sudo docker build --tag app .
 
-msg "Stopping Docker container"
-sudo docker stop app
-sudo docker rm app
+msg "Stopping containers"
+SERVER_PORT=443 sudo docker compose down -d
 
 msg "Starting containers"
-SERVER_PORT=8080 sudo docker compose up -d
+SERVER_PORT=443 sudo docker compose up -d
 
 msg "Pruning stale Docker images"
 sudo docker image prune -f

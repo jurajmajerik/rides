@@ -10,14 +10,14 @@ msg () {
 msg "Pulling from GitHub"
 git pull
 
-msg "Building Docker image"
+msg "Building the 'app' image"
 sudo docker build --tag app .
 
 msg "Stopping containers"
-SERVER_PORT=443 sudo docker compose down -d
+sudo docker compose down
 
 msg "Starting containers"
-SERVER_PORT=443 sudo docker compose up -d
+sudo docker compose up -d
 
 msg "Pruning stale Docker images"
 sudo docker image prune -f

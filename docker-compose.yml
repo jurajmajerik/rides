@@ -3,8 +3,10 @@ services:
     image: app
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
     environment:
-      SERVER_ENV: DEV
+      SERVER_ENV: ${SERVER_ENV}
   db:
     image: postgres:15.1-alpine
     ports:

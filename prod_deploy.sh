@@ -10,11 +10,6 @@ msg () {
 msg "Pulling from GitHub"
 git pull
 
-msg "Building frontend bundle"
-cd frontend
-npm run build
-cd ..
-
 msg "Building the 'app' image"
 sudo docker build --tag app .
 

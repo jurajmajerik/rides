@@ -17,7 +17,7 @@ const main = async () => {
     visited[`${x}:${y}`] = true;
     const currentNode = nodes[`${x}:${y}`];
 
-    await highlightVisited(`${x}:${y}`);
+    // await highlightVisited(`${x}:${y}`);
   
     const neighbours = [
       [x, y - 1],

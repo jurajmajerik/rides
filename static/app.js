@@ -102,3 +102,34 @@ obstacles.forEach(args => {
 });
 
 body.appendChild(svg);
+
+// Car
+const animateCar = async () => {
+  const car = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  car.setAttribute('width', squareSize * 2);
+  car.setAttribute('height', squareSize * 2);
+  car.setAttribute('x', 0 * squareSize);
+  car.setAttribute('y', 20 * squareSize);
+  car.setAttribute('fill', 'white');
+  car.setAttribute('stroke', 'black');
+  svg.appendChild(car);
+  
+  const wait = (time) => new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+
+  const startX = 0;
+  const endX = 29;
+  const range = endX - startX;
+  
+  const countPoints = range * 10;
+  
+  for (let x = 0; x <= range; x += 0.1) {
+    console.log(x, range);
+    await wait(7);
+    car.setAttribute('x', x * squareSize);
+  }
+};
+animateCar();

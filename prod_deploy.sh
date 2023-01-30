@@ -7,7 +7,7 @@ msg () {
   echo -e "\n$1\n--------------------\n"
 }
 
-msg "Pulling from GitHub"
+msg "Pulling from Github"
 git pull
 
 msg "Building the 'app' image"

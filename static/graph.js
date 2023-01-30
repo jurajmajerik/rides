@@ -16,8 +16,6 @@ const main = async () => {
   const build = async ({ x, y }) => {
     visited[`${x}:${y}`] = true;
     const currentNode = nodes[`${x}:${y}`];
-
-    // await highlightVisited(`${x}:${y}`);
   
     const neighbours = [
       [x, y - 1],
@@ -35,6 +33,6 @@ const main = async () => {
       }
     }
   };
-  await build({ x: 0, y: 0 });
+  build({ x: 0, y: 0 });
 };
 main();

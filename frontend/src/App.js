@@ -5,6 +5,10 @@ const gridSize = 500;
 const gridCount = 50; // No. of squares in each direction
 const squareSize = gridSize / gridCount;
 
+Number.prototype.round = function(places) {
+  return +(Math.round(this + "e+" + places)  + "e-" + places);
+}
+
 // Populate points
 const points = [];
 for (let x = 0; x < gridCount; x += 1) {
@@ -103,54 +107,42 @@ class SVG extends React.Component {
       [8,16],
       [8,17],
       [8,18],
+      [8,17],
     ];
 
     let currX = 0;
     let currY = 20;
 
+    const move = ({ coord, dir }) => {
+      if (coord === 'x') {
+        if (dir === 'right') {
+        }
+      }
+    };
+
     for (let i = 0; i < path.length; i++) {
       const [nextX, nextY] = path[i];
 
-      // We need to look at the difference between currentX and nextX
-      
-      // Update x
-      if (currX !== nextX) {
-        // Move left or right?
-
-        // Move left - increment x
-        if (currX < nextX) {
-          while (currX < nextX) {
-            currX += 0.1;
-            await wait(1);
-            this.setState((state) => {
-              const cars = state.cars.map(({ id, x, y }) => ({ id, x: currX, y }));
-              return { cars };
-            });
-            currX += 0.10;
-          }
-        } else {
-          // Move right - decrement x
-
-        }
+      const xIncrement = (nextX - currX) / 10;
+      while (currX !== nextX) {
+        await wait(5);
+        this.setState((state) => { // eslint-disable-line
+          const cars = state.cars.map(({ id, x, y }) => ({ id, x: currX, y }));
+          return { cars };
+        });
+        currX = (currX + xIncrement).round(2);
       }
 
-      // Update y
-        // Move up - increment y
-        if (currY > nextY) {
-          while (currY > nextY) {
-          // for (let i = currY; i < nextX; i += 0.10) {
-            currY -= 0.1;
-            await wait(1);
-            this.setState((state) => {
-              const cars = state.cars.map(({ id, x, y }) => ({ id, x, y: currY }));
-              return { cars };
-            });
-            currY -= 0.10;
-          }
-        } else {
-          // Move down - decrement y
 
-        }
+      const yIncrement = (nextY - currY) / 10;
+      while (currY !== nextY) {
+        await wait(5);
+        this.setState((state) => { // eslint-disable-line
+          const cars = state.cars.map(({ id, x, y }) => ({ id, x, y: currY }));
+          return { cars };
+        });
+        currY = (currY + yIncrement).round(2);
+      }
     }
   }
 

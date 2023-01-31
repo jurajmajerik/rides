@@ -130,13 +130,6 @@ class SVG extends React.Component {
     let currX = 0;
     let currY = 20;
 
-    const move = ({ coord, dir }) => {
-      if (coord === 'x') {
-        if (dir === 'right') {
-        }
-      }
-    };
-
     for (let i = 0; i < path.length; i++) {
       const [nextX, nextY] = path[i];
 

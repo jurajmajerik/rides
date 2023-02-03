@@ -1,5 +1,4 @@
-const html = `
-<desc>Created with Fabric.js 4.6.0</desc>
+const shapes = `
 <defs>
 <filter id="shadow">
   <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#696969"/>
@@ -58,9 +57,9 @@ const html = `
 </g>
 `;
 
-const IconCar = ({ x, y, rotation }) => (
-<svg x={x} y={y} width="50" height="50" viewBox="0 0 100 100" border="solid 10px black">
-  <g width="50" height="50" transform={`rotate(${rotation})`} transform-origin="50px 50px" dangerouslySetInnerHTML={{ __html: html }} />
-</svg>
+const CarIcon = ({ x, y, rotation }) => (
+  <svg x={x} y={y} width="50" height="50" viewBox="0 0 100 100" border="solid 10px black">
+    <g width="50" height="50" transform={`rotate(${rotation})`} transform-origin="50px 50px" dangerouslySetInnerHTML={{ __html: shapes }} />
+  </svg>
 );
-export default IconCar;
+export default CarIcon;

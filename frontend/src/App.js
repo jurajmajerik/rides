@@ -1,5 +1,5 @@
 import React from 'react';
-import IconCar from './IconCar';
+import CarIcon from './CarIcon';
 import obstacles from './obstacles';
 
 const gridSize = 500;
@@ -19,63 +19,40 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
   }
 });
 
+const Obstacle = ({ x, y, color }) => (
+  <rect
+    width={squareSize}
+    height={squareSize}
+    x={x}
+    y={y}
+    fill={color}
+    stroke={color}
+  />
+);
+
 class Car extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      position: props.target,
+      position: props.next,
       rotation: props.rotation,
     };
-  }
-
-  async rotate() {
-    const wait = (t) => new Promise((res) => {
-      setTimeout(() => {
-        res();
-      }, t);
-    });
-
-    while (this.state.rotation < 0) {
-      this.setState(state => ({
-        position: state.position,
-        rotation: state.rotation + 1,
-      }));
-      await wait(20);
-    }
-  }
-
-  componentDidMount() {
-    // this.rotate();
   }
 
   render() {
     const { position, rotation } = this.state;
     const [x, y] = position;
     return (
-      <>
-      <rect
-        className='car'
-        fill="black"
-        stroke='black'
-        key={`${x}:${y}`}
-        width={squareSize}
-        height={squareSize}
-        x={x * squareSize}
-        y={y * squareSize}
-        style={{
-        }}
-      />
-      <IconCar
+      <CarIcon
         x={x * squareSize - 20}
         y={y * squareSize - 20}
         rotation={rotation}
       />
-      </>
     );
   }
 }
 
-class SVG extends React.Component {
+class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -83,19 +60,17 @@ class SVG extends React.Component {
     };
   }
 
-  async updateCars() {
+  async placeCars() {
     this.setState(() => ({
       cars: [
         {
           id: 'car1',
-          // current: [6,3],
-          current: [16,14],
+          next: [16,14],
           rotation: 0,
         },
         {
           id: 'car2',
-          // current: [6,3],
-          current: [26,16],
+          next: [26,16],
           rotation: 270,
         }
       ]
@@ -103,7 +78,7 @@ class SVG extends React.Component {
   }
 
   componentDidMount() {
-    this.updateCars();
+    this.placeCars();
   }
 
   render() {
@@ -120,8 +95,8 @@ class SVG extends React.Component {
       );
     }
 
-    const cars = this.state.cars.map(({ id, current, path, rotation }) => {
-      return <Car key={id} target={current} rotation={rotation} path={path} />;
+    const cars = this.state.cars.map(({ id, next, rotation }) => {
+      return <Car key={id} next={next} rotation={rotation} />;
     });
 
     return (
@@ -137,21 +112,10 @@ class SVG extends React.Component {
   }
 }
 
-const Obstacle = ({ x, y, color }) => (
-  <rect
-    width={squareSize}
-    height={squareSize}
-    x={x}
-    y={y}
-    fill={color}
-    stroke={color}
-  />
-);
-
 function App() {
   return (
     <div className='App'>
-      <SVG />
+      <Map />
     </div>
   );
 }

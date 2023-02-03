@@ -24,30 +24,53 @@ class Car extends React.Component {
     super(props);
     this.state = {
       position: props.target,
+      rotation: props.rotation,
     };
   }
 
-  render() {
-    const { position } = this.state;
-    const [x, y] = position;
+  async rotate() {
+    const wait = (t) => new Promise((res) => {
+      setTimeout(() => {
+        res();
+      }, t);
+    });
 
+    while (this.state.rotation < 0) {
+      this.setState(state => ({
+        position: state.position,
+        rotation: state.rotation + 1,
+      }));
+      await wait(20);
+    }
+  }
+
+  componentDidMount() {
+    // this.rotate();
+  }
+
+  render() {
+    const { position, rotation } = this.state;
+    const [x, y] = position;
     return (
-      // <rect
-      //   className='car'
-      //   fill="black"
-      //   stroke='black'
-      //   key={`${x}:${y}`}
-      //   width={squareSize}
-      //   height={squareSize}
-      //   x={x * squareSize}
-      //   y={y * squareSize}
-      //   style={{
-      //   }}
-      // />
-      <IconCar
+      <>
+      <rect
+        className='car'
+        fill="black"
+        stroke='black'
+        key={`${x}:${y}`}
+        width={squareSize}
+        height={squareSize}
         x={x * squareSize}
         y={y * squareSize}
+        style={{
+        }}
       />
+      <IconCar
+        x={x * squareSize - 20}
+        y={y * squareSize - 20}
+        rotation={rotation}
+      />
+      </>
     );
   }
 }
@@ -65,7 +88,15 @@ class SVG extends React.Component {
       cars: [
         {
           id: 'car1',
-          current: [16,17],
+          // current: [6,3],
+          current: [16,14],
+          rotation: 0,
+        },
+        {
+          id: 'car2',
+          // current: [6,3],
+          current: [26,16],
+          rotation: 270,
         }
       ]
     }));
@@ -89,14 +120,15 @@ class SVG extends React.Component {
       );
     }
 
-    const cars = this.state.cars.map(({ id, current, path }) => {
-      return <Car key={id} target={current} path={path} />;
+    const cars = this.state.cars.map(({ id, current, path, rotation }) => {
+      return <Car key={id} target={current} rotation={rotation} path={path} />;
     });
 
     return (
       <svg
       width={gridSize}
       height={gridSize}
+      className="map"
       >
         {obstacleElems}
         {cars}

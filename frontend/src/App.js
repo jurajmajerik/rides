@@ -1,5 +1,6 @@
 import React from 'react';
 import CarIcon from './CarIcon';
+import { advanceCoord, getNextCoordIndex } from './movement';
 import obstacles from './obstacles';
 
 const gridSize = 500;
@@ -106,73 +107,21 @@ class Car extends React.Component {
   async move(next) {
     // If dest changed, terminate!
     // New instance of move() will be triggered
-  
-    // Generate all points between position and target
+ 
     const { path, position } = this.state;
     let [currX, currY] = position;
   
-    // Find the nearest point on the path
-    const startIndex = path.findIndex(([x, y], i, arr) => {
-      if (i === 0) return false;
-
-      const xMatches = x === currX;
-      const yMatches = y === currY;
-
-      const isBetween = (currVal, arr, i, coord) => {
-        const coordIndex = coord === 'x' ? 0 : 1;
-        const currItem = arr[i][coordIndex];
-        const prevItem = arr[i - 1][coordIndex];
-        return (
-          (currVal <= currItem && currVal >= prevItem)
-          ||
-          (currVal >= currItem && currVal <= prevItem)
-        );
-      };
-
-      return (
-        (xMatches
-          && isBetween(currY, arr, i, 'y')
-        )
-        ||
-        (yMatches
-          && isBetween(currX, arr, i, 'x')
-        )
-      );
-    });
-
+    const startIndex = getNextCoordIndex(currX, currY, path);
     const endIndex = path.findIndex(([x, y]) => {
       return x === next[0] && y === next[1];
     });
-
-    // Create section & count turns
-    const section = [];
-    let turnCount = 0;
-    let direction = path[startIndex][0] === path[startIndex + 1][0] ? 'x' : 'y';
-    for (let i = startIndex; i <= endIndex; i++) {
-      if (path[i + 1]) {
-        if (direction === 'x' && path[i + 1][1] !== path[i][1]) {
-          direction = 'y';
-          turnCount++;
-        } else if (direction === 'y' && path[i + 1][0] !== path[i][0]) {
-          direction = 'x;'
-          turnCount++;
-        }
-      }
-      section.push(path[i]);
-    }
+    const section = path.slice(startIndex, endIndex + 1);
 
     // How many squares to traverse
     const distance = endIndex - startIndex + Math.max(currX % 1, currY % 1);
-
-    // Turn duration
-    const turnsDuration = turnCount * 200;
-
     // How many steps? 2000ms / 30ms = 20 steps
-    const steps = (fetchInterval) / refreshInterval;
-
+    const steps = fetchInterval / refreshInterval;
     const increment = distance / steps;
-
-    
   
     // Traverse every path of the section
     for (let i = 0; i < section.length; i++) {
@@ -182,14 +131,7 @@ class Car extends React.Component {
       while (currX !== nextX) {
         if (next !== this.props.next) return;
 
-        if (nextX > currX) {
-          currX = currX + increment;
-          if (currX + increment > nextX) currX = nextX;
-        } else {
-          currX = currX - increment;
-          if (currX - increment < nextX) currX = nextX;
-        }
-
+        currX = advanceCoord(currX, nextX, increment);
         this.setState((state) => ({ // eslint-disable-line
           position: [currX, state.position[1]],
           path: state.path,
@@ -200,14 +142,7 @@ class Car extends React.Component {
       while (currY !== nextY) {
         if (next !== this.props.next) return;
 
-        if (nextY > currY) {
-          currY = currY + increment;
-          if (currY + increment > nextY) currY = nextY;
-        } else {
-          currY = currY - increment;
-          if (currY - increment < nextY) currY = nextY;
-        }
-  
+        currY = advanceCoord(currY, nextY, increment);
         this.setState((state) => ({ // eslint-disable-line
           position: [state.position[0], currY],
           path: state.path,

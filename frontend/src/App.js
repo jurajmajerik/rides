@@ -2,51 +2,14 @@ import React from 'react';
 import CarIcon from './CarIcon';
 import { advanceCoord, getNextCoordIndex } from './movement';
 import obstacles from './obstacles';
+import records from './records';
 
 const gridSize = 500;
 const gridCount = 50; // No. of squares in each direction
 const squareSize = gridSize / gridCount;
 
-const fetchInterval = 2000;
-const refreshInterval = 30; // every 30ms
-
-const records = [
-  {
-    id: 'car1',
-    next: [0, 20],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  },
-  {
-    id: 'car1',
-    next: [4, 19],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  },
-  {
-    id: 'car1',
-    next: [4, 14],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  },
-  {
-    id: 'car1',
-    next: [11, 17],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  },
-  {
-    id: 'car1',
-    next: [15, 17],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  },
-  {
-    id: 'car1',
-    next: [10, 20],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  },
-  {
-    id: 'car1',
-    next: [8, 20],
-    path: [[0, 20],[1,20],[2,20],[3,20],[4,20],[4,19],[4,18],[4,17],[4,16],[4,15],[4,14],[5,14],[6,14],[7,14],[8,14],[8,15],[8,16],[8,17],[9,17],[10,17],[11,17],[12,17],[13,17],[14,17],[15,17],[16,17],[16,18],[16,19],[16,20],[15,20],[14,20],[13,20],[12,20],[11,20],[10,20],[9,20],[8,20]],
-  }
-];
+const fetchInterval = 1000;
+const refreshInterval = 33;
 
 Number.prototype.round = function(places) { // eslint-disable-line
   return +(Math.round(this + 'e+' + places)  + 'e-' + places);
@@ -92,22 +55,7 @@ class Car extends React.Component {
     };
   }
 
-  async rotate() {
-    const wait = (t) => new Promise((res) => {
-      setTimeout(() => {
-        res();
-      }, t);
-    });
-    while (true) {
-      this.setState(state => ({ position: state.position, rotation: state.rotation + 1 }));
-      await wait(20);
-    }
-  }
-
   async move(next) {
-    // If dest changed, terminate!
-    // New instance of move() will be triggered
- 
     const { path, position } = this.state;
     let [currX, currY] = position;
   
@@ -117,13 +65,10 @@ class Car extends React.Component {
     });
     const section = path.slice(startIndex, endIndex + 1);
 
-    // How many squares to traverse
     const distance = endIndex - startIndex + Math.max(currX % 1, currY % 1);
-    // How many steps? 2000ms / 30ms = 20 steps
     const steps = fetchInterval / refreshInterval;
     const increment = distance / steps;
   
-    // Traverse every path of the section
     for (let i = 0; i < section.length; i++) {
 
       const [nextX, nextY] = section[i];

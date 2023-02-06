@@ -1,6 +1,6 @@
 import { advanceCoord, getNextCoordIndex, isBetween } from './movement';
 
-test('check is a number is between two numbers inclusive', () => {
+test('check if a number is between two numbers inclusive', () => {
   expect(isBetween(14.23, 15, 14)).toEqual(true);
   expect(isBetween(15.32, 16, 15)).toEqual(true);
   expect(isBetween(16, 16, 15)).toEqual(true);

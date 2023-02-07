@@ -1,6 +1,7 @@
 import React from 'react';
 import CarIcon from './CarIcon';
 import { advanceCoord, getNextCoordIndex } from './movement';
+import { wait } from './utils';
 import obstacles from './obstacles';
 import records from './records';
 
@@ -10,16 +11,6 @@ const squareSize = gridSize / gridCount;
 
 const fetchInterval = 1000;
 const refreshInterval = 33;
-
-Number.prototype.round = function(places) { // eslint-disable-line
-  return +(Math.round(this + 'e+' + places)  + 'e-' + places);
-}
-
-const wait = (t) => new Promise((res) => {
-  setTimeout(() => {
-    res();
-  }, t);
-});
 
 const coordsToObstacles = [];
 obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {

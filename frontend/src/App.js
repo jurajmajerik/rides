@@ -25,17 +25,6 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
   }
 });
 
-const Obstacle = ({ x, y, color }) => (
-  <rect
-    width={squareSize}
-    height={squareSize}
-    x={x}
-    y={y}
-    fill={color}
-    stroke={color}
-  />
-);
-
 class Car extends React.Component {
   constructor(props) {
     super(props);
@@ -133,11 +122,14 @@ class Map extends React.Component {
     for (let [key, color] of Object.entries(coordsToObstacles)) {
       const [x, y] = key.split(':');
       obstacleElems.push(
-        <Obstacle
+        <rect
           key={`${x}:${y}`}
+          width={squareSize}
+          height={squareSize}
           x={x * squareSize}
           y={y * squareSize}
-          color={color}
+          fill={color}
+          stroke={color}
         />
       );
     }

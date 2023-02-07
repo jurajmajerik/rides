@@ -31,3 +31,25 @@ export const advanceCoord = (curr, next, increment) => {
 
   return curr;
 };
+
+export const countTurns = (section) => {
+  let count = 0;
+
+  const getDirection = (section, i) => {
+    const x0 = section[i - 1][0];
+    const x1 = section[i][0];
+    return x1 !== x0 ? 'x' : 'y';
+  };
+
+  let currDirection = getDirection(section, 1);
+
+  for (let i = 2; i < section.length; i++) {
+    let newDirection = getDirection(section, i);
+    if (newDirection !== currDirection) {
+      currDirection = newDirection;
+      count++;
+    }
+  }
+
+  return count;
+};

@@ -1,4 +1,4 @@
-import { advanceCoord, getNextCoordIndex, isBetween } from './movement';
+import { advanceCoord, countTurns, getNextCoordIndex, isBetween } from './movement';
 
 test('check if a number is between two numbers inclusive', () => {
   expect(isBetween(14.23, 15, 14)).toEqual(true);
@@ -19,4 +19,18 @@ test('get the index next set of coords on the path', () => {
 test('advance a coordinate', () => {
   expect(advanceCoord(1.48, 2, 0.22)).toEqual(1.70);
   expect(advanceCoord(1.99, 2, 0.22)).toEqual(2.00);
+});
+
+test('count turns', () => {
+  let section = [[0,0],[1,0],[2,0],[3,0],[4,0],[5,0]];
+  expect(countTurns(section)).toEqual(0);
+
+  section = [[0,0],[1,0],[1,1]];
+  expect(countTurns(section)).toEqual(1);
+
+  section = [[0,0],[1,0],[1,1],[2,1],[2,2]];
+  expect(countTurns(section)).toEqual(3);
+
+  section = [[0,0],[1,0],[1,1],[2,1],[2,2],[3,2],[4,2],[5,2],[6,2],[6,3]];
+  expect(countTurns(section)).toEqual(5);
 });

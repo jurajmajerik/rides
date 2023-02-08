@@ -72,11 +72,6 @@ const records = [
   },
   {
     id: 'car1',
-    next: [13,14],
-    path,
-  },
-  {
-    id: 'car1',
     next: [16,13],
     path,
   },

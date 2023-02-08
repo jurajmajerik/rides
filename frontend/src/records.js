@@ -31,7 +31,7 @@ const path = [
   [14, 14],
   [15, 14],
   [16, 14],
-  [16, 13]
+  [16, 13],
 ];
 
 const records = [
@@ -47,6 +47,11 @@ const records = [
   },
   {
     id: 'car1',
+    next: [6,11],
+    path,
+  },
+  {
+    id: 'car1',
     next: [6,7],
     path,
   },
@@ -57,7 +62,17 @@ const records = [
   },
   {
     id: 'car1',
-    next: [12,11],
+    next: [12,8],
+    path,
+  },
+  {
+    id: 'car1',
+    next: [12,14],
+    path,
+  },
+  {
+    id: 'car1',
+    next: [13,14],
     path,
   },
   {

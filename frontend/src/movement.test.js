@@ -1,4 +1,12 @@
-import { advanceCoord, countTurns, getNextCoordIndex, isBetween } from './movement';
+import {
+  advanceCoord,
+  countTurns,
+  getDirection,
+  getNextCoordIndex,
+  getRotation,
+  getTurnDistance,
+  isBetween
+} from './movement';
 
 test('check if a number is between two numbers inclusive', () => {
   expect(isBetween(14.23, 15, 14)).toEqual(true);
@@ -33,4 +41,59 @@ test('count turns', () => {
 
   section = [[0,0],[1,0],[1,1],[2,1],[2,2],[3,2],[4,2],[5,2],[6,2],[6,3]];
   expect(countTurns(section)).toEqual(5);
+});
+
+test('get direction', () => {
+  expect(getDirection([[0,0],[1,0]], 1)).toEqual('x');
+  expect(getDirection([[0,1],[0,2]], 1)).toEqual('y');
+});
+
+test('get rotation', () => {
+  expect(getRotation([[0,1],[0,0]], 1)).toEqual(0);
+  expect(getRotation([[0,0],[1,0]], 1)).toEqual(90);
+  expect(getRotation([[0,0],[0,1]], 1)).toEqual(180);
+  expect(getRotation([[1,0],[0,0]], 1)).toEqual(270);
+});
+
+test('get turn distance', () => {
+  expect(getTurnDistance(90, 0)).toEqual({
+    distClockwise: 270,
+    distCounterclockwise: 90,
+  });
+  expect(getTurnDistance(90, 180)).toEqual({
+    distClockwise: 90,
+    distCounterclockwise: 270,
+  });
+  expect(getTurnDistance(90, 180)).toEqual({
+    distClockwise: 90,
+    distCounterclockwise: 270,
+  });
+  expect(getTurnDistance(180, 0)).toEqual({
+    distClockwise: 180,
+    distCounterclockwise: 180,
+  });
+  expect(getTurnDistance(180, 360)).toEqual({
+    distClockwise: 180,
+    distCounterclockwise: 180,
+  });
+  expect(getTurnDistance(0, 90)).toEqual({
+    distClockwise: 90,
+    distCounterclockwise: 270,
+  });
+  expect(getTurnDistance(360, 90)).toEqual({
+    distClockwise: 90,
+    distCounterclockwise: 270,
+  });
+  expect(getTurnDistance(270, 90)).toEqual({
+    distClockwise: 180,
+    distCounterclockwise: 180,
+  });
+  expect(getTurnDistance(270, 0)).toEqual({
+    distClockwise: 90,
+    distCounterclockwise: 270,
+  });
+  expect(getTurnDistance(270, 360)).toEqual({
+    distClockwise: 90,
+    distCounterclockwise: 270,
+  });
 });

@@ -46,8 +46,8 @@ export default class Car extends React.Component {
       else rotation -= increment;
 
       if (targetRotation === 0 && rotation > 360) rotation = 0;
-      if (rotation < 0) rotation = 360 - Math.abs(rotation);
-      if (targetRotation !== 0 && isClockwise && rotation > targetRotation) rotation = targetRotation;
+      else if (rotation < 0) rotation = 360 - Math.abs(rotation);
+      else if (targetRotation !== 0 && isClockwise && rotation > targetRotation) rotation = targetRotation;
 
       this.setState(state => ({ // eslint-disable-line
         position: state.position,
@@ -59,6 +59,7 @@ export default class Car extends React.Component {
   }
 
   async move(next) {
+    if (next !== this.props.next) return;
     const { path, position } = this.state;
     let [currX, currY] = position;
   

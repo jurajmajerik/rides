@@ -32,8 +32,8 @@ export default class Car extends React.Component {
   async rotate(section, i) {
     let rotation = this.state.rotation;
     const targetRotation = getRotation(section, i);
-    
-    // Counterclockwise
+    if (this.state.rotation === targetRotation) return;
+
     const { distClockwise, distCounterclockwise } = getTurnDistance(rotation, targetRotation);
     const isClockwise = distClockwise < distCounterclockwise;
 

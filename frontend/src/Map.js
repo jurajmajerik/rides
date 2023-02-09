@@ -2,13 +2,12 @@ import React from 'react';
 import Car from './Car';
 import obstacles from './obstacles';
 import data from './data';
-import { wait } from './utils';
+import { getRandomInt, wait } from './utils';
 
 import config from './config';
 const {
   gridSize,
   squareSize,
-  fetchInterval,
 } = config;
 
 const coordsToObstacles = [];
@@ -45,7 +44,9 @@ export default class Map extends React.Component {
         cars.push(update);
       }
       this.setState({ cars });
-      await wait(fetchInterval);
+      const interval = getRandomInt(1000, 2000);
+      console.log(interval);
+      await wait(interval);
     }
   }
 

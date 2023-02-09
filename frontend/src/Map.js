@@ -1,7 +1,7 @@
 import React from 'react';
 import Car from './Car';
 import obstacles from './obstacles';
-import records from './records';
+import data from './data';
 import { wait } from './utils';
 
 import config from './config';
@@ -33,8 +33,18 @@ export default class Map extends React.Component {
   }
 
   async simulate() {
-    for (const record of records) {
-      this.setState({ cars: [record] });
+    const updateCount = data[0].updates.length;
+    for (let i = 0; i < updateCount; i++) {      
+      const cars = [];
+      for (let j = 0; j < data.length; j++) {
+        const update = {
+          id: data[j].id,
+          path: data[j].path,
+          next: data[j].updates[i],
+        };
+        cars.push(update);
+      }
+      this.setState({ cars });
       await wait(fetchInterval);
     }
   }

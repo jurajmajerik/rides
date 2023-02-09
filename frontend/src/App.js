@@ -57,10 +57,7 @@ class Car extends React.Component {
         if (next !== this.props.next) return;
 
         currX = advanceCoord(currX, nextX, increment);
-        this.setState((state) => ({ // eslint-disable-line
-          position: [currX, state.position[1]],
-          path: state.path,
-        }));
+        this.setState({ position: [currX, this.state.position[1]] });
         await wait(refreshInterval);
       }
 
@@ -68,10 +65,7 @@ class Car extends React.Component {
         if (next !== this.props.next) return;
 
         currY = advanceCoord(currY, nextY, increment);
-        this.setState((state) => ({ // eslint-disable-line
-          position: [state.position[0], currY],
-          path: state.path,
-        }));
+        this.setState({ position: [this.state.position[0], currY] });
         await wait(refreshInterval);
       }
     }
@@ -106,9 +100,7 @@ class Map extends React.Component {
 
   async simulate() {
     for (const record of records) {
-      this.setState(state => ({
-        cars: [record]
-      }));
+      this.setState({ cars: [record] });
       await wait(fetchInterval);
     }
   }

@@ -22,6 +22,7 @@ export default class Car extends React.Component {
     super(props);
     const { path } = props;
 
+    this.rotateBusy = false;
     this.state = {
       position: props.next,
       rotation: getRotation(path, 1),
@@ -30,9 +31,11 @@ export default class Car extends React.Component {
   }
 
   async rotate(section, i) {
+    this.rotateBusy = true;
+
     let rotation = this.state.rotation;
     const targetRotation = getRotation(section, i);
-    if (this.state.rotation === targetRotation) return;
+    if (this.state.rotation === targetRotation) return this.rotateBusy = false;
 
     const { distClockwise, distCounterclockwise } = getTurnDistance(rotation, targetRotation);
     const isClockwise = distClockwise < distCounterclockwise;
@@ -45,17 +48,14 @@ export default class Car extends React.Component {
       if (isClockwise) rotation += increment;
       else rotation -= increment;
 
-      if (targetRotation === 0 && rotation > 360) rotation = 0;
+      if (rotation > 360) rotation = 0;
       else if (rotation < 0) rotation = 360 - Math.abs(rotation);
-      else if (targetRotation !== 0 && isClockwise && rotation > targetRotation) rotation = targetRotation;
 
-      this.setState(state => ({ // eslint-disable-line
-        position: state.position,
-        rotation,
-        path: state.path,
-      }));
+      this.setState({ rotation });
       await wait(refreshInterval);
     }
+
+    this.rotateBusy = false;
   }
 
   async move(next) {
@@ -76,17 +76,19 @@ export default class Car extends React.Component {
     const increment = distance / steps;
   
     for (let i = 0; i < section.length; i++) {
-      if (i > 0) await this.rotate(section, i);
+      if (i > 0) {
+        while (this.rotateBusy) {
+          await wait(refreshInterval);
+        }
+        await this.rotate(section, i);
+      }
 
       const [nextX, nextY] = section[i];
       while (currX !== nextX) {
         if (next !== this.props.next) return;
 
         currX = advanceCoord(currX, nextX, increment);
-        this.setState((state) => ({ // eslint-disable-line
-          position: [currX, state.position[1]],
-          path: state.path,
-        }));
+        this.setState({ position: [currX, this.state.position[1]] });
         await wait(refreshInterval);
       }
 
@@ -94,10 +96,7 @@ export default class Car extends React.Component {
         if (next !== this.props.next) return;
 
         currY = advanceCoord(currY, nextY, increment);
-        this.setState((state) => ({ // eslint-disable-line
-          position: [state.position[0], currY],
-          path: state.path,
-        }));
+        this.setState({ position: [this.state.position[0], currY] });
         await wait(refreshInterval);
       }
     }

@@ -34,9 +34,7 @@ export default class Map extends React.Component {
 
   async simulate() {
     for (const record of records) {
-      this.setState(state => ({
-        cars: [record]
-      }));
+      this.setState({ cars: [record] });
       await wait(fetchInterval);
     }
   }

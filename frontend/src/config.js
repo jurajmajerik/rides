@@ -1,7 +1,7 @@
 const gridSize = 500;
 const gridCount = 50; // No. of squares in each direction
 const squareSize = gridSize / gridCount;
-const fetchInterval = 1200;
+const fetchInterval = 1000;
 const refreshInterval = 16;
 const turnDuration = refreshInterval * 8;
 

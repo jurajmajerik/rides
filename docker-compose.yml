@@ -1,12 +1,19 @@
 services:
-  app:
-    image: app
+  server:
+    image: server
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     environment:
       SERVER_ENV: ${SERVER_ENV}
+  simulation:
+    build:
+      context: .
+      dockerfile: ./simulation/Dockerfile
   db:
     image: postgres:15.1-alpine
     ports:

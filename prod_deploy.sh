@@ -10,8 +10,8 @@ msg () {
 msg "Pulling from Github"
 git pull
 
-msg "Building the 'server' image"
-sudo docker build --tag server .
+msg "Building images"
+docker-compose build
 
 msg "Stopping containers"
 sudo docker compose down

@@ -116,7 +116,8 @@ const main = async () => {
   let i = 0;
   while (true) {
     const [x, y] = paths[path][i];
-    await client.query(
+
+    const res = await client.query(
       `
       INSERT INTO rides (car_id, location, path) 
       VALUES ('car1', '${x}:${y}', '${JSON.stringify(paths[path])}')
@@ -124,6 +125,7 @@ const main = async () => {
       DO UPDATE SET location = EXCLUDED.location, path = EXCLUDED.path;
       `
     );
+    console.log(`${x}:${y}`);
 
     if (i === paths[path].length - 1) {
       path = path === 'first' ? 'second' : 'first';
@@ -131,7 +133,7 @@ const main = async () => {
     } else {
       i++;
     }
-    await wait(300);
+    await wait(1);
   }
 };
 main();

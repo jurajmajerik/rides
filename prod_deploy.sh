@@ -11,7 +11,7 @@ msg "Pulling from Github"
 git pull
 
 msg "Building images"
-docker-compose build
+sudo docker-compose build
 
 msg "Stopping containers"
 sudo docker compose down

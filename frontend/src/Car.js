@@ -65,15 +65,24 @@ export default class Car extends React.Component {
       await wait(100);
       if (timestamp !== this.timestamp) return;
     }
-
     if (timestamp !== this.timestamp) return;
 
+    
     this.moveBusy = true;
-
+    
     const { position } = this.state;
     let [currX, currY] = position;
+
+    console.log(currX, currY);
+    console.log(next, path);
   
     const startIndex = getNextCoordIndex(currX, currY, path);
+
+    if (startIndex === -1) {
+      this.setState({ position: [path[0][0], path[0][1]], path });
+      return this.moveBusy = false;
+    }
+
     const endIndex = path.findIndex(([x, y]) => {
       return x === next[0] && y === next[1];
     });

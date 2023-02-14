@@ -132,7 +132,7 @@ const main = async () => {
     if (i === paths[path].length - 1) {
       path = path === 'first' ? 'second' : 'first';
       i = 0;
-      await wait(5000);
+      // await wait(5000);
     } else {
       i++;
     }

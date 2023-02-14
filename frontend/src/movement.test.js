@@ -17,11 +17,14 @@ test('check if a number is between two numbers inclusive', () => {
 });
 
 test('get the index next set of coords on the path', () => {
-  const path = [[0, 20],[1,20],[2,20],[3,20],[4,20]];
+  let path = [[0, 20],[1,20],[2,20],[3,20],[4,20]];
   expect(getNextCoordIndex(1.23, 20, path)).toEqual(2);
   expect(getNextCoordIndex(2, 20, path)).toEqual(2);
   expect(getNextCoordIndex(0, 20, path)).toEqual(0);
   expect(getNextCoordIndex(4, 20, path)).toEqual(4);
+
+  path=[[8,17],[8,16],[8,15],[8,14],[7,14],[6,14],[6,13],[6,12],[6,11],[6,10],[6,9],[6,8],[6,7],[6,6],[7,6],[8,6],[9,6],[10,6],[11,6],[12,6],[12,7],[12,8],[12,9],[12,10],[12,11],[12,12],[12,13],[12,14],[13,14],[14,14],[15,14],[16,14],[16,13]];
+  expect(getNextCoordIndex(8, 16, path)).toEqual(1);
 });
 
 test('advance a coordinate', () => {

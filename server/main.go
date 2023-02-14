@@ -2,35 +2,38 @@ package main
 
 import (
 	db "app/db"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 )
 
-func getDrivers(w http.ResponseWriter, req *http.Request) {
-	rows, err := db.Connection.Query("SELECT name FROM drivers")
+type Ride struct {
+	Id       string `json:"id"`
+	CarId    string `json:"car_id"`
+	Location string `json:"location"`
+	Path     string `json:"path"`
+}
+
+func getRides(w http.ResponseWriter, req *http.Request) {
+	rows, err := db.Connection.Query("SELECT * FROM rides")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer rows.Close()
 
-	data := ""
+	var rides []Ride
+
 	for rows.Next() {
-		var name string
-		err = rows.Scan(&name)
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Println(name)
-		data += fmt.Sprintf("%s ", name)
+		var ride Ride
+		rows.Scan(&ride.Id, &ride.CarId, &ride.Location, &ride.Path)
+		rides = append(rides, ride)
 	}
 
-	err = rows.Err()
-	if err != nil {
-		fmt.Println(err)
-	}
+	ridesBytes, _ := json.MarshalIndent(rides, "", "\t")
 
-	fmt.Fprintf(w, data)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(ridesBytes)
 }
 
 func main() {
@@ -38,7 +41,7 @@ func main() {
 	defer db.Connection.Close()
 
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
-	http.HandleFunc("/drivers", getDrivers)
+	http.HandleFunc("/rides", getRides)
 
 	serverEnv := os.Getenv("SERVER_ENV")
 

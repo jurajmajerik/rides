@@ -22,7 +22,9 @@ export default class Car extends React.Component {
     super(props);
     const { path } = props;
 
+    this.timestamp = 0;
     this.rotateBusy = false;
+    this.moveBusy = false;
     this.state = {
       position: props.next,
       rotation: getRotation(path, 1),
@@ -58,16 +60,27 @@ export default class Car extends React.Component {
     this.rotateBusy = false;
   }
 
-  async move(next) {
-    if (next !== this.props.next) return;
-    const { path, position } = this.state;
+  async move(next, path, timestamp) {
+    while (this.moveBusy) {
+      await wait(100);
+      if (timestamp !== this.timestamp) return;
+    }
+
+    if (timestamp !== this.timestamp) return;
+
+    this.moveBusy = true;
+
+    const { position } = this.state;
     let [currX, currY] = position;
   
     const startIndex = getNextCoordIndex(currX, currY, path);
     const endIndex = path.findIndex(([x, y]) => {
       return x === next[0] && y === next[1];
     });
+
+    if (startIndex === -1 || endIndex === -1) return this.moveBusy = false;
     const section = path.slice(startIndex, endIndex + 1);
+    if (section.length < 2) return this.moveBusy = false;
     const turnCount = countTurns(section);
     const turnsDuration = turnCount * turnDuration;
 
@@ -85,26 +98,30 @@ export default class Car extends React.Component {
 
       const [nextX, nextY] = section[i];
       while (currX !== nextX) {
-        if (next !== this.props.next) return;
+        // if (next !== this.props.next) return;
 
         currX = advanceCoord(currX, nextX, increment);
-        this.setState({ position: [currX, this.state.position[1]] });
+        this.setState({ position: [currX, this.state.position[1]], path });
         await wait(refreshInterval);
       }
 
       while (currY !== nextY) {
-        if (next !== this.props.next) return;
+        // if (next !== this.props.next) return;
 
         currY = advanceCoord(currY, nextY, increment);
-        this.setState({ position: [this.state.position[0], currY] });
+        this.setState({ position: [this.state.position[0], currY], path });
         await wait(refreshInterval);
       }
     }
+
+    this.moveBusy = false;
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.next === this.props.next) return;
-    this.move(this.props.next);
+    const timestamp = new Date().getTime();
+    this.timestamp = timestamp;
+    this.move(this.props.next, this.props.path, timestamp);
   }
 
   render() {

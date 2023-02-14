@@ -8,6 +8,7 @@ import config from './config';
 const {
   gridSize,
   squareSize,
+  fetchInterval,
 } = config;
 
 const coordsToObstacles = [];
@@ -31,26 +32,29 @@ export default class Map extends React.Component {
     };
   }
 
-  async simulate() {
-    const updateCount = data[0].updates.length;
-    for (let i = 0; i < updateCount; i++) {      
+  async loadData() {
+    while (true) {
+      const res = await fetch('http://localhost:8080/rides');
+      const rides = await res.json();
+  
       const cars = [];
-      for (let j = 0; j < data.length; j++) {
-        const update = {
-          id: data[j].id,
-          path: data[j].path,
-          next: data[j].updates[i],
-        };
-        cars.push(update);
+      for (const ride of rides) {
+        const { car_id, location } = ride;
+        const path = JSON.parse(ride.path);
+        const [x, y] = location.split(':');
+        cars.push({
+          id: car_id,
+          path: path,
+          next: [parseInt(x), parseInt(y)],
+        });
       }
       this.setState({ cars });
-      const interval = getRandomInt(1000, 2000);
-      await wait(interval);
+      await wait(fetchInterval);
     }
   }
 
   componentDidMount() {
-    this.simulate();
+    this.loadData();
   }
 
   render() {

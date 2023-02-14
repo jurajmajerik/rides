@@ -41,6 +41,7 @@ const paths = {
     [15,14],
     [16,14],
     [16,13],
+    [16,12],
   ],
   second: [
     [16,12],
@@ -92,6 +93,7 @@ const paths = {
     [8,20],
     [8,19],
     [8,18],
+    [8,17],
   ]
 };
 
@@ -130,10 +132,11 @@ const main = async () => {
     if (i === paths[path].length - 1) {
       path = path === 'first' ? 'second' : 'first';
       i = 0;
+      await wait(5000);
     } else {
       i++;
     }
-    await wait(1);
+    await wait(200);
   }
 };
 main();

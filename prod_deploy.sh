@@ -11,10 +11,10 @@ msg "Pulling from Github"
 git pull
 
 msg "Building images"
-sudo docker-compose build
+sudo docker compose build
 
 msg "Stopping containers"
-sudo docker-compose down --remove-orphans
+sudo docker compose down --remove-orphans
 
 msg "Starting containers"
 sudo docker compose up -d

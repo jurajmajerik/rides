@@ -45,7 +45,6 @@ export default class Map extends React.Component {
       }
       this.setState({ cars });
       const interval = getRandomInt(1000, 2000);
-      console.log(interval);
       await wait(interval);
     }
   }
@@ -67,6 +66,7 @@ export default class Map extends React.Component {
           y={y * squareSize}
           fill={color}
           stroke={color}
+          onClick={() => console.log(`${x}:${y}`)}
         />
       );
     }

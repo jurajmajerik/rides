@@ -63,9 +63,10 @@ export default class Car extends React.Component {
   async move(next, path, timestamp) {
     while (this.moveBusy) {
       await wait(100);
-      if (timestamp !== this.timestamp) return;
+      console.log('waiting');
+      if (timestamp !== this.timestamp) return console.log('overtaken');;
     }
-    if (timestamp !== this.timestamp) return;
+    // if (timestamp !== this.timestamp) return;
 
     
     this.moveBusy = true;
@@ -73,8 +74,8 @@ export default class Car extends React.Component {
     const { position } = this.state;
     let [currX, currY] = position;
 
-    console.log(currX, currY);
-    console.log(next, path);
+    // console.log(currX, currY);
+    // console.log(next, path);
   
     const startIndex = getNextCoordIndex(currX, currY, path);
 

@@ -29,6 +29,7 @@ export default class Map extends React.Component {
     super(props);
     this.state = {
       cars: [],
+      actual: null,
     };
   }
 
@@ -48,12 +49,14 @@ export default class Map extends React.Component {
           next: [parseInt(x), parseInt(y)],
         });
       }
-      this.setState({ cars });
+
+      this.setState({ cars, actual: cars[0].next });
       await wait(fetchInterval);
     }
   }
 
   componentDidMount() {
+    console.log('cdm');
     this.loadData();
   }
 
@@ -79,6 +82,8 @@ export default class Map extends React.Component {
       return <Car key={id} next={next} rotation={rotation || 0} path={path} />;
     });
 
+    const { actual } = this.state;
+
     return (
       <svg
       width={gridSize}
@@ -86,6 +91,17 @@ export default class Map extends React.Component {
       className="map"
       >
         {obstacleElems}
+        { actual
+          ?
+          <rect
+            key={`${actual[0]}:${actual[1]}`}
+            width={squareSize}
+            height={squareSize}
+            x={actual[0] * squareSize}
+            y={actual[1] * squareSize}
+            fill="red"
+          />
+          : null }
         {cars}
       </svg>
     );

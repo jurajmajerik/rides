@@ -63,12 +63,14 @@ export default class Car extends React.Component {
   async move(next, path, timestamp) {
     while (this.moveBusy) {
       await wait(100);
-      console.log('waiting');
-      if (timestamp !== this.timestamp) return console.log('overtaken');;
+      // console.log('waiting');
+      if (timestamp !== this.timestamp) return;
     }
     // if (timestamp !== this.timestamp) return;
 
-    
+    if (this.pathLength !== path.length) console.log(`PATH CHANGE ${Date.now()}`);
+    this.pathLength = path.length;
+
     this.moveBusy = true;
     
     const { position } = this.state;

@@ -38,16 +38,22 @@ export default class Map extends React.Component {
 
   async loadData() {
     while (true) {
-
-      const timeout = 5000;
-      const now = Date.now();
-      console.log(now - this.previousUpdateAt);
-
-      if ((now - this.previousUpdateAt) > timeout) console.log('TIMEOUT!!!');
-      this.previousUpdateAt = now;
-
       const res = await fetch('http://localhost:8080/rides');
       const rides = await res.json();
+
+      const timeout = 2000;
+      const now = Date.now();
+      if ((now - this.previousUpdateAt) > timeout) {
+        console.log(`TIMEOUT ${now - this.previousUpdateAt}`);
+        this.previousUpdateAt = now;
+        // Here set the state to "refreshing:true"
+        // Then above check:
+        // If no timeout, cancel refreshing:true to remove the refresh UI
+        this.setState({ cars: [] });
+        await wait(fetchInterval);
+        continue;
+      }
+      this.previousUpdateAt = now;
   
       const cars = [];
       for (const ride of rides) {

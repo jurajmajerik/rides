@@ -33,6 +33,7 @@ export default class Map extends React.Component {
     this.state = {
       cars: [],
       actual: null,
+      refreshing: false,
     };
   }
 
@@ -49,10 +50,11 @@ export default class Map extends React.Component {
         // Here set the state to "refreshing:true"
         // Then above check:
         // If no timeout, cancel refreshing:true to remove the refresh UI
-        this.setState({ cars: [] });
+        this.setState({ cars: [], refreshing: true });
         await wait(fetchInterval);
         continue;
       }
+
       this.previousUpdateAt = now;
   
       const cars = [];
@@ -67,7 +69,7 @@ export default class Map extends React.Component {
         });
       }
 
-      this.setState({ cars, actual: cars[0].next });
+      this.setState({ cars, actual: cars[0].next, refreshing: false });
       await wait(fetchInterval);
     }
   }
@@ -101,25 +103,30 @@ export default class Map extends React.Component {
     const { actual } = this.state;
 
     return (
-      <svg
-      width={gridSize}
-      height={gridSize}
-      className="map"
-      >
-        {obstacleElems}
-        { actual
-          ?
-          <rect
-            key={`${actual[0]}:${actual[1]}`}
-            width={squareSize}
-            height={squareSize}
-            x={actual[0] * squareSize}
-            y={actual[1] * squareSize}
-            fill="red"
-          />
-          : null }
-        {cars}
-      </svg>
+      <div className="map">
+        <div className="map-inner">
+          <div className={`map-refresh ${this.state.refreshing ? 'active' : ''}`} />
+          <svg
+          width={gridSize}
+          height={gridSize}
+          className="map"
+          >
+            {obstacleElems}
+            { actual
+              ?
+              <rect
+                key={`${actual[0]}:${actual[1]}`}
+                width={squareSize}
+                height={squareSize}
+                x={actual[0] * squareSize}
+                y={actual[1] * squareSize}
+                fill="red"
+              />
+              : null }
+            {cars}
+          </svg>
+        </div>
+      </div>
     );
   }
 }

@@ -27,6 +27,9 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
+
+    this.previousUpdateAt = Date.now();
+
     this.state = {
       cars: [],
       actual: null,
@@ -35,6 +38,14 @@ export default class Map extends React.Component {
 
   async loadData() {
     while (true) {
+
+      const timeout = 5000;
+      const now = Date.now();
+      console.log(now - this.previousUpdateAt);
+
+      if ((now - this.previousUpdateAt) > timeout) console.log('TIMEOUT!!!');
+      this.previousUpdateAt = now;
+
       const res = await fetch('http://localhost:8080/rides');
       const rides = await res.json();
   
@@ -56,7 +67,6 @@ export default class Map extends React.Component {
   }
 
   componentDidMount() {
-    console.log('cdm');
     this.loadData();
   }
 

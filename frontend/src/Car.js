@@ -22,7 +22,7 @@ export default class Car extends React.Component {
     super(props);
     const { path } = props;
 
-    this.timestamp = 0;
+    this.latestUpdateAt = 0;
     this.rotateBusy = false;
     this.moveBusy = false;
     this.state = {
@@ -60,14 +60,16 @@ export default class Car extends React.Component {
     this.rotateBusy = false;
   }
 
-  async move(next, path, timestamp) {
+  async move(next, path, receivedAt) {
     while (this.moveBusy) {
       await wait(100);
       // console.log('waiting');
-      if (timestamp !== this.timestamp) return;
+      // Discard stale invocations
+      if (receivedAt !== this.latestUpdateAt) return;
     }
-    // if (timestamp !== this.timestamp) return;
+    // if (timestamp !== this.latestUpdateAt) return;
 
+    // Display when the path has changed
     if (this.pathLength !== path.length) console.log(`PATH CHANGE ${Date.now()}`);
     this.pathLength = path.length;
 
@@ -75,12 +77,11 @@ export default class Car extends React.Component {
     
     const { position } = this.state;
     let [currX, currY] = position;
-
-    // console.log(currX, currY);
-    // console.log(next, path);
   
     const startIndex = getNextCoordIndex(currX, currY, path);
 
+    // This deals with the case: new path received but old still traversing
+    // But causes the "jump"
     if (startIndex === -1) {
       this.setState({ position: [path[0][0], path[0][1]], path });
       return this.moveBusy = false;
@@ -125,6 +126,10 @@ export default class Car extends React.Component {
         this.setState({ position: [this.state.position[0], currY], path });
         await wait(refreshInterval);
       }
+
+      // Detect if user switches the tab / execution being throttled
+      // const timeout = 5000;
+      // if ((this.latestUpdateAt - receivedAt) > timeout) console.log('TIMEOUT!!!');
     }
 
     this.moveBusy = false;
@@ -132,9 +137,9 @@ export default class Car extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.next === this.props.next) return;
-    const timestamp = new Date().getTime();
-    this.timestamp = timestamp;
-    this.move(this.props.next, this.props.path, timestamp);
+    const receivedAt = Date.now();
+    this.latestUpdateAt = receivedAt;
+    this.move(this.props.next, this.props.path, receivedAt);
   }
 
   render() {

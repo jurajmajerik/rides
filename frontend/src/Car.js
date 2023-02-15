@@ -94,7 +94,8 @@ export default class Car extends React.Component {
     const turnsDuration = turnCount * turnDuration;
 
     const distance = endIndex - startIndex + Math.max(currX % 1, currY % 1);
-    const steps = (fetchInterval - turnsDuration) / refreshInterval;
+    const overhead = 300;
+    const steps = (fetchInterval - turnsDuration - overhead) / refreshInterval;
     const increment = distance / steps;
   
     for (let i = 0; i < section.length; i++) {

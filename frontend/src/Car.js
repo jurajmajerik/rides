@@ -20,15 +20,23 @@ const {
 export default class Car extends React.Component {
   constructor(props) {
     super(props);
-    const { path } = props;
+    const { path, next } = props;
+
+    // Find the index of the current position
+    let pathIndex = path.findIndex(([x, y]) => {
+      return x === next[0] && y === next[1];
+    });
+    if (pathIndex === 0) pathIndex = 1;
+
+    const rotation = getRotation(path, pathIndex);
 
     this.latestUpdateAt = 0;
     this.rotateBusy = false;
     this.moveBusy = false;
     this.state = {
-      position: props.next,
-      rotation: getRotation(path, 1),
-      path: props.path,
+      position: next,
+      rotation,
+      path,
     };
   }
 
@@ -70,8 +78,8 @@ export default class Car extends React.Component {
     // if (timestamp !== this.latestUpdateAt) return;
 
     // Display when the path has changed
-    if (this.pathLength !== path.length) console.log(`PATH CHANGE ${Date.now()}`);
-    this.pathLength = path.length;
+    // if (this.pathLength !== path.length) console.log(`PATH CHANGE ${Date.now()}`);
+    // this.pathLength = path.length;
 
     this.moveBusy = true;
     
@@ -112,24 +120,16 @@ export default class Car extends React.Component {
 
       const [nextX, nextY] = section[i];
       while (currX !== nextX) {
-        // if (next !== this.props.next) return;
-
         currX = advanceCoord(currX, nextX, increment);
         this.setState({ position: [currX, this.state.position[1]], path });
         await wait(refreshInterval);
       }
 
       while (currY !== nextY) {
-        // if (next !== this.props.next) return;
-
         currY = advanceCoord(currY, nextY, increment);
         this.setState({ position: [this.state.position[0], currY], path });
         await wait(refreshInterval);
       }
-
-      // Detect if user switches the tab / execution being throttled
-      // const timeout = 5000;
-      // if ((this.latestUpdateAt - receivedAt) > timeout) console.log('TIMEOUT!!!');
     }
 
     this.moveBusy = false;

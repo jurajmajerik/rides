@@ -44,7 +44,7 @@ export default class Map extends React.Component {
       const timeout = 2000;
       const now = Date.now();
       if ((now - this.previousUpdateAt) > timeout) {
-        console.log(`TIMEOUT ${now - this.previousUpdateAt}`);
+        // console.log(`TIMEOUT ${now - this.previousUpdateAt}`);
         this.previousUpdateAt = now;
         // Here set the state to "refreshing:true"
         // Then above check:

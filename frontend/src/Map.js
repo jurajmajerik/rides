@@ -8,7 +8,6 @@ import config from './config';
 const {
   gridSize,
   squareSize,
-  fetchInterval,
 } = config;
 
 const coordsToObstacles = [];
@@ -27,55 +26,32 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
-
-    this.previousUpdateAt = Date.now();
-
     this.state = {
       cars: [],
-      actual: null,
-      refreshing: false,
     };
   }
 
-  async loadData() {
-    while (true) {
-      const res = await fetch('http://localhost:8080/rides');
-      const rides = await res.json();
-
-      const timeout = 2000;
-      const now = Date.now();
-      if ((now - this.previousUpdateAt) > timeout) {
-        // console.log(`TIMEOUT ${now - this.previousUpdateAt}`);
-        this.previousUpdateAt = now;
-        // Here set the state to "refreshing:true"
-        // Then above check:
-        // If no timeout, cancel refreshing:true to remove the refresh UI
-        this.setState({ cars: [], refreshing: true });
-        await wait(fetchInterval);
-        continue;
-      }
-
-      this.previousUpdateAt = now;
-  
+  async simulate() {
+    const updateCount = data[0].updates.length;
+    for (let i = 0; i < updateCount; i++) {      
       const cars = [];
-      for (const ride of rides) {
-        const { car_id, location } = ride;
-        const path = JSON.parse(ride.path);
-        const [x, y] = location.split(':');
-        cars.push({
-          id: car_id,
-          path: path,
-          next: [parseInt(x), parseInt(y)],
-        });
+      for (let j = 0; j < data.length; j++) {
+        const update = {
+          id: data[j].id,
+          path: data[j].path,
+          next: data[j].updates[i],
+        };
+        cars.push(update);
       }
-
-      this.setState({ cars, actual: cars[0].next, refreshing: false });
-      await wait(fetchInterval);
+      this.setState({ cars });
+      const interval = getRandomInt(1000, 2000);
+      console.log(interval);
+      await wait(interval);
     }
   }
 
   componentDidMount() {
-    this.loadData();
+    this.simulate();
   }
 
   render() {
@@ -91,7 +67,6 @@ export default class Map extends React.Component {
           y={y * squareSize}
           fill={color}
           stroke={color}
-          onClick={() => console.log(`${x}:${y}`)}
         />
       );
     }
@@ -100,33 +75,15 @@ export default class Map extends React.Component {
       return <Car key={id} next={next} rotation={rotation || 0} path={path} />;
     });
 
-    const { actual } = this.state;
-
     return (
-      <div className="map">
-        <div className="map-inner">
-          <div className={`map-refresh ${this.state.refreshing ? 'active' : ''}`} />
-          <svg
-          width={gridSize}
-          height={gridSize}
-          className="map"
-          >
-            {obstacleElems}
-            { actual
-              ?
-              <rect
-                key={`${actual[0]}:${actual[1]}`}
-                width={squareSize}
-                height={squareSize}
-                x={actual[0] * squareSize}
-                y={actual[1] * squareSize}
-                fill="red"
-              />
-              : null }
-            {cars}
-          </svg>
-        </div>
-      </div>
+      <svg
+      width={gridSize}
+      height={gridSize}
+      className="map"
+      >
+        {obstacleElems}
+        {cars}
+      </svg>
     );
   }
 }

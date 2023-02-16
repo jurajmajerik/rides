@@ -1,4 +1,6 @@
+const fs = require('fs');
 const { Client } = require('pg');
+const dbConfig = JSON.parse(fs.readFileSync('../dbconfig.json', 'utf8'));
 
 const wait = (t) => new Promise((res) => {
   setTimeout(() => {
@@ -98,20 +100,14 @@ const paths = {
 };
 
 const main = async () => {
-  await wait (2000);
-  const client = new Client({
-    host: 'db',
-    port: 5432,
-    user: 'postgres',
-    password: 'mysecretpassword',
-  });
+  await wait (5000);
+
+  const { host, port, user, password, dbname } = dbConfig;
+  const client = new Client({ host, port, user, password, database: dbname });
 
   client.connect((err) => {
-    if (err) {
-      console.error('connection error', err.stack)
-    } else {
-      console.log('connected')
-    }
+    if (err) console.error('connection error', err.stack);
+    else console.log('connected');
   });
 
   let path = 'first';
@@ -127,7 +123,7 @@ const main = async () => {
       DO UPDATE SET location = EXCLUDED.location, path = EXCLUDED.path;
       `
     );
-    console.log(`${x}:${y}`);
+    if (res.rowCount) console.log(`${x}:${y}`);
 
     if (i === paths[path].length - 1) {
       path = path === 'first' ? 'second' : 'first';

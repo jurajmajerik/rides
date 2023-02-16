@@ -3,7 +3,7 @@ package main
 import (
 	db "app/db"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -18,7 +18,8 @@ type Ride struct {
 func getRides(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query("SELECT * FROM rides")
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, "Failed to get rides: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 
@@ -46,13 +47,15 @@ func main() {
 	serverEnv := os.Getenv("SERVER_ENV")
 
 	if serverEnv == "DEV" {
-		http.ListenAndServe(":8080", nil)
+		log.Fatal(http.ListenAndServe(":8080", nil))
 	} else if serverEnv == "PROD" {
-		http.ListenAndServeTLS(
-			":443",
-			"/etc/letsencrypt/live/app.jurajmajerik.com/fullchain.pem",
-			"/etc/letsencrypt/live/app.jurajmajerik.com/privkey.pem",
-			nil,
+		log.Fatal(
+			http.ListenAndServeTLS(
+				":443",
+				"/etc/letsencrypt/live/app.jurajmajerik.com/fullchain.pem",
+				"/etc/letsencrypt/live/app.jurajmajerik.com/privkey.pem",
+				nil,
+			),
 		)
 	}
 }

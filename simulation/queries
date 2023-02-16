@@ -44,5 +44,3 @@ INSERT INTO rides (car_id, location, path) VALUES(
     [16,13]
   ]'
 );
-
-UPDATE rides SET location = 'hello', path = 'there' WHERE car_id = 'car1';

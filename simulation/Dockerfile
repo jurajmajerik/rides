@@ -2,6 +2,7 @@ FROM node:19-alpine
 
 WORKDIR /app
 
+COPY dbconfig.json .
 COPY simulation ./simulation
 RUN cd simulation && npm install
 

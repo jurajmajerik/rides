@@ -5,6 +5,7 @@ WORKDIR /app
 COPY go.mod ./
 COPY go.sum ./
 
+COPY dbconfig.json .
 COPY server ./server
 COPY db ./db
 COPY frontend ./frontend

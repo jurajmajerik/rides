@@ -116,6 +116,7 @@ export default class Map extends React.Component {
       return <Car key={id} actual={actual} rotation={rotation || 0} path={path} />;
     });
 
+    const actualsColors = {car1: '#10b981', car2: '#6366f1', car3: '#f43f5e'};
     const actuals = this.state.cars.map(({ id, actual }) => {
       return (
         <rect
@@ -124,7 +125,7 @@ export default class Map extends React.Component {
           height={squareSize}
           x={actual[0] * squareSize}
           y={actual[1] * squareSize}
-          fill="red"
+          fill={actualsColors[id]}
         />
       );
     });

@@ -15,6 +15,7 @@ const {
   fetchInterval,
   refreshInterval,
   turnDuration,
+  animationOverhead,
 } = config;
 
 export default class Car extends React.Component {
@@ -22,7 +23,6 @@ export default class Car extends React.Component {
     super(props);
     const { path, actual } = props;
 
-    // Find the index of the current position
     let pathIndex = path.findIndex(([x, y]) => {
       return x === actual[0] && y === actual[1];
     });
@@ -80,25 +80,17 @@ export default class Car extends React.Component {
     let [currX, currY] = position;
   
     const startIndex = getNextCoordIndex(currX, currY, path);
-
-    if (startIndex === -1) {
-      this.setState({ position: [path[0][0], path[0][1]], path });
-      return this.moveBusy = false;
-    }
-
     const endIndex = path.findIndex(([x, y]) => {
       return x === actual[0] && y === actual[1];
     });
 
-    // if (startIndex === -1 || endIndex === -1) return this.moveBusy = false;
     const section = path.slice(startIndex, endIndex + 1);
     if (section.length < 2) return this.moveBusy = false;
     const turnCount = countTurns(section);
     const turnsDuration = turnCount * turnDuration;
 
     const distance = endIndex - startIndex + Math.max(currX % 1, currY % 1);
-    const overhead = 100;
-    const steps = (fetchInterval - turnsDuration - overhead) / refreshInterval;
+    const steps = (fetchInterval - turnsDuration - animationOverhead) / refreshInterval;
     const increment = distance / steps;
   
     for (let i = 0; i < section.length; i++) {
@@ -128,6 +120,7 @@ export default class Car extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.actual === this.props.actual) return;
+
     const receivedAt = Date.now();
     this.latestUpdateAt = receivedAt;
     this.move(this.props.actual, this.props.path, receivedAt);

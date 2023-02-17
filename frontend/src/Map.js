@@ -10,7 +10,7 @@ const {
   fetchInterval,
 } = config;
 
-const coordsToObstacles = [];
+const coordsToObstacles = {};
 obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
   let x = xStart;
   while (x <= xEnd) {
@@ -22,6 +22,30 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
     x += 1;
   }
 });
+
+const pathCoords = [];
+const roadRects = [];
+for (let x = 0; x < 50; x++) {
+  for (let y = 0; y < 50; y++) {
+    if (!coordsToObstacles[`${x}:${y}`]) {
+      roadRects.push(
+        <rect
+          key={`${x}:${y}`}
+          width={squareSize}
+          height={squareSize}
+          x={x * squareSize}
+          y={y * squareSize}
+          fill="white"
+          onClick={() => {
+            pathCoords.push([x, y]);
+            console.log(JSON.stringify(pathCoords));
+          }}
+        />
+      );
+    }
+  }
+}
+
 
 export default class Map extends React.Component {
   constructor(props) {
@@ -48,7 +72,7 @@ export default class Map extends React.Component {
       }
 
       this.previousUpdateAt = now;
-  
+
       const cars = [];
       for (const ride of rides) {
         const { car_id, location } = ride;
@@ -114,6 +138,7 @@ export default class Map extends React.Component {
           height={gridSize}
           className="map"
           >
+            {roadRects}
             {obstacleElems}
             {actuals}
             {cars}

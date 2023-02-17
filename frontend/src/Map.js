@@ -119,12 +119,11 @@ export default class Map extends React.Component {
     const actualsColors = {car1: '#10b981', car2: '#6366f1', car3: '#f43f5e'};
     const actuals = this.state.cars.map(({ id, actual }) => {
       return (
-        <rect
+        <circle
           key={`${actual[0]}:${actual[1]}`}
-          width={squareSize}
-          height={squareSize}
-          x={actual[0] * squareSize}
-          y={actual[1] * squareSize}
+          r={squareSize / 2}
+          cx={actual[0] * squareSize + (squareSize / 2)}
+          cy={actual[1] * squareSize + (squareSize / 2)}
           fill={actualsColors[id]}
         />
       );

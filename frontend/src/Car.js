@@ -20,11 +20,11 @@ const {
 export default class Car extends React.Component {
   constructor(props) {
     super(props);
-    const { path, next } = props;
+    const { path, actual } = props;
 
     // Find the index of the current position
     let pathIndex = path.findIndex(([x, y]) => {
-      return x === next[0] && y === next[1];
+      return x === actual[0] && y === actual[1];
     });
     if (pathIndex === 0) pathIndex = 1;
 
@@ -34,7 +34,7 @@ export default class Car extends React.Component {
     this.rotateBusy = false;
     this.moveBusy = false;
     this.state = {
-      position: next,
+      position: actual,
       rotation,
       path,
     };
@@ -68,18 +68,11 @@ export default class Car extends React.Component {
     this.rotateBusy = false;
   }
 
-  async move(next, path, receivedAt) {
+  async move(actual, path, receivedAt) {
     while (this.moveBusy) {
       await wait(100);
-      // console.log('waiting');
-      // Discard stale invocations
       if (receivedAt !== this.latestUpdateAt) return;
     }
-    // if (timestamp !== this.latestUpdateAt) return;
-
-    // Display when the path has changed
-    // if (this.pathLength !== path.length) console.log(`PATH CHANGE ${Date.now()}`);
-    // this.pathLength = path.length;
 
     this.moveBusy = true;
     
@@ -88,25 +81,23 @@ export default class Car extends React.Component {
   
     const startIndex = getNextCoordIndex(currX, currY, path);
 
-    // This deals with the case: new path received but old still traversing
-    // But causes the "jump"
     if (startIndex === -1) {
       this.setState({ position: [path[0][0], path[0][1]], path });
       return this.moveBusy = false;
     }
 
     const endIndex = path.findIndex(([x, y]) => {
-      return x === next[0] && y === next[1];
+      return x === actual[0] && y === actual[1];
     });
 
-    if (startIndex === -1 || endIndex === -1) return this.moveBusy = false;
+    // if (startIndex === -1 || endIndex === -1) return this.moveBusy = false;
     const section = path.slice(startIndex, endIndex + 1);
     if (section.length < 2) return this.moveBusy = false;
     const turnCount = countTurns(section);
     const turnsDuration = turnCount * turnDuration;
 
     const distance = endIndex - startIndex + Math.max(currX % 1, currY % 1);
-    const overhead = 300;
+    const overhead = 100;
     const steps = (fetchInterval - turnsDuration - overhead) / refreshInterval;
     const increment = distance / steps;
   
@@ -136,10 +127,10 @@ export default class Car extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.next === this.props.next) return;
+    if (prevProps.actual === this.props.actual) return;
     const receivedAt = Date.now();
     this.latestUpdateAt = receivedAt;
-    this.move(this.props.next, this.props.path, receivedAt);
+    this.move(this.props.actual, this.props.path, receivedAt);
   }
 
   render() {

@@ -1,8 +1,7 @@
 import React from 'react';
 import Car from './Car';
 import obstacles from './obstacles';
-import data from './data';
-import { getRandomInt, wait } from './utils';
+import { api, wait } from './utils';
 
 import config from './config';
 const {
@@ -10,18 +9,6 @@ const {
   squareSize,
   fetchInterval,
 } = config;
-
-const api = {};
-const baseUrl = (
-  process.env.REACT_APP_ENV === 'dev'
-  ? 'http://localhost:8080'
-  : 'https://app.jurajmajerik.com'
-);
-api.get = async endpoint => {
-  const res = await fetch(`${baseUrl}${endpoint}`);
-  if (res.json) return await res.json();
-  return res;
-};
 
 const coordsToObstacles = [];
 obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
@@ -41,10 +28,8 @@ export default class Map extends React.Component {
     super(props);
 
     this.previousUpdateAt = Date.now();
-
     this.state = {
       cars: [],
-      actual: null,
       refreshing: false,
     };
   }
@@ -56,11 +41,7 @@ export default class Map extends React.Component {
       const timeout = 2000;
       const now = Date.now();
       if ((now - this.previousUpdateAt) > timeout) {
-        // console.log(`TIMEOUT ${now - this.previousUpdateAt}`);
         this.previousUpdateAt = now;
-        // Here set the state to "refreshing:true"
-        // Then above check:
-        // If no timeout, cancel refreshing:true to remove the refresh UI
         this.setState({ cars: [], refreshing: true });
         await wait(fetchInterval);
         continue;
@@ -76,11 +57,11 @@ export default class Map extends React.Component {
         cars.push({
           id: car_id,
           path: path,
-          next: [parseInt(x), parseInt(y)],
+          actual: [parseInt(x), parseInt(y)],
         });
       }
 
-      this.setState({ cars, actual: cars[0].next, refreshing: false });
+      this.setState({ cars, refreshing: false });
       await wait(fetchInterval);
     }
   }
@@ -107,11 +88,22 @@ export default class Map extends React.Component {
       );
     }
 
-    const cars = this.state.cars.map(({ id, next, rotation, path }) => {
-      return <Car key={id} next={next} rotation={rotation || 0} path={path} />;
+    const cars = this.state.cars.map(({ id, actual, rotation, path }) => {
+      return <Car key={id} actual={actual} rotation={rotation || 0} path={path} />;
     });
 
-    const { actual } = this.state;
+    const actuals = this.state.cars.map(({ id, actual }) => {
+      return (
+        <rect
+          key={`${actual[0]}:${actual[1]}`}
+          width={squareSize}
+          height={squareSize}
+          x={actual[0] * squareSize}
+          y={actual[1] * squareSize}
+          fill="red"
+        />
+      );
+    });
 
     return (
       <div className="map">
@@ -123,17 +115,7 @@ export default class Map extends React.Component {
           className="map"
           >
             {obstacleElems}
-            { actual
-              ?
-              <rect
-                key={`${actual[0]}:${actual[1]}`}
-                width={squareSize}
-                height={squareSize}
-                x={actual[0] * squareSize}
-                y={actual[1] * squareSize}
-                fill="red"
-              />
-              : null }
+            {actuals}
             {cars}
           </svg>
         </div>

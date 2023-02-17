@@ -11,6 +11,18 @@ const {
   fetchInterval,
 } = config;
 
+const api = {};
+const baseUrl = (
+  process.env.REACT_APP_ENV === 'dev'
+  ? 'http://localhost:8080'
+  : 'https://app.jurajmajerik.com'
+);
+api.get = async endpoint => {
+  const res = await fetch(`${baseUrl}${endpoint}`);
+  if (res.json) return await res.json();
+  return res;
+};
+
 const coordsToObstacles = [];
 obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
   let x = xStart;
@@ -39,8 +51,7 @@ export default class Map extends React.Component {
 
   async loadData() {
     while (true) {
-      const res = await fetch('http://localhost:8080/rides');
-      const rides = await res.json();
+      const rides = await api.get('/rides');
 
       const timeout = 2000;
       const now = Date.now();

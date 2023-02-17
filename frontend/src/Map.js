@@ -23,30 +23,6 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
   }
 });
 
-const pathCoords = [];
-const roadRects = [];
-for (let x = 0; x < 50; x++) {
-  for (let y = 0; y < 50; y++) {
-    if (!coordsToObstacles[`${x}:${y}`]) {
-      roadRects.push(
-        <rect
-          key={`${x}:${y}`}
-          width={squareSize}
-          height={squareSize}
-          x={x * squareSize}
-          y={y * squareSize}
-          fill="white"
-          onClick={() => {
-            pathCoords.push([x, y]);
-            console.log(JSON.stringify(pathCoords));
-          }}
-        />
-      );
-    }
-  }
-}
-
-
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -138,7 +114,6 @@ export default class Map extends React.Component {
           height={gridSize}
           className="map"
           >
-            {roadRects}
             {obstacleElems}
             {actuals}
             {cars}

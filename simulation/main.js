@@ -34,7 +34,6 @@ const main = async () => {
         DO UPDATE SET location = EXCLUDED.location, path = EXCLUDED.path;
         `
       );
-      if (res.rowCount) console.log(`${x}:${y}`);
 
       if (i === path.length - 1) {
         pathObj.selected = selected === 'first' ? 'second' : 'first';

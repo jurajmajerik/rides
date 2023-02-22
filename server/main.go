@@ -15,6 +15,13 @@ type Ride struct {
 	Path     string `json:"path"`
 }
 
+type Customer struct {
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Active   bool   `json:"active"`
+	Location string `json:"location"`
+}
+
 func getRides(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query("SELECT * FROM rides")
 	if err != nil {
@@ -37,12 +44,35 @@ func getRides(w http.ResponseWriter, req *http.Request) {
 	w.Write(ridesBytes)
 }
 
+func getCustomers(w http.ResponseWriter, req *http.Request) {
+	rows, err := db.Connection.Query("SELECT * FROM customers where active = true")
+	if err != nil {
+		http.Error(w, "Failed to get customers: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var customers []Customer
+
+	for rows.Next() {
+		var customer Customer
+		rows.Scan(&customer.Id, &customer.Name, &customer.Active, &customer.Location)
+		customers = append(customers, customer)
+	}
+
+	ridesBytes, _ := json.MarshalIndent(customers, "", "\t")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(ridesBytes)
+}
+
 func main() {
 	db.InitDB()
 	defer db.Connection.Close()
 
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
 	http.HandleFunc("/rides", getRides)
+	http.HandleFunc("/customers", getCustomers)
 
 	serverEnv := os.Getenv("SERVER_ENV")
 

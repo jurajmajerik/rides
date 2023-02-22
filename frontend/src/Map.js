@@ -54,6 +54,7 @@ export default class Map extends React.Component {
     this.previousUpdateAt = Date.now();
     this.state = {
       cars: [],
+      customers: [],
       refreshing: false,
     };
   }
@@ -90,8 +91,17 @@ export default class Map extends React.Component {
     }
   }
 
+  async loadCustomers() {
+    while (true) {
+      const customers = await api.get('/customers');
+      this.setState({ customers });
+      await wait(fetchInterval);
+    }
+  }
+
   componentDidMount() {
     this.loadData();
+    this.loadCustomers();
   }
 
   render() {
@@ -114,6 +124,22 @@ export default class Map extends React.Component {
 
     const cars = this.state.cars.map(({ id, actual, rotation, path }) => {
       return <Car key={id} actual={actual} rotation={rotation || 0} path={path} />;
+    });
+
+    const customers = this.state.customers.map(({ id, name, location }) => {
+      const [x, y] = location.split(':');
+      return (
+        <rect
+          key={`${x}:${y}`}
+          width={squareSize}
+          height={squareSize}
+          x={x * squareSize}
+          y={y * squareSize}
+          fill={'black'}
+          stroke={'black'}
+          onClick={() => console.log(`${x}:${y}`)}
+        />
+      );
     });
 
     const actualsColors = {car1: '#10b981', car2: '#6366f1', car3: '#f43f5e'};
@@ -142,6 +168,7 @@ export default class Map extends React.Component {
             {obstacleElems}
             {actuals}
             {cars}
+            {customers}
           </svg>
         </div>
       </div>

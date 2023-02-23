@@ -4,6 +4,7 @@ import obstacles from './obstacles';
 import { api, wait } from './utils';
 
 import config from './config';
+import CustomerIcon from './CustomerIcon';
 const {
   gridSize,
   squareSize,
@@ -129,28 +130,10 @@ export default class Map extends React.Component {
     const customers = this.state.customers.map(({ id, name, location }) => {
       const [x, y] = location.split(':');
       return (
-        <rect
+        <CustomerIcon
           key={`${x}:${y}`}
-          width={squareSize}
-          height={squareSize}
-          x={x * squareSize}
-          y={y * squareSize}
-          fill={'black'}
-          stroke={'black'}
-          onClick={() => console.log(`${x}:${y}`)}
-        />
-      );
-    });
-
-    const actualsColors = {car1: '#10b981', car2: '#6366f1', car3: '#f43f5e'};
-    const actuals = this.state.cars.map(({ id, actual }) => {
-      return (
-        <circle
-          key={`${actual[0]}:${actual[1]}`}
-          r={squareSize / 2}
-          cx={actual[0] * squareSize + (squareSize / 2)}
-          cy={actual[1] * squareSize + (squareSize / 2)}
-          fill={actualsColors[id]}
+          x={x * squareSize - (squareSize / 2)}
+          y={y * squareSize - (squareSize / 2)}
         />
       );
     });
@@ -166,7 +149,6 @@ export default class Map extends React.Component {
           >
             {roadRects}
             {obstacleElems}
-            {actuals}
             {cars}
             {customers}
           </svg>

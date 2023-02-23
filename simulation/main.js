@@ -32,7 +32,7 @@ obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
 const roadNodes = [];
 for (let x = 0; x < 50; x++) {
   for (let y = 0; y < 50; y++) {
-    if (!coordsToObstacles[`${x}:${y}`]) {
+    if (!coordsToObstacles[`${x}:${y}`] && x !== 0 && x !== 49 && y !== 0 && y !== 49) {
       roadNodes.push(`${x}:${y}`);
     }
   }
@@ -55,8 +55,8 @@ class Customer {
   async simulate() {
     while (true) {
       let newActive;
-      if (this.active) newActive = decide(90);
-      else newActive = decide(10);
+      if (this.active) newActive = decide(95);
+      else newActive = decide(5);
 
       if (this.active !== newActive) {
         if (newActive) {

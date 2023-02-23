@@ -1,46 +1,11 @@
-const fs = require('fs');
-const { Client } = require('pg');
-const dbConfig = JSON.parse(fs.readFileSync('../dbconfig.json', 'utf8'));
-const paths = require('./paths');
-const obstacles = require('../_config/obstacles.js');
+import dbInit from './dbInit.js';
+import paths from './paths.js';
+import { getRoadNodes, wait, getRandomInt, decide } from './utils.js';
+const db = dbInit();
 
-const wait = (t) => new Promise((res) => {
-  setTimeout(() => {
-    res();
-  }, t);
-});
-
-const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min) + min);
-const decide = probability => getRandomInt(1, 100) < probability;
-
-const { host, port, user, password, dbname } = dbConfig;
-const client = new Client({ host, port, user, password, database: dbname });
-
-const coordsToObstacles = {};
-obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
-  let x = xStart;
-  while (x <= xEnd) {
-    let y = yStart;
-    while (y <= yEnd) {
-      coordsToObstacles[`${x}:${y}`] = true;
-      y += 1;
-    }
-    x += 1;
-  }
-});
-
-const roadNodes = [];
-for (let x = 0; x < 50; x++) {
-  for (let y = 0; y < 50; y++) {
-    if (!coordsToObstacles[`${x}:${y}`] && x !== 0 && x !== 49 && y !== 0 && y !== 49) {
-      roadNodes.push(`${x}:${y}`);
-    }
-  }
-}
-
-client.connect((err) => {
-  if (err) console.error('connection error', err.stack);
-  else console.log('connected');
+const roadNodes = getRoadNodes().filter(coord => {
+  const [x, y] = coord.split(':');
+  return (x !== '0' && x !== '49' && y !== '0' && y !== '49'); // exclude edge coords for now
 });
 
 class Customer {
@@ -65,7 +30,7 @@ class Customer {
         }
 
         this.active = newActive;
-        const res = await client.query(
+        const res = await db.query(
           `
           INSERT INTO customers (name, active, location)
           VALUES ('${this.name}', ${this.active}, '${this.location}')
@@ -90,7 +55,7 @@ const main = async () => {
       const path = pathObj[selected];
       const [x, y] = path[i];
 
-      const res = await client.query(
+      const res = await db.query(
         `
         INSERT INTO rides (car_id, location, path)
         VALUES ('${carId}', '${x}:${y}', '${JSON.stringify(path)}')

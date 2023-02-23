@@ -1,7 +1,8 @@
 import React from 'react';
 import Car from './Car';
 import obstacles from './obstacles';
-import { api, wait } from './utils';
+import { api } from './api';
+import { wait } from './utils';
 
 import config from './config';
 import CustomerIcon from './CustomerIcon';

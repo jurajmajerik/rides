@@ -59,7 +59,6 @@ class Customer {
   }
 
   async updateDB() {
-    console.log(this.active, this.destination);
     return db.query(
       `
       INSERT INTO customers (name, active, location, destination)
@@ -112,7 +111,6 @@ class Customer {
   }
 
   handleDestinationResult(destination) {
-    console.log(`[${this.name}] Destination received: ${destination}`);
     this.destination = destination;
     this.updateDB();
   }

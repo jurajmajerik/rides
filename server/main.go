@@ -16,10 +16,11 @@ type Ride struct {
 }
 
 type Customer struct {
-	Id       string `json:"id"`
-	Name     string `json:"name"`
-	Active   bool   `json:"active"`
-	Location string `json:"location"`
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Active      bool   `json:"active"`
+	Location    string `json:"location"`
+	Destination string `json:"destination"`
 }
 
 func getRides(w http.ResponseWriter, req *http.Request) {
@@ -56,7 +57,13 @@ func getCustomers(w http.ResponseWriter, req *http.Request) {
 
 	for rows.Next() {
 		var customer Customer
-		rows.Scan(&customer.Id, &customer.Name, &customer.Active, &customer.Location)
+		rows.Scan(
+			&customer.Id,
+			&customer.Name,
+			&customer.Active,
+			&customer.Location,
+			&customer.Destination,
+		)
 		customers = append(customers, customer)
 	}
 

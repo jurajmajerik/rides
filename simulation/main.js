@@ -119,7 +119,7 @@ class Customer {
 const main = async () => {
   await wait (5000);
 
-  // Simulate cards
+  // Simulate cars
   simulateCars();
 
   // Simulate customers

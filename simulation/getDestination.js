@@ -15,7 +15,9 @@ const main = async () => {
       const destination = md5(input);
       process.send({ name, destination });
     }
-    await wait(200);
+
+    if (queue.length) continue;
+    else await wait(200);
   }
 };
 main();

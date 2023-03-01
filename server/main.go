@@ -89,8 +89,8 @@ func main() {
 		log.Fatal(
 			http.ListenAndServeTLS(
 				":443",
-				"/etc/letsencrypt/live/app.jurajmajerik.com/fullchain.pem",
-				"/etc/letsencrypt/live/app.jurajmajerik.com/privkey.pem",
+				"/etc/letsencrypt/live/rides.jurajmajerik.com/fullchain.pem",
+				"/etc/letsencrypt/live/rides.jurajmajerik.com/privkey.pem",
 				nil,
 			),
 		)

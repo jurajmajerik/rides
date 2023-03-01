@@ -132,8 +132,8 @@ export default class Car extends React.Component {
     const [x, y] = position;
     return (
       <CarIcon
-        x={x * squareSize - 20}
-        y={y * squareSize - 20}
+        x={parseFloat((x * squareSize - 20).toFixed(2))}
+        y={parseFloat((y * squareSize - 20).toFixed(2))}
         rotation={rotation}
       />
     );

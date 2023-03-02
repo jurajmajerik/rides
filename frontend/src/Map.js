@@ -146,7 +146,7 @@ export default class Map extends React.Component {
           <svg
           width={gridSize}
           height={gridSize}
-          className="map"
+          viewBox='0 0 1000 1000'
           >
             {roadRects}
             {obstacleElems}

@@ -12,21 +12,36 @@ code {
     monospace;
 }
 
+.App {
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.description {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-20px);
+  margin: 0 20px;
+}
+
 .map {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
   border: solid 0.5px lightgray;
-  width: 500px;
-  height: 500px;
+  flex: 0 0 auto;
+  width: 100vh;
+  height: 100%;
 }
 
 .map-inner {
   position: relative;
-  width: 100%;
+}
+
+.map-inner svg {
   height: 100%;
+  width: 100%;
 }
 
 .map-refresh.active {

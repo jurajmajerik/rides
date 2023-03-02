@@ -12,9 +12,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "REACT_APP_ENV=dev react-scripts start",
-    "build": "REACT_APP_ENV=prod react-scripts build",
-    "test": "react-scripts test",
+    "start": "REACT_APP_ENV=dev react-app-rewired start",
+    "build": "REACT_APP_ENV=prod react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,5 +34,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-app-rewired": "^2.2.1"
   }
 }

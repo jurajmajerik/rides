@@ -1,10 +1,11 @@
 import React from 'react';
 import Car from './Car';
-import obstacles from './obstacles';
+// import obstacles from './obstacles';
+import obstacles from '../../_config/obstacles';
 import { api } from './api';
 import { wait } from './utils';
 
-import config from './config';
+import config from '../../_config/config';
 import CustomerIcon from './CustomerIcon';
 const {
   gridSize,

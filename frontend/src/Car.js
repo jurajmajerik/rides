@@ -9,7 +9,7 @@ import {
   getTurnDistance
 } from './movement';
 
-import config from './config';
+import config from '../../_config/config';
 const {
   squareSize,
   fetchInterval,

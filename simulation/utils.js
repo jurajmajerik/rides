@@ -62,8 +62,8 @@ export const getRoadNodes = () => {
   const coordsToObstacles = getCoordsToObstacles();
 
   const roadNodes = [];
-  for (let x = 0; x < 50; x++) {
-    for (let y = 0; y < 50; y++) {
+  for (let x = 0; x < 100; x++) {
+    for (let y = 0; y < 100; y++) {
       if (!coordsToObstacles[`${x}:${y}`]) {
         roadNodes.push(`${x}:${y}`);
       }

@@ -8,7 +8,7 @@ const getDestination = fork('getDestination.js');
 
 const roadNodes = getRoadNodes().filter(coord => {
   const [x, y] = coord.split(':');
-  return (x !== '0' && x !== '49' && y !== '0' && y !== '49'); // exclude edge coords for now
+  return (x !== '0' && x !== '99' && y !== '0' && y !== '99'); // exclude edge coords for now
 });
 
 const simulateCars = () => {

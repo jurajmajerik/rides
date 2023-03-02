@@ -5,11 +5,7 @@ import { api } from './api';
 import { wait } from '../../shared/utils';
 import config from '../../shared/config';
 import CustomerIcon from './CustomerIcon';
-const {
-  gridSize,
-  squareSize,
-  fetchInterval,
-} = config;
+const { gridSize, squareSize, fetchInterval } = config;
 
 const obstaclesMap = (() => {
   const obstaclesMap = new Map();
@@ -45,7 +41,7 @@ export default class GeoMap extends React.Component {
 
       const timeout = 2000;
       const now = Date.now();
-      if ((now - this.previousUpdateAt) > timeout) {
+      if (now - this.previousUpdateAt > timeout) {
         this.previousUpdateAt = now;
         this.setState({ cars: [], refreshing: true });
         await wait(fetchInterval);
@@ -103,7 +99,9 @@ export default class GeoMap extends React.Component {
     }
 
     const cars = this.state.cars.map(({ id, actual, rotation, path }) => {
-      return <Car key={id} actual={actual} rotation={rotation || 0} path={path} />;
+      return (
+        <Car key={id} actual={actual} rotation={rotation || 0} path={path} />
+      );
     });
 
     const customers = this.state.customers.map(({ id, name, location }) => {
@@ -111,8 +109,8 @@ export default class GeoMap extends React.Component {
       return (
         <CustomerIcon
           key={`${x}:${y}`}
-          x={x * squareSize - (squareSize / 2)}
-          y={y * squareSize - (squareSize / 2)}
+          x={x * squareSize - squareSize / 2}
+          y={y * squareSize - squareSize / 2}
         />
       );
     });
@@ -120,12 +118,10 @@ export default class GeoMap extends React.Component {
     return (
       <div className="map">
         <div className="map-inner">
-          <div className={`map-refresh ${this.state.refreshing ? 'active' : ''}`} />
-          <svg
-          width={gridSize}
-          height={gridSize}
-          viewBox='0 0 1000 1000'
-          >
+          <div
+            className={`map-refresh ${this.state.refreshing ? 'active' : ''}`}
+          />
+          <svg width={gridSize} height={gridSize} viewBox="0 0 1000 1000">
             {obstacleElems}
             {cars}
             {customers}

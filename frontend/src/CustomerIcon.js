@@ -9,6 +9,17 @@ const shapes = `
 `;
 
 const CustomerIcon = ({ x, y }) => (
-  <svg style={{ position: 'relative', zIndex: 1 }} x={x} y={y} fill="#000000" width="20px" height="20px" viewBox="0 0 56.00 56.00" xmlns="http://www.w3.org/2000/svg" transform="matrix(1, 0, 0, 1, 0, 0)" dangerouslySetInnerHTML={{ __html: shapes }} />
+  <svg
+    style={{ position: 'relative', zIndex: 1 }}
+    x={x}
+    y={y}
+    fill="#000000"
+    width="20px"
+    height="20px"
+    viewBox="0 0 56.00 56.00"
+    xmlns="http://www.w3.org/2000/svg"
+    transform="matrix(1, 0, 0, 1, 0, 0)"
+    dangerouslySetInnerHTML={{ __html: shapes }}
+  />
 );
 export default CustomerIcon;

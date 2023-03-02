@@ -1,8 +1,5 @@
-export const isBetween = (val, curr, prev) => (
-  (val <= curr && val >= prev)
-  ||
-  (val >= curr && val <= prev)
-);
+export const isBetween = (val, curr, prev) =>
+  (val <= curr && val >= prev) || (val >= curr && val <= prev);
 
 export const getNextCoordIndex = (currX, currY, path) => {
   return path.findIndex(([x, y], i, path) => {
@@ -13,12 +10,11 @@ export const getNextCoordIndex = (currX, currY, path) => {
     const yMatches = y === currY;
 
     return (
-      (xMatches && isBetween(currY, path[i][1], path[i - 1][1]))
-      ||
+      (xMatches && isBetween(currY, path[i][1], path[i - 1][1])) ||
       (yMatches && isBetween(currX, path[i][0], path[i - 1][0]))
     );
   });
-}
+};
 
 export const advanceCoord = (curr, next, increment) => {
   if (next > curr) {
@@ -65,14 +61,8 @@ export const getRotation = (path, i) => {
 };
 
 export const getTurnDistance = (curr, target) => ({
-  distClockwise: (
-    target > curr && target <= 360
-    ? target - curr
-    : 360 - curr + target
-  ),
-  distCounterclockwise: (
-    target >= 0 && target < curr
-    ? curr - target
-    : curr + 360 - target
-  ),
+  distClockwise:
+    target > curr && target <= 360 ? target - curr : 360 - curr + target,
+  distCounterclockwise:
+    target >= 0 && target < curr ? curr - target : curr + 360 - target,
 });

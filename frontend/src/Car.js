@@ -6,7 +6,7 @@ import {
   countTurns,
   getNextCoordIndex,
   getRotation,
-  getTurnDistance
+  getTurnDistance,
 } from './movement';
 import config from '../../shared/config';
 
@@ -45,9 +45,13 @@ export default class Car extends React.Component {
 
     let rotation = this.state.rotation;
     const targetRotation = getRotation(section, i);
-    if (this.state.rotation === targetRotation) return this.rotateBusy = false;
+    if (this.state.rotation === targetRotation)
+      return (this.rotateBusy = false);
 
-    const { distClockwise, distCounterclockwise } = getTurnDistance(rotation, targetRotation);
+    const { distClockwise, distCounterclockwise } = getTurnDistance(
+      rotation,
+      targetRotation
+    );
     const isClockwise = distClockwise < distCounterclockwise;
 
     const diff = Math.min(distClockwise, distCounterclockwise);
@@ -75,24 +79,25 @@ export default class Car extends React.Component {
     }
 
     this.moveBusy = true;
-    
+
     const { position } = this.state;
     let [currX, currY] = position;
-  
+
     const startIndex = getNextCoordIndex(currX, currY, path);
     const endIndex = path.findIndex(([x, y]) => {
       return x === actual[0] && y === actual[1];
     });
 
     const section = path.slice(startIndex, endIndex + 1);
-    if (section.length < 2) return this.moveBusy = false;
+    if (section.length < 2) return (this.moveBusy = false);
     const turnCount = countTurns(section);
     const turnsDuration = turnCount * turnDuration;
 
     const distance = endIndex - startIndex + Math.max(currX % 1, currY % 1);
-    const steps = (fetchInterval - turnsDuration - animationOverhead) / refreshInterval;
+    const steps =
+      (fetchInterval - turnsDuration - animationOverhead) / refreshInterval;
     const increment = distance / steps;
-  
+
     for (let i = 0; i < section.length; i++) {
       if (i > 0) {
         while (this.rotateBusy) {

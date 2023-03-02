@@ -1,11 +1,9 @@
 import React from 'react';
 import Car from './Car';
-// import obstacles from './obstacles';
-import obstacles from '../../_config/obstacles';
+import obstacles from '../../shared/obstacles';
 import { api } from './api';
-import { wait } from './utils';
-
-import config from '../../_config/config';
+import { wait } from '../../shared/utils';
+import config from '../../shared/config';
 import CustomerIcon from './CustomerIcon';
 const {
   gridSize,
@@ -13,44 +11,23 @@ const {
   fetchInterval,
 } = config;
 
-const coordsToObstacles = {};
-obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
-  let x = xStart;
-  while (x <= xEnd) {
-    let y = yStart;
-    while (y <= yEnd) {
-      coordsToObstacles[`${x}:${y}`] = color || '#c1c3c7';
-      y += 1;
+const obstaclesMap = (() => {
+  const obstaclesMap = new Map();
+  obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
+    let x = xStart;
+    while (x <= xEnd) {
+      let y = yStart;
+      while (y <= yEnd) {
+        obstaclesMap.set(`${x}:${y}`, color || '#c1c3c7');
+        y += 1;
+      }
+      x += 1;
     }
-    x += 1;
-  }
-});
+  });
+  return obstaclesMap;
+})();
 
-const pathCoords = [];
-const roadRects = [];
-for (let x = 0; x < 50; x++) {
-  for (let y = 0; y < 50; y++) {
-    if (!coordsToObstacles[`${x}:${y}`]) {
-      roadRects.push(
-        <rect
-          key={`${x}:${y}`}
-          width={squareSize}
-          height={squareSize}
-          x={x * squareSize}
-          y={y * squareSize}
-          fill="white"
-          onClick={() => {
-            pathCoords.push([x, y]);
-            console.log(JSON.stringify(pathCoords));
-          }}
-        />
-      );
-    }
-  }
-}
-
-
-export default class Map extends React.Component {
+export default class GeoMap extends React.Component {
   constructor(props) {
     super(props);
 
@@ -109,7 +86,7 @@ export default class Map extends React.Component {
 
   render() {
     const obstacleElems = [];
-    for (let [key, color] of Object.entries(coordsToObstacles)) {
+    for (let [key, color] of obstaclesMap) {
       const [x, y] = key.split(':');
       obstacleElems.push(
         <rect
@@ -120,7 +97,7 @@ export default class Map extends React.Component {
           y={y * squareSize}
           fill={color}
           stroke={color}
-          onClick={() => console.log(`${x}:${y}`)}
+          // onClick={() => console.log(`${x}:${y}`)}
         />
       );
     }
@@ -149,7 +126,6 @@ export default class Map extends React.Component {
           height={gridSize}
           viewBox='0 0 1000 1000'
           >
-            {roadRects}
             {obstacleElems}
             {cars}
             {customers}

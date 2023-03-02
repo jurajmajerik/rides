@@ -1,6 +1,6 @@
 import React from 'react';
 import CarIcon from './CarIcon';
-import { wait } from './utils';
+import { wait } from '../../shared/utils';
 import {
   advanceCoord,
   countTurns,
@@ -8,8 +8,8 @@ import {
   getRotation,
   getTurnDistance
 } from './movement';
+import config from '../../shared/config';
 
-import config from '../../_config/config';
 const {
   squareSize,
   fetchInterval,

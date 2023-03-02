@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -25,7 +29,7 @@ code {
   align-items: center;
   text-align: center;
   transform: translateY(-20px);
-  margin: 0 20px;
+  margin: 0 40px;
 }
 
 .map {

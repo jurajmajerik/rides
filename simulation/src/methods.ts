@@ -1,28 +1,13 @@
-import obstacles from '../shared/obstacles.js';
+import obstacles from '../../shared/obstacles.js';
+import config from '../../shared/config.js';
 
-export const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min) + min);
-
-export const decide = probability => getRandomInt(1, 100) < probability;
-
-export const wait = (t) => new Promise((res) => {
-  setTimeout(() => {
-    res();
-  }, t);
-});
-
-const gridSize = 500;
-const gridCount = 50; // No. of squares in each direction
-const squareSize = gridSize / gridCount;
-const fetchInterval = 1500;
-const refreshInterval = 16;
-const turnDuration = refreshInterval * 8;
-const animationOverhead = 200;
+const { gridCount } = config;
 
 const points = {};
 for (let x = 0; x < gridCount; x += 1) {
   for (let y = 0; y < gridCount; y += 1) {
     points[`${x}:${y}`] = true;
-  } 
+  }
 }
 
 const setObstacle = (xStart, xEnd, yStart, yEnd) => {
@@ -36,10 +21,9 @@ const setObstacle = (xStart, xEnd, yStart, yEnd) => {
     x += 1;
   }
 };
-obstacles.forEach(args => {
-  setObstacle(...args);
+obstacles.forEach((xStart, xEnd, yStart, yEnd) => {
+  setObstacle(xStart, xEnd, yStart, yEnd);
 });
-console.log(points);
 
 const getCoordsToObstacles = () => {
   const coordsToObstacles = {};
@@ -87,7 +71,7 @@ export const getGraph = () => {
       [x, y + 1],
       [x - 1, y],
     ];
-  
+
     for (const [x, y] of neighbours) {
       const coords = `${x}:${y}`;
       if (points[coords]) {
@@ -97,7 +81,6 @@ export const getGraph = () => {
       }
     }
   };
-
 
   build({ x: 0, y: 0 });
 

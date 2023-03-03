@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import { wait } from './utils.js';
+import { wait } from '../../shared/utils.js';
 
 const queue = [];
 

@@ -1,14 +1,16 @@
 import dbInit from './dbInit.js';
 import paths from './paths.js';
-import { getRoadNodes, wait, getRandomInt, decide } from './utils.js';
-const db = dbInit();
+import { wait, getRandomInt, decide } from '../../shared/utils.js';
+import { getRoadNodes } from './methods.js';
 import { fork } from 'child_process';
+
+const db = dbInit();
 
 const getDestination = fork('getDestination.js');
 
-const roadNodes = getRoadNodes().filter(coord => {
+const roadNodes = getRoadNodes().filter((coord) => {
   const [x, y] = coord.split(':');
-  return (x !== '0' && x !== '99' && y !== '0' && y !== '99'); // exclude edge coords for now
+  return x !== '0' && x !== '99' && y !== '0' && y !== '99'; // exclude edge coords for now
 });
 
 const simulateCars = () => {
@@ -37,7 +39,7 @@ const simulateCars = () => {
       }
 
       await wait(200);
-    }    
+    }
   };
 
   for (const pathObj of paths) {
@@ -46,13 +48,14 @@ const simulateCars = () => {
 };
 
 class Customer {
-  constructor({ name }) {
-    this.refreshInterval = 500;
-    this.name = name;
-    this.active = false;
-    this.location = null;
-    this.destination = null;
+  private refreshInterval = 500;
+  private name: string;
+  private active = false;
+  private location: string | null = null;
+  private destination: string | null = null;
 
+  constructor({ name }) {
+    this.name = name;
     this.handleDestinationResult = this.handleDestinationResult.bind(this);
 
     this.simulate();
@@ -117,7 +120,7 @@ class Customer {
 }
 
 const main = async () => {
-  await wait (5000);
+  await wait(5000);
 
   // Simulate cars
   simulateCars();
@@ -128,8 +131,11 @@ const main = async () => {
     customers[name] = new Customer({ name });
   });
 
-  getDestination.on('message', ({ name, destination }) => {
-    customers[name].handleDestinationResult(destination);
-  });
+  getDestination.on(
+    'message',
+    ({ name, destination }: { name: string; destination: string }) => {
+      customers[name].handleDestinationResult(destination);
+    }
+  );
 };
 main();

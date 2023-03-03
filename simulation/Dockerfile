@@ -7,4 +7,4 @@ COPY shared ./shared
 COPY simulation ./simulation
 RUN cd simulation && npm install
 
-CMD cd simulation && node main.js
+CMD cd simulation && cd dist && node index.js

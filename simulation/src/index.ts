@@ -2,15 +2,22 @@ import dbInit from './dbInit.js';
 import paths from './paths.js';
 import { wait, getRandomInt, decide } from '../../shared/utils.js';
 import { getRoadNodes } from './methods.js';
-import { fork } from 'child_process';
+import { fork, ChildProcess } from 'child_process';
+import config from '../../shared/config.js';
+const { gridCount } = config;
 
-const db = dbInit();
+let db;
 
-const getDestination = fork('getDestination.js');
+const getDestination: ChildProcess = fork('getDestination.js');
 
-const roadNodes = getRoadNodes().filter((coord) => {
+const roadNodes: string[] = getRoadNodes().filter((coord: string) => {
   const [x, y] = coord.split(':');
-  return x !== '0' && x !== '99' && y !== '0' && y !== '99'; // exclude edge coords for now
+  return (
+    x !== '0' &&
+    x !== (gridCount - 1).toString() &&
+    y !== '0' &&
+    y !== (gridCount - 1).toString()
+  );
 });
 
 const simulateCars = () => {
@@ -54,14 +61,14 @@ class Customer {
   private location: string | null = null;
   private destination: string | null = null;
 
-  constructor({ name }) {
+  constructor({ name }: { name: string }) {
     this.name = name;
     this.handleDestinationResult = this.handleDestinationResult.bind(this);
 
     this.simulate();
   }
 
-  async updateDB() {
+  private async updateDB(): Promise<void> {
     return db.query(
       `
       INSERT INTO customers (name, active, location, destination)
@@ -76,7 +83,7 @@ class Customer {
     );
   }
 
-  async simulate() {
+  private async simulate(): Promise<void> {
     while (true) {
       // Active and waiting for the destination
       if (this.active && !this.destination) {
@@ -85,7 +92,7 @@ class Customer {
       }
 
       // Decide on the new active status
-      let newActive;
+      let newActive: boolean;
       if (this.active) newActive = decide(95);
       else newActive = decide(5);
 
@@ -113,14 +120,14 @@ class Customer {
     }
   }
 
-  handleDestinationResult(destination) {
+  public handleDestinationResult(destination: string): void {
     this.destination = destination;
     this.updateDB();
   }
 }
 
 const main = async () => {
-  await wait(5000);
+  db = await dbInit();
 
   // Simulate cars
   simulateCars();

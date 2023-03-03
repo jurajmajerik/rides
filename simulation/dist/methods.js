@@ -1,6 +1,6 @@
 import obstacles from '../../shared/obstacles.js';
 import config from '../../shared/config.js';
-const { gridCount, squareSize, fetchInterval, refreshInterval, turnDuration, animationOverhead, } = config;
+const { gridCount } = config;
 const points = {};
 for (let x = 0; x < gridCount; x += 1) {
     for (let y = 0; y < gridCount; y += 1) {

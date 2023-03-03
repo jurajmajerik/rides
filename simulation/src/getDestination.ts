@@ -1,9 +1,14 @@
 import md5 from 'md5';
 import { wait } from '../../shared/utils.js';
 
-const queue = [];
+interface Message {
+  name: string;
+  input: string;
+}
 
-process.on('message', ({ name, input }) => {
+const queue: Message[] = [];
+
+process.on('message', ({ name, input }: Message) => {
   queue.push({ name, input });
 });
 

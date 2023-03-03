@@ -3,11 +3,16 @@ import paths from './paths.js';
 import { wait, getRandomInt, decide } from '../../shared/utils.js';
 import { getRoadNodes } from './methods.js';
 import { fork } from 'child_process';
-const db = dbInit();
+import config from '../../shared/config.js';
+const { gridCount } = config;
+let db;
 const getDestination = fork('getDestination.js');
-const roadNodes = getRoadNodes().filter(coord => {
+const roadNodes = getRoadNodes().filter((coord) => {
     const [x, y] = coord.split(':');
-    return (x !== '0' && x !== '99' && y !== '0' && y !== '99'); // exclude edge coords for now
+    return (x !== '0' &&
+        x !== (gridCount - 1).toString() &&
+        y !== '0' &&
+        y !== (gridCount - 1).toString());
 });
 const simulateCars = () => {
     const cycle = async (pathObj) => {
@@ -100,7 +105,7 @@ class Customer {
     }
 }
 const main = async () => {
-    await wait(5000);
+    db = await dbInit();
     // Simulate cars
     simulateCars();
     // Simulate customers

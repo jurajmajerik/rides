@@ -18,8 +18,23 @@ const {
   animationOverhead,
 } = config;
 
-export default class Car extends React.Component {
-  constructor(props) {
+interface Props {
+  path: [number, number][];
+  actual: [number, number];
+}
+
+interface State {
+  position: [number, number];
+  rotation: number;
+  path: [number, number][];
+}
+
+export default class Car extends React.Component<Props, State> {
+  private latestUpdateAt = 0;
+  private rotateBusy = false;
+  private moveBusy = false;
+
+  constructor(props: Props) {
     super(props);
     const { path, actual } = props;
 
@@ -28,11 +43,8 @@ export default class Car extends React.Component {
     });
     if (pathIndex === 0) pathIndex = 1;
 
-    const rotation = getRotation(path, pathIndex);
+    const rotation: number = getRotation(path, pathIndex);
 
-    this.latestUpdateAt = 0;
-    this.rotateBusy = false;
-    this.moveBusy = false;
     this.state = {
       position: actual,
       rotation,
@@ -40,7 +52,7 @@ export default class Car extends React.Component {
     };
   }
 
-  async rotate(section, i) {
+  async rotate(section: [number, number][], i: number) {
     this.rotateBusy = true;
 
     let rotation = this.state.rotation;
@@ -72,7 +84,11 @@ export default class Car extends React.Component {
     this.rotateBusy = false;
   }
 
-  async move(actual, path, receivedAt) {
+  async move(
+    actual: [number, number],
+    path: [number, number][],
+    receivedAt: number
+  ) {
     while (this.moveBusy) {
       await wait(100);
       if (receivedAt !== this.latestUpdateAt) return;
@@ -123,7 +139,7 @@ export default class Car extends React.Component {
     this.moveBusy = false;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps.actual === this.props.actual) return;
 
     const receivedAt = Date.now();

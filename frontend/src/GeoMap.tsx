@@ -23,11 +23,19 @@ const obstaclesMap = (() => {
   return obstaclesMap;
 })();
 
-export default class GeoMap extends React.Component {
+interface Props {}
+interface State {
+  cars: any[];
+  customers: any[];
+  refreshing: boolean;
+}
+
+export default class GeoMap extends React.Component<Props, State> {
+  private previousUpdateAt = Date.now();
+
   constructor(props) {
     super(props);
 
-    this.previousUpdateAt = Date.now();
     this.state = {
       cars: [],
       customers: [],
@@ -35,7 +43,7 @@ export default class GeoMap extends React.Component {
     };
   }
 
-  async loadData() {
+  private async loadData(): Promise<void> {
     while (true) {
       const rides = await api.get('/rides');
 
@@ -53,7 +61,7 @@ export default class GeoMap extends React.Component {
       const cars = [];
       for (const ride of rides) {
         const { car_id, location } = ride;
-        const path = JSON.parse(ride.path);
+        const path = JSON.parse(ride.path) as [number, number][];
         const [x, y] = location.split(':');
         cars.push({
           id: car_id,
@@ -67,7 +75,7 @@ export default class GeoMap extends React.Component {
     }
   }
 
-  async loadCustomers() {
+  private async loadCustomers(): Promise<void> {
     while (true) {
       const customers = await api.get('/customers');
       this.setState({ customers });
@@ -98,13 +106,11 @@ export default class GeoMap extends React.Component {
       );
     }
 
-    const cars = this.state.cars.map(({ id, actual, rotation, path }) => {
-      return (
-        <Car key={id} actual={actual} rotation={rotation || 0} path={path} />
-      );
+    const cars = this.state.cars.map(({ id, actual, path }) => {
+      return <Car key={id} actual={actual} path={path} />;
     });
 
-    const customers = this.state.customers.map(({ id, name, location }) => {
+    const customers = this.state.customers.map(({ location }) => {
       const [x, y] = location.split(':');
       return (
         <CustomerIcon

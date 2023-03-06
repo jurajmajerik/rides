@@ -55,7 +55,13 @@ const shapes = `
 </g>
 `;
 
-const CarIcon = ({ x, y, rotation }) => (
+interface Props {
+  x: number;
+  y: number;
+  rotation: number;
+}
+
+const CarIcon = ({ x, y, rotation }: Props) => (
   <svg
     style={{ position: 'relative', zIndex: 1000 }}
     x={x}
@@ -63,7 +69,6 @@ const CarIcon = ({ x, y, rotation }) => (
     width="50"
     height="50"
     viewBox="0 0 100 100"
-    border="solid 10px black"
   >
     <g
       width="50"

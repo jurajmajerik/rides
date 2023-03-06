@@ -1,4 +1,3 @@
-import React from 'react';
 import GeoMap from './GeoMap';
 
 const App = () => {

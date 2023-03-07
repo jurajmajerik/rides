@@ -4,20 +4,15 @@ import { wait, getRandomInt, decide } from '../../shared/utils.js';
 import { getRoadNodes } from './methods.js';
 import { fork, ChildProcess } from 'child_process';
 import config from '../../shared/config.js';
+import { CoordPair } from './types.js';
 const { gridCount } = config;
 
 let db;
 
 const getDestination: ChildProcess = fork('getDestination.js');
 
-const roadNodes: string[] = getRoadNodes().filter((coord: string) => {
-  const [x, y] = coord.split(':');
-  return (
-    x !== '0' &&
-    x !== (gridCount - 1).toString() &&
-    y !== '0' &&
-    y !== (gridCount - 1).toString()
-  );
+const roadNodes: CoordPair[] = getRoadNodes().filter(([x, y]: CoordPair) => {
+  return x !== 0 && x !== gridCount - 1 && y !== 0 && y !== gridCount - 1;
 });
 
 const simulateCars = () => {
@@ -27,15 +22,18 @@ const simulateCars = () => {
       const path = pathObj[selected];
       const [x, y] = path[i];
 
-      const res = await db.query(
+      db.query(
         `
         INSERT INTO rides (car_id, location, path)
-        VALUES ('${carId}', '${x}:${y}', '${JSON.stringify(path)}')
+        VALUES (
+          '${carId}',
+          '${x}:${y}',
+          '${JSON.stringify(path)}'
+        )
         ON CONFLICT (car_id)
         DO UPDATE SET location = EXCLUDED.location, path = EXCLUDED.path;
         `
       );
-      if (!res.rowCount || res.rowCount !== 1) console.error(res);
 
       if (i === path.length - 1) {
         pathObj.selected = selected === 'first' ? 'second' : 'first';
@@ -58,8 +56,8 @@ class Customer {
   private refreshInterval = 500;
   private name: string;
   private active = false;
-  private location: string | null = null;
-  private destination: string | null = null;
+  private location: CoordPair | null = null;
+  private destination: CoordPair | null = null;
 
   constructor({ name }: { name: string }) {
     this.name = name;
@@ -72,7 +70,12 @@ class Customer {
     return db.query(
       `
       INSERT INTO customers (name, active, location, destination)
-      VALUES ('${this.name}', ${this.active}, '${this.location}', '${this.destination}')
+      VALUES (
+        '${this.name}',
+        ${this.active},
+        '${this.location && `${this.location[0]}:${this.location[1]}`}',
+        '${this.destination && `${this.destination[0]}:${this.destination[1]}`}'
+      )
       ON CONFLICT (name)
       DO UPDATE SET 
       name = EXCLUDED.name,
@@ -106,7 +109,7 @@ class Customer {
 
           getDestination.send({
             name: this.name,
-            location: [location.split(':')[0], location.split(':')[1]],
+            location,
           });
         } else {
           this.active = false;
@@ -120,9 +123,8 @@ class Customer {
     }
   }
 
-  public handleDestinationResult(destination: [number, number]): void {
-    const [x, y] = destination;
-    this.destination = `${x}:${y}`;
+  public handleDestinationResult(destination: CoordPair): void {
+    this.destination = destination;
     this.updateDB();
   }
 }
@@ -141,13 +143,7 @@ const main = async () => {
 
   getDestination.on(
     'message',
-    ({
-      name,
-      destination,
-    }: {
-      name: string;
-      destination: [number, number];
-    }) => {
+    ({ name, destination }: { name: string; destination: CoordPair }) => {
       customers[name].handleDestinationResult(destination);
     }
   );

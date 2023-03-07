@@ -117,8 +117,8 @@ const GeoMap = () => {
     return (
       <DestIcon
         key={`${x}:${y}`}
-        x={x * squareSize - squareSize / 2}
-        y={y * squareSize - squareSize / 2}
+        x={x * squareSize - squareSize / +5}
+        y={y * squareSize - squareSize / 2 - 8}
       />
     );
   });

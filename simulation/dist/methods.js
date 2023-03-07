@@ -23,7 +23,7 @@ export const getRoadNodes = () => {
     for (let x = 0; x < gridCount; x++) {
         for (let y = 0; y < gridCount; y++) {
             if (!obstaclesSet.has(`${x}:${y}`)) {
-                roadNodes.push(`${x}:${y}`);
+                roadNodes.push([x, y]);
             }
         }
     }
@@ -79,7 +79,8 @@ export const getClosestRoadNode = (x, y, graph) => {
         queue = nextQueue;
     }
 };
-export const generateDestination = (startX, startY) => {
+export const generateDestination = (coordPair) => {
+    const [startX, startY] = coordPair;
     const rangeX = getDestinationRange(startX);
     const rangeY = getDestinationRange(startY);
     return [

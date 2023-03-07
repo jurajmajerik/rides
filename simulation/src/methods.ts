@@ -1,7 +1,7 @@
 import obstacles from '../../shared/obstacles.js';
 import { getRandomInt } from '../../shared/utils.js';
 import config from '../../shared/config.js';
-import { Graph, Obstacle, Obstacles } from './types.js';
+import { CoordPair, Graph, Obstacles } from './types.js';
 
 const { gridCount } = config;
 
@@ -22,14 +22,14 @@ export const getObstaclesSet = (obstacles: Obstacles): Set<string> => {
   return obstaclesSet;
 };
 
-export const getRoadNodes = (): string[] => {
+export const getRoadNodes = (): CoordPair[] => {
   const obstaclesSet = getObstaclesSet(obstacles);
 
-  const roadNodes: string[] = [];
+  const roadNodes: CoordPair[] = [];
   for (let x = 0; x < gridCount; x++) {
     for (let y = 0; y < gridCount; y++) {
       if (!obstaclesSet.has(`${x}:${y}`)) {
-        roadNodes.push(`${x}:${y}`);
+        roadNodes.push([x, y]);
       }
     }
   }
@@ -64,7 +64,11 @@ export const getDestinationRange = (coord: number): [number, number] =>
     ? [gridCount / 2 + Math.floor(coord / 2), gridCount]
     : [0, gridCount / 2 - Math.floor((gridCount - coord) / 2)];
 
-export const getClosestRoadNode = (x: number, y: number, graph: Graph) => {
+export const getClosestRoadNode = (
+  x: number,
+  y: number,
+  graph: Graph
+): CoordPair => {
   if (graph[y][x] === 1) return [x, y];
 
   const isValid = (y, x) =>
@@ -101,10 +105,8 @@ export const getClosestRoadNode = (x: number, y: number, graph: Graph) => {
   }
 };
 
-export const generateDestination = (
-  startX: number,
-  startY: number
-): [number, number] => {
+export const generateDestination = (coordPair: CoordPair): CoordPair => {
+  const [startX, startY] = coordPair;
   const rangeX = getDestinationRange(startX);
   const rangeY = getDestinationRange(startY);
   return [

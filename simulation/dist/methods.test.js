@@ -29,12 +29,12 @@ test('return a range of possible destinations for a starting coordinate', () => 
     expect(getDestinationRange(99)).toEqual([0, 50]);
 });
 test('return destination coordinates', () => {
-    let [destX, destY] = generateDestination(0, 0);
+    let [destX, destY] = generateDestination([0, 0]);
     expect(destX).toBeGreaterThanOrEqual(gridCount / 2);
     expect(destX).toBeLessThanOrEqual(gridCount);
     expect(destY).toBeGreaterThanOrEqual(gridCount / 2);
     expect(destY).toBeLessThanOrEqual(gridCount);
-    [destX, destY] = generateDestination(50, 50);
+    [destX, destY] = generateDestination([50, 50]);
     expect(destX).toBeGreaterThanOrEqual(0);
     expect(destX).toBeLessThanOrEqual(25);
     expect(destY).toBeGreaterThanOrEqual(0);

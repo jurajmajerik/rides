@@ -7,12 +7,8 @@ import config from '../../shared/config.js';
 const { gridCount } = config;
 let db;
 const getDestination = fork('getDestination.js');
-const roadNodes = getRoadNodes().filter((coord) => {
-    const [x, y] = coord.split(':');
-    return (x !== '0' &&
-        x !== (gridCount - 1).toString() &&
-        y !== '0' &&
-        y !== (gridCount - 1).toString());
+const roadNodes = getRoadNodes().filter(([x, y]) => {
+    return x !== 0 && x !== gridCount - 1 && y !== 0 && y !== gridCount - 1;
 });
 const simulateCars = () => {
     const cycle = async (pathObj) => {
@@ -20,14 +16,16 @@ const simulateCars = () => {
             const { carId, i, selected } = pathObj;
             const path = pathObj[selected];
             const [x, y] = path[i];
-            const res = await db.query(`
+            db.query(`
         INSERT INTO rides (car_id, location, path)
-        VALUES ('${carId}', '${x}:${y}', '${JSON.stringify(path)}')
+        VALUES (
+          '${carId}',
+          '${x}:${y}',
+          '${JSON.stringify(path)}'
+        )
         ON CONFLICT (car_id)
         DO UPDATE SET location = EXCLUDED.location, path = EXCLUDED.path;
         `);
-            if (!res.rowCount || res.rowCount !== 1)
-                console.error(res);
             if (i === path.length - 1) {
                 pathObj.selected = selected === 'first' ? 'second' : 'first';
                 pathObj.i = 0;
@@ -56,7 +54,12 @@ class Customer {
     async updateDB() {
         return db.query(`
       INSERT INTO customers (name, active, location, destination)
-      VALUES ('${this.name}', ${this.active}, '${this.location}', '${this.destination}')
+      VALUES (
+        '${this.name}',
+        ${this.active},
+        '${this.location && `${this.location[0]}:${this.location[1]}`}',
+        '${this.destination && `${this.destination[0]}:${this.destination[1]}`}'
+      )
       ON CONFLICT (name)
       DO UPDATE SET 
       name = EXCLUDED.name,
@@ -86,7 +89,7 @@ class Customer {
                     this.location = location;
                     getDestination.send({
                         name: this.name,
-                        location: [location.split(':')[0], location.split(':')[1]],
+                        location,
                     });
                 }
                 else {
@@ -100,8 +103,7 @@ class Customer {
         }
     }
     handleDestinationResult(destination) {
-        const [x, y] = destination;
-        this.destination = `${x}:${y}`;
+        this.destination = destination;
         this.updateDB();
     }
 }
@@ -114,7 +116,7 @@ const main = async () => {
     ['Alice', 'Michael', 'Kate', 'Paul', 'Susan', 'Andrew'].forEach((name) => {
         customers[name] = new Customer({ name });
     });
-    getDestination.on('message', ({ name, destination, }) => {
+    getDestination.on('message', ({ name, destination }) => {
         customers[name].handleDestinationResult(destination);
     });
 };

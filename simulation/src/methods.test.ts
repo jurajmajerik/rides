@@ -2,8 +2,10 @@ import {
   buildGraph,
   getDestinationRange,
   generateDestination,
+  getClosestRoadNode,
 } from './methods.js';
 import config from '../../shared/config.js';
+import { Graph } from './types.js';
 
 const { gridCount } = config;
 
@@ -52,4 +54,16 @@ test('return destination coordinates', () => {
   expect(destX).toBeLessThanOrEqual(25);
   expect(destY).toBeGreaterThanOrEqual(0);
   expect(destY).toBeLessThanOrEqual(25);
+});
+
+test('returns the closest road node (can be the node itself)', () => {
+  let graph: Graph = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0],
+  ];
+  expect(getClosestRoadNode(0, 0, graph)).toEqual([1, 0]);
+  expect(getClosestRoadNode(0, 1, graph)).toEqual([0, 1]);
+  expect(getClosestRoadNode(0, 2, graph)).toEqual([0, 2]);
+  expect(getClosestRoadNode(2, 2, graph)).toEqual([2, 1]);
 });

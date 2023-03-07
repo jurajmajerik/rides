@@ -1,11 +1,9 @@
 import obstacles from '../../shared/obstacles.js';
 import { getRandomInt } from '../../shared/utils.js';
 import config from '../../shared/config.js';
+import { Graph, Obstacle, Obstacles } from './types.js';
 
 const { gridCount } = config;
-
-type Obstacle = [number, number, number, number, string?];
-type Obstacles = Obstacle[];
 
 export const getObstaclesSet = (obstacles: Obstacles): Set<string> => {
   const obstaclesSet = new Set<string>();
@@ -42,8 +40,8 @@ export const getRoadNodes = (): string[] => {
 export const buildGraph = (
   obstaclesSet: Set<string>,
   gridCount: number
-): (0 | 1)[][] => {
-  const graph: (0 | 1)[][] = [];
+): Graph => {
+  const graph: Graph = [];
   for (let y = 0; y < gridCount; y++) {
     graph[y] = [];
 
@@ -56,7 +54,7 @@ export const buildGraph = (
   return graph;
 };
 
-export const getGraph = () => {
+export const getGraph = (): Graph => {
   const obstaclesSet = getObstaclesSet(obstacles);
   return buildGraph(obstaclesSet, gridCount);
 };
@@ -65,6 +63,43 @@ export const getDestinationRange = (coord: number): [number, number] =>
   coord < gridCount / 2
     ? [gridCount / 2 + Math.floor(coord / 2), gridCount]
     : [0, gridCount / 2 - Math.floor((gridCount - coord) / 2)];
+
+export const getClosestRoadNode = (x: number, y: number, graph: Graph) => {
+  if (graph[y][x] === 1) return [x, y];
+
+  const isValid = (y, x) =>
+    y >= 0 && y < graph.length && x >= 0 && x < graph[y].length;
+
+  const directions = [
+    [0, -1],
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+  ];
+
+  let queue = [[y, x]];
+  const seen = new Set([`${y}:${x}`]);
+
+  while (queue.length) {
+    const nextQueue = [];
+
+    for (let i = 0; i < queue.length; i++) {
+      const [y, x] = queue[i];
+
+      for (const [dx, dy] of directions) {
+        const nextY = y + dy;
+        const nextX = x + dx;
+
+        if (isValid(nextY, nextX) && !seen.has(`${nextY}:${nextX}`)) {
+          if (graph[nextY][nextX] === 1) return [nextX, nextY];
+          seen.add(`${nextY}:${nextX}`);
+          nextQueue.push([nextY, nextX]);
+        }
+      }
+    }
+    queue = nextQueue;
+  }
+};
 
 export const generateDestination = (
   startX: number,

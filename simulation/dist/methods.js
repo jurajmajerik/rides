@@ -49,6 +49,36 @@ export const getGraph = () => {
 export const getDestinationRange = (coord) => coord < gridCount / 2
     ? [gridCount / 2 + Math.floor(coord / 2), gridCount]
     : [0, gridCount / 2 - Math.floor((gridCount - coord) / 2)];
+export const getClosestRoadNode = (x, y, graph) => {
+    if (graph[y][x] === 1)
+        return [x, y];
+    const isValid = (y, x) => y >= 0 && y < graph.length && x >= 0 && x < graph[y].length;
+    const directions = [
+        [0, -1],
+        [1, 0],
+        [0, 1],
+        [-1, 0],
+    ];
+    let queue = [[y, x]];
+    const seen = new Set([`${y}:${x}`]);
+    while (queue.length) {
+        const nextQueue = [];
+        for (let i = 0; i < queue.length; i++) {
+            const [y, x] = queue[i];
+            for (const [dx, dy] of directions) {
+                const nextY = y + dy;
+                const nextX = x + dx;
+                if (isValid(nextY, nextX) && !seen.has(`${nextY}:${nextX}`)) {
+                    if (graph[nextY][nextX] === 1)
+                        return [nextX, nextY];
+                    seen.add(`${nextY}:${nextX}`);
+                    nextQueue.push([nextY, nextX]);
+                }
+            }
+        }
+        queue = nextQueue;
+    }
+};
 export const generateDestination = (startX, startY) => {
     const rangeX = getDestinationRange(startX);
     const rangeY = getDestinationRange(startY);

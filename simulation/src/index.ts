@@ -106,7 +106,7 @@ class Customer {
 
           getDestination.send({
             name: this.name,
-            input: `${Date.now()}`,
+            location: [location.split(':')[0], location.split(':')[1]],
           });
         } else {
           this.active = false;
@@ -120,8 +120,9 @@ class Customer {
     }
   }
 
-  public handleDestinationResult(destination: string): void {
-    this.destination = destination;
+  public handleDestinationResult(destination: [number, number]): void {
+    const [x, y] = destination;
+    this.destination = `${x}:${y}`;
     this.updateDB();
   }
 }
@@ -140,7 +141,13 @@ const main = async () => {
 
   getDestination.on(
     'message',
-    ({ name, destination }: { name: string; destination: string }) => {
+    ({
+      name,
+      destination,
+    }: {
+      name: string;
+      destination: [number, number];
+    }) => {
       customers[name].handleDestinationResult(destination);
     }
   );

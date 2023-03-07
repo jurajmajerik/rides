@@ -1,23 +1,26 @@
 import md5 from 'md5';
 import { wait } from '../../shared/utils.js';
+import { generateDestination } from './methods.js';
 
 interface Message {
   name: string;
-  input: string;
+  location: [number, number];
 }
 
 const queue: Message[] = [];
 
-process.on('message', ({ name, input }: Message) => {
-  queue.push({ name, input });
+process.on('message', ({ name, location }: Message) => {
+  queue.push({ name, location });
 });
 
 const main = async () => {
   while (true) {
     if (queue.length) {
-      const { name, input } = queue.shift();
-      await wait(800);
-      const destination = md5(input);
+      const { name, location } = queue.shift();
+      const x = location[0];
+      const y = location[1];
+
+      const destination = generateDestination(x, y);
       process.send({ name, destination });
     }
 

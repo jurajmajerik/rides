@@ -5,6 +5,7 @@ import { api } from './api';
 import { wait } from '../../shared/utils';
 import config from '../../shared/config';
 import CustomerIcon from './CustomerIcon';
+import DestIcon from './DestIcon';
 
 const { gridSize, squareSize, fetchInterval } = config;
 
@@ -111,14 +112,30 @@ const GeoMap = () => {
     );
   });
 
+  const destElems = customers.map(({ destination }) => {
+    const [x, y] = destination.split(':');
+    return (
+      <DestIcon
+        key={`${x}:${y}`}
+        x={x * squareSize - squareSize / 2}
+        y={y * squareSize - squareSize / 2}
+      />
+    );
+  });
+
   return (
     <div className="map">
       <div className="map-inner">
         <div className={`map-refresh ${refreshing ? 'active' : ''}`} />
-        <svg width={gridSize} height={gridSize} viewBox="0 0 1000 1000">
+        <svg
+          width={gridSize}
+          height={gridSize}
+          viewBox={`0 0 ${gridSize} ${gridSize}`}
+        >
           {obstacleElems}
           {carElems}
           {customerElems}
+          {destElems}
         </svg>
       </div>
     </div>

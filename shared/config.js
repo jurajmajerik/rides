@@ -1,5 +1,5 @@
-const gridSize = 500;
-const gridCount = 50;
+const gridSize = 1000;
+const gridCount = 100;
 const squareSize = gridSize / gridCount;
 const fetchInterval = 1500;
 const refreshInterval = 16;

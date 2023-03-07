@@ -86,7 +86,7 @@ class Customer {
                     this.location = location;
                     getDestination.send({
                         name: this.name,
-                        input: `${Date.now()}`,
+                        location: [location.split(':')[0], location.split(':')[1]],
                     });
                 }
                 else {
@@ -100,7 +100,8 @@ class Customer {
         }
     }
     handleDestinationResult(destination) {
-        this.destination = destination;
+        const [x, y] = destination;
+        this.destination = `${x}:${y}`;
         this.updateDB();
     }
 }
@@ -113,7 +114,7 @@ const main = async () => {
     ['Alice', 'Michael', 'Kate', 'Paul', 'Susan', 'Andrew'].forEach((name) => {
         customers[name] = new Customer({ name });
     });
-    getDestination.on('message', ({ name, destination }) => {
+    getDestination.on('message', ({ name, destination, }) => {
         customers[name].handleDestinationResult(destination);
     });
 };

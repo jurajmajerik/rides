@@ -1,76 +1,60 @@
 import obstacles from '../../shared/obstacles.js';
+import { getRandomInt } from '../../shared/utils.js';
 import config from '../../shared/config.js';
 const { gridCount } = config;
-const points = {};
-for (let x = 0; x < gridCount; x += 1) {
-    for (let y = 0; y < gridCount; y += 1) {
-        points[`${x}:${y}`] = true;
-    }
-}
-const setObstacle = (xStart, xEnd, yStart, yEnd) => {
-    let x = xStart;
-    while (x <= xEnd) {
-        let y = yStart;
-        while (y <= yEnd) {
-            points[`${x}:${y}`] = false;
-            y += 1;
-        }
-        x += 1;
-    }
-};
-obstacles.forEach((xStart, xEnd, yStart, yEnd) => {
-    setObstacle(xStart, xEnd, yStart, yEnd);
-});
-const getCoordsToObstacles = () => {
-    const coordsToObstacles = {};
+export const getObstaclesSet = (obstacles) => {
+    const obstaclesSet = new Set();
     obstacles.forEach(([xStart, xEnd, yStart, yEnd]) => {
         let x = xStart;
         while (x <= xEnd) {
             let y = yStart;
             while (y <= yEnd) {
-                coordsToObstacles[`${x}:${y}`] = true;
+                obstaclesSet.add(`${x}:${y}`);
                 y += 1;
             }
             x += 1;
         }
     });
-    return coordsToObstacles;
+    return obstaclesSet;
 };
 export const getRoadNodes = () => {
-    const coordsToObstacles = getCoordsToObstacles();
+    const obstaclesSet = getObstaclesSet(obstacles);
     const roadNodes = [];
-    for (let x = 0; x < 100; x++) {
-        for (let y = 0; y < 100; y++) {
-            if (!coordsToObstacles[`${x}:${y}`]) {
+    for (let x = 0; x < gridCount; x++) {
+        for (let y = 0; y < gridCount; y++) {
+            if (!obstaclesSet.has(`${x}:${y}`)) {
                 roadNodes.push(`${x}:${y}`);
             }
         }
     }
     return roadNodes;
 };
-export const getGraph = () => {
-    const graph = { '0:0': {} };
-    const visited = {};
-    const build = async ({ x, y }) => {
-        visited[`${x}:${y}`] = true;
-        const currentNode = graph[`${x}:${y}`];
-        const neighbours = [
-            [x, y - 1],
-            [x + 1, y],
-            [x, y + 1],
-            [x - 1, y],
-        ];
-        for (const [x, y] of neighbours) {
-            const coords = `${x}:${y}`;
-            if (points[coords]) {
-                graph[coords] = graph[coords] || {};
-                currentNode[coords] = graph[coords];
-                if (!visited[coords])
-                    build({ x, y });
-            }
+export const buildGraph = (obstaclesSet, gridCount) => {
+    const graph = [];
+    for (let y = 0; y < gridCount; y++) {
+        graph[y] = [];
+        for (let x = 0; x < gridCount; x++) {
+            if (obstaclesSet.has(`${x}:${y}`))
+                graph[y][x] = 0;
+            else
+                graph[y][x] = 1;
         }
-    };
-    build({ x: 0, y: 0 });
+    }
     return graph;
+};
+export const getGraph = () => {
+    const obstaclesSet = getObstaclesSet(obstacles);
+    return buildGraph(obstaclesSet, gridCount);
+};
+export const getDestinationRange = (coord) => coord < gridCount / 2
+    ? [gridCount / 2 + Math.floor(coord / 2), gridCount]
+    : [0, gridCount / 2 - Math.floor((gridCount - coord) / 2)];
+export const generateDestination = (startX, startY) => {
+    const rangeX = getDestinationRange(startX);
+    const rangeY = getDestinationRange(startY);
+    return [
+        getRandomInt(rangeX[0], rangeX[1]),
+        getRandomInt(rangeY[0], rangeY[1]),
+    ];
 };
 //# sourceMappingURL=methods.js.map

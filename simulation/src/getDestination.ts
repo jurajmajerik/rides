@@ -25,8 +25,7 @@ const main = async () => {
       const [x, y] = location;
 
       let [destX, destY] = generateDestination([x, y]);
-      let destination = getClosestRoadNode(destX, destY, graph);
-      process.send({ name, destination });
+      process.send({ name, destination: [destX, destY] });
     }
 
     if (queue.length) continue;

@@ -5,6 +5,11 @@ import { CoordPair, Graph, Obstacles } from './types.js';
 
 const { gridCount } = config;
 
+interface Cache {
+  graph: Graph | null;
+}
+const cache: Cache = { graph: null };
+
 export const getObstaclesSet = (obstacles: Obstacles): Set<string> => {
   const obstaclesSet = new Set<string>();
   obstacles.forEach(([xStart, xEnd, yStart, yEnd]) => {
@@ -55,8 +60,9 @@ export const buildGraph = (
 };
 
 export const getGraph = (): Graph => {
-  const obstaclesSet = getObstaclesSet(obstacles);
-  return buildGraph(obstaclesSet, gridCount);
+  if (cache.graph) return cache.graph;
+  cache.graph = buildGraph(getObstaclesSet(obstacles), gridCount);
+  return cache.graph;
 };
 
 export const getDestinationRange = (coord: number): [number, number] =>
@@ -69,10 +75,10 @@ export const getClosestRoadNode = (
   y: number,
   graph: Graph
 ): CoordPair => {
-  if (graph[y][x] === 1) return [x, y];
-
   const isValid = (y, x) =>
     y > 0 && y < graph.length - 1 && x > 0 && x < graph[y].length - 1;
+
+  if (isValid(y, x) && graph[y][x] === 1) return [x, y];
 
   const directions = [
     [0, -1],
@@ -106,11 +112,16 @@ export const getClosestRoadNode = (
 };
 
 export const generateDestination = (coordPair: CoordPair): CoordPair => {
+  const graph = getGraph();
+
   const [startX, startY] = coordPair;
   const rangeX = getDestinationRange(startX);
   const rangeY = getDestinationRange(startY);
-  return [
-    getRandomInt(rangeX[0], rangeX[1]),
-    getRandomInt(rangeY[0], rangeY[1]),
-  ];
+
+  const destX = getRandomInt(rangeX[0], rangeX[1]);
+  const destY = getRandomInt(rangeY[0], rangeY[1]);
+
+  let destination = getClosestRoadNode(destX, destY, graph);
+
+  return destination;
 };

@@ -52,7 +52,7 @@ export const getDestinationRange = (coord) => coord < gridCount / 2
 export const getClosestRoadNode = (x, y, graph) => {
     if (graph[y][x] === 1)
         return [x, y];
-    const isValid = (y, x) => y >= 0 && y < graph.length && x >= 0 && x < graph[y].length;
+    const isValid = (y, x) => y > 0 && y < graph.length - 1 && x > 0 && x < graph[y].length - 1;
     const directions = [
         [0, -1],
         [1, 0],

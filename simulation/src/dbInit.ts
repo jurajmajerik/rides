@@ -1,4 +1,5 @@
 import fs from 'fs';
+//@ts-ignore
 import pg, { Client } from 'pg';
 import { wait } from '../../shared/utils.js';
 

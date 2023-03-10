@@ -1,4 +1,5 @@
 import fs from 'fs';
+//@ts-ignore
 import pg from 'pg';
 import { wait } from '../../shared/utils.js';
 let retries = 3;

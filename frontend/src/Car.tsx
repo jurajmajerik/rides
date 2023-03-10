@@ -37,7 +37,7 @@ export default class Car extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { path, actual } = props;
-
+    console.log(path);
     let pathIndex = path.findIndex(([x, y]) => {
       return x === actual[0] && y === actual[1];
     });

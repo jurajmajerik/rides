@@ -27,7 +27,7 @@ const obstaclesMap = (() => {
 
 const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
   while (true) {
-    const rides = await api.get('/rides');
+    const drivers = await api.get('/drivers');
 
     const timeout = 2000;
     const now = Date.now();
@@ -41,12 +41,12 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
     previousUpdateAtRef.current = now;
 
     const cars = [];
-    for (const ride of rides) {
-      const { car_id, location } = ride;
+    for (const ride of drivers) {
+      const { driverId, location } = ride;
       const path = JSON.parse(ride.path) as [number, number][];
       const [x, y] = location.split(':');
       cars.push({
-        id: car_id,
+        id: driverId,
         path: path,
         actual: [parseInt(x), parseInt(y)],
       });

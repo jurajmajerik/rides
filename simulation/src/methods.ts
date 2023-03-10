@@ -39,7 +39,9 @@ export const getRoadNodes = (): CoordPair[] => {
     }
   }
 
-  return roadNodes;
+  return roadNodes.filter(([x, y]: CoordPair) => {
+    return x !== 0 && x !== gridCount - 1 && y !== 0 && y !== gridCount - 1;
+  });
 };
 
 export const buildGraph = (
@@ -124,4 +126,13 @@ export const generateDestination = (coordPair: CoordPair): CoordPair => {
   let destination = getClosestRoadNode(destX, destY, graph);
 
   return destination;
+};
+
+export const getStraightLineDistance = (
+  coordsA: CoordPair,
+  coordsB: CoordPair
+): number => {
+  const [xA, yA] = coordsA;
+  const [xB, yB] = coordsB;
+  return Math.sqrt(Math.pow(xB - xA, 2) + Math.pow(yB - yA, 2));
 };

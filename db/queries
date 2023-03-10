@@ -1,14 +1,15 @@
 CREATE TABLE customers (
   id SERIAL PRIMARY KEY,
+  customer_id uuid UNIQUE,
   name VARCHAR(255) UNIQUE NOT NULL,
   active BOOLEAN,
-  location VARCHAR(255) NOT NULL,
-  destination VARCHAR(255) NOT NULL
+  location VARCHAR(5) NOT NULL,
+  destination VARCHAR(5) NOT NULL
 );
 
-CREATE TABLE rides (
+CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
-  car_id VARCHAR(255) UNIQUE NOT NULL,
-  location VARCHAR(255) NOT NULL,
+  driver_id uuid UNIQUE,
+  location VARCHAR(5) NOT NULL,
   path TEXT
 );

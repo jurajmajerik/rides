@@ -1,18 +1,16 @@
 import { wait } from '../../shared/utils.js';
-import { generateDestination, getClosestRoadNode, getGraph, } from './methods.js';
-const graph = getGraph();
+import { generateDestination } from './methods.js';
 const queue = [];
-process.on('message', ({ name, location }) => {
-    queue.push({ name, location });
+process.on('message', ({ customerId, location }) => {
+    queue.push({ customerId, location });
 });
 const main = async () => {
     while (true) {
         if (queue.length) {
-            const { name, location } = queue.shift();
+            const { customerId, location } = queue.shift();
             const [x, y] = location;
             let [destX, destY] = generateDestination([x, y]);
-            let destination = getClosestRoadNode(destX, destY, graph);
-            process.send({ name, destination });
+            process.send({ customerId, destination: [destX, destY] });
         }
         if (queue.length)
             continue;

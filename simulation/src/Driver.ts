@@ -44,7 +44,11 @@ export default class Driver {
   private async simulate(): Promise<void> {
     g.dispatcher.send({
       from: 'driver',
-      data: { driverId: this.driverId, location: this.location },
+      data: {
+        driverId: this.driverId,
+        name: this.name,
+        location: this.location,
+      },
     });
 
     this.updateDB();

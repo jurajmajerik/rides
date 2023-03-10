@@ -4,11 +4,13 @@ import { getStraightLineDistance } from './methods.js';
 
 interface CustomerData {
   customerId: string;
+  name: string;
   location: CoordPair;
 }
 
 interface DriverData {
   driverId: string;
+  name: string;
   location: CoordPair;
 }
 
@@ -17,16 +19,20 @@ interface Message {
   data: CustomerData | DriverData;
 }
 
-const customerQueue: { customerId: string; location: CoordPair }[] = [];
-const drivers: { driverId: string; location: CoordPair }[] = [];
+const customerQueue: {
+  customerId: string;
+  name: string;
+  location: CoordPair;
+}[] = [];
+const drivers: { driverId: string; name: string; location: CoordPair }[] = [];
 
 process.on('message', ({ from, data }: Message) => {
   if (from === 'customer') {
-    const { customerId, location } = data as CustomerData;
-    customerQueue.push({ customerId, location });
+    const { customerId, name, location } = data as CustomerData;
+    customerQueue.push({ customerId, name, location });
   } else if (from === 'driver') {
-    const { driverId, location } = data as DriverData;
-    drivers.push({ driverId, location });
+    const { driverId, name, location } = data as DriverData;
+    drivers.push({ driverId, name, location });
   }
 });
 
@@ -36,7 +42,7 @@ const main = async () => {
   while (true) {
     await wait(500);
     if (customerQueue.length && drivers.length) {
-      const { customerId, location } = customerQueue.shift();
+      const { customerId, location, name } = customerQueue.shift();
 
       drivers.sort((driverA, driverB) => {
         return (
@@ -47,6 +53,16 @@ const main = async () => {
 
       const matchedDriver = drivers.pop();
       const { driverId } = matchedDriver;
+
+      console.log(
+        `Matched ${
+          matchedDriver.name
+        } <> ${name} dist:${getStraightLineDistance(
+          location,
+          matchedDriver.location
+        )}`
+      );
+
       process.send({ customerId, driverId });
     }
 

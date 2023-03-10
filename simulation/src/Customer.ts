@@ -99,7 +99,11 @@ export default class Customer {
 
         g.dispatcher.send({
           from: 'customer',
-          data: { customerId: this.customerId, location: this.location },
+          data: {
+            customerId: this.customerId,
+            name: this.name,
+            location: this.location,
+          },
         });
       }
 

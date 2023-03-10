@@ -43,6 +43,7 @@ const main = async () => {
     'message',
     ({ customerId, driverId }: { customerId: string; driverId: string }) => {
       customerInstances[customerId].handleDispatcherResult(driverId);
+      driverInstances[driverId].handleDispatcherResult(customerId);
     }
   );
 };

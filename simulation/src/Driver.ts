@@ -11,6 +11,7 @@ export default class Driver {
   private driverId: string;
   private name: string;
   location: CoordPair | null = null;
+  private customerId: string | null = null;
 
   constructor({ driverId, name }: { driverId: string; name: string }) {
     this.driverId = driverId;
@@ -56,5 +57,10 @@ export default class Driver {
     while (true) {
       await wait(refreshInterval);
     }
+  }
+
+  public handleDispatcherResult(customerId: string): void {
+    this.customerId = customerId;
+    this.updateDB();
   }
 }

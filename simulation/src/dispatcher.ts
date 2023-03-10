@@ -57,10 +57,10 @@ const main = async () => {
       console.log(
         `Matched ${
           matchedDriver.name
-        } <> ${name} dist:${getStraightLineDistance(
+        } <> ${name} | distance: ${getStraightLineDistance(
           location,
           matchedDriver.location
-        )}`
+        ).toFixed(0)}`
       );
 
       process.send({ customerId, driverId });

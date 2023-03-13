@@ -4,12 +4,14 @@ CREATE TABLE customers (
   name VARCHAR(255) UNIQUE NOT NULL,
   active BOOLEAN,
   location VARCHAR(5) NOT NULL,
-  destination VARCHAR(5) NOT NULL
+  destination VARCHAR(5) NOT NULL,
+  driver_id uuid UNIQUE
 );
 
 CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   driver_id uuid UNIQUE,
   location VARCHAR(5) NOT NULL,
-  path TEXT
+  path TEXT,
+  customer_id uuid UNIQUE
 );

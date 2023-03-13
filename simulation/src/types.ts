@@ -3,3 +3,4 @@ export type Obstacles = Obstacle[];
 
 export type Graph = (0 | 1)[][];
 export type CoordPair = [number, number];
+export type Path = CoordPair[];

@@ -2,16 +2,20 @@ import g from './global.js';
 import { wait, getRandomInt } from '../../shared/utils.js';
 import { getRoadNodes } from './methods.js';
 import config from '../../shared/config.js';
-import { CoordPair } from './types.js';
+import { CoordPair, Path } from './types.js';
 
 const { refreshInterval } = config;
 const roadNodes = getRoadNodes();
 
 export default class Driver {
+  private busy = false;
+
   private driverId: string;
   private name: string;
-  location: CoordPair | null = null;
+  private location: CoordPair | null = null;
   private customerId: string | null = null;
+  private customerLocation: CoordPair | null = null;
+  private path: Path | null = null;
 
   constructor({ driverId, name }: { driverId: string; name: string }) {
     this.driverId = driverId;
@@ -22,22 +26,22 @@ export default class Driver {
   }
 
   private async updateDB(): Promise<void> {
-    const dummyPath =
-      this.location &&
-      `[[${this.location[0]}, ${this.location[1]}], [${this.location[0] + 1}, ${
-        this.location[1]
-      }]]`;
+    console.log(this.path);
 
     return g.db.query(
       `
-      INSERT INTO drivers (driver_id, location, path)
+      INSERT INTO drivers (driver_id, location, path, customer_id)
       VALUES (
         '${this.driverId}',
         '${this.location[0]}:${this.location[1]}',
-        '${dummyPath}'
+        ${this.path ? `'${this.path}'` : null},
+        ${this.customerId ? `'${this.customerId}'` : null}
       )
       ON CONFLICT (driver_id)
-      DO UPDATE SET location = EXCLUDED.location, path = EXCLUDED.path;
+      DO UPDATE SET
+      location = EXCLUDED.location,
+      path = EXCLUDED.path,
+      customer_id = EXCLUDED.customer_id
       `
     );
   }
@@ -56,11 +60,33 @@ export default class Driver {
 
     while (true) {
       await wait(refreshInterval);
+
+      if (!this.busy) {
+        // Request path if not already requested
+        if (this.customerId && this.customerLocation && !this.path) {
+          this.busy = true;
+          g.routePlanner.send({
+            driverId: this.driverId,
+            startingPosition: this.location,
+            destination: this.customerLocation,
+          });
+        }
+      }
     }
   }
 
-  public handleDispatcherResult(customerId: string): void {
+  public handleDispatcherResult(
+    customerId: string,
+    customerLocation: CoordPair
+  ): void {
     this.customerId = customerId;
+    this.customerLocation = customerLocation;
+    this.updateDB();
+  }
+
+  public handleRoutePlannerResult(path: Path): void {
+    this.busy = false;
+    this.path = path;
     this.updateDB();
   }
 }

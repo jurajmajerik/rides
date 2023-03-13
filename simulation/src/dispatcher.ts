@@ -63,7 +63,7 @@ const main = async () => {
         ).toFixed(0)}`
       );
 
-      process.send({ customerId, driverId });
+      process.send({ customerId, driverId, location });
     }
 
     if (customerQueue.length) continue;

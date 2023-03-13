@@ -14,17 +14,19 @@
     },
     "watchPathIgnorePatterns": [
       "node_modules",
-      "src"
+      "dist"
     ]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/plugin-transform-typescript": "^7.21.0",
     "md5": "^2.3.0",
     "pg": "^8.9.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.21.0",
     "@types/jest": "^29.4.0",
     "@types/node": "^18.14.5",
     "@typescript-eslint/eslint-plugin": "^5.54.0",

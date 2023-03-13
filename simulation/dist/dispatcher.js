@@ -1,22 +1,31 @@
 import { wait } from '../../shared/utils.js';
+import { getStraightLineDistance } from './methods.js';
 const customerQueue = [];
 const drivers = [];
 process.on('message', ({ from, data }) => {
     if (from === 'customer') {
-        const { customerId, location } = data;
-        customerQueue.push({ customerId, location });
+        const { customerId, name, location } = data;
+        customerQueue.push({ customerId, name, location });
     }
     else if (from === 'driver') {
-        const { driverId, location } = data;
-        drivers.push({ driverId, location });
+        const { driverId, name, location } = data;
+        drivers.push({ driverId, name, location });
     }
-    console.log(customerQueue, drivers);
 });
 const main = async () => {
+    await wait(5000);
     while (true) {
-        if (customerQueue.length) {
-            const { customerId, location } = customerQueue[0];
-            const [x, y] = location;
+        await wait(500);
+        if (customerQueue.length && drivers.length) {
+            const { customerId, location, name } = customerQueue.shift();
+            drivers.sort((driverA, driverB) => {
+                return (getStraightLineDistance(driverB.location, location) -
+                    getStraightLineDistance(driverA.location, location));
+            });
+            const matchedDriver = drivers.pop();
+            const { driverId } = matchedDriver;
+            console.log(`Matched ${matchedDriver.name} <> ${name} | distance: ${getStraightLineDistance(location, matchedDriver.location).toFixed(0)}`);
+            process.send({ customerId, driverId });
         }
         if (customerQueue.length)
             continue;

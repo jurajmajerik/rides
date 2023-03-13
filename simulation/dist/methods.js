@@ -54,7 +54,7 @@ export const getGraph = () => {
 export const getDestinationRange = (coord) => coord < gridCount / 2
     ? [gridCount / 2 + Math.floor(coord / 2), gridCount]
     : [0, gridCount / 2 - Math.floor((gridCount - coord) / 2)];
-export const getClosestRoadNode = (x, y, graph) => {
+export const getClosestRoadNode = (x, y, graph = getGraph()) => {
     const isValid = (y, x) => y > 0 && y < graph.length - 1 && x > 0 && x < graph[y].length - 1;
     if (isValid(y, x) && graph[y][x] === 1)
         return [x, y];
@@ -74,8 +74,9 @@ export const getClosestRoadNode = (x, y, graph) => {
                 const nextY = y + dy;
                 const nextX = x + dx;
                 if (isValid(nextY, nextX) && !seen.has(`${nextY}:${nextX}`)) {
-                    if (graph[nextY][nextX] === 1)
+                    if (graph[nextY][nextX] === 1) {
                         return [nextX, nextY];
+                    }
                     seen.add(`${nextY}:${nextX}`);
                     nextQueue.push([nextY, nextX]);
                 }
@@ -85,18 +86,56 @@ export const getClosestRoadNode = (x, y, graph) => {
     }
 };
 export const generateDestination = (coordPair) => {
-    const graph = getGraph();
     const [startX, startY] = coordPair;
     const rangeX = getDestinationRange(startX);
     const rangeY = getDestinationRange(startY);
     const destX = getRandomInt(rangeX[0], rangeX[1]);
     const destY = getRandomInt(rangeY[0], rangeY[1]);
-    let destination = getClosestRoadNode(destX, destY, graph);
+    let destination = getClosestRoadNode(destX, destY);
     return destination;
 };
-const getDistance = (coordsA, coordsB) => {
+export const getStraightLineDistance = (coordsA, coordsB) => {
     const [xA, yA] = coordsA;
     const [xB, yB] = coordsB;
-    return Math.pow(xB - xA, 2) + Math.pow(yB - yA, 2);
+    return Math.sqrt(Math.pow(xB - xA, 2) + Math.pow(yB - yA, 2));
+};
+export const getShortestPath = (startingPosition, destination, graph = getGraph()) => {
+    const isValid = (y, x) => y > 0 &&
+        y < graph.length - 1 &&
+        x > 0 &&
+        x < graph[y].length - 1 &&
+        graph[y][x] === 1;
+    const directions = [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+    ];
+    const [y, x] = startingPosition;
+    let queue = [[[y, x], [[y, x]]]];
+    const seen = new Set([`${y}:${x}`]);
+    while (queue.length) {
+        const nextQueue = [];
+        for (let i = 0; i < queue.length; i++) {
+            const [coordPair, currPath] = queue[i];
+            const [currY, currX] = coordPair;
+            if (currX === destination[0] && currY === destination[1]) {
+                return currPath;
+            }
+            for (let j = 0; j < directions.length; j++) {
+                const [dx, dy] = directions[j];
+                const nextY = currY + dy;
+                const nextX = currX + dx;
+                if (isValid(nextY, nextX) && !seen.has(`${nextY}:${nextX}`)) {
+                    seen.add(`${nextY}:${nextX}`);
+                    nextQueue.push([
+                        [nextY, nextX],
+                        [...currPath, [nextX, nextY]],
+                    ]);
+                }
+            }
+        }
+        queue = nextQueue;
+    }
 };
 //# sourceMappingURL=methods.js.map

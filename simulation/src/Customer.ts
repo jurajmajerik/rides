@@ -3,16 +3,18 @@ import { wait, getRandomInt, decide } from '../../shared/utils.js';
 import { CoordPair } from './types.js';
 import { getRoadNodes } from './methods.js';
 import config from '../../shared/config.js';
+
 const { maxActiveCustomers, refreshInterval } = config;
 const roadNodes = getRoadNodes();
 
 export default class Customer {
+  private busy = false;
+
   private customerId: string;
   private name: string;
   private active = false;
   private location: CoordPair | null = null;
   private destination: CoordPair | null = null;
-  private driverRequested = false;
   private driverId: string | null = null;
 
   constructor({ customerId, name }: { customerId: string; name: string }) {
@@ -24,28 +26,30 @@ export default class Customer {
   }
 
   private isNotMatched(): boolean {
-    return (
-      this.active && this.destination && !this.driverId && !this.driverRequested
-    );
+    return this.active && this.destination && !this.driverId;
   }
 
   private async updateDB(): Promise<void> {
     return g.db.query(
       `
-      INSERT INTO customers (customer_id, name, active, location, destination)
+      INSERT INTO customers (customer_id, name, active, location, destination, driver_id)
       VALUES (
         '${this.customerId}',
         '${this.name}',
         ${this.active},
         '${this.location && `${this.location[0]}:${this.location[1]}`}',
-        '${this.destination && `${this.destination[0]}:${this.destination[1]}`}'
+        '${
+          this.destination && `${this.destination[0]}:${this.destination[1]}`
+        }',
+        ${this.driverId ? `'${this.driverId}'` : null}
       )
       ON CONFLICT (name)
       DO UPDATE SET 
       name = EXCLUDED.name,
       active = EXCLUDED.active,
       location = EXCLUDED.location,
-      destination = EXCLUDED.destination
+      destination = EXCLUDED.destination,
+      driver_id = EXCLUDED.driver_id
       `
     );
   }
@@ -88,23 +92,24 @@ export default class Customer {
           this.active = false;
           this.location = null;
           this.destination = null;
-          this.driverRequested = false;
           this.updateDB();
         }
       }
 
-      // Match with a driver
-      if (this.isNotMatched()) {
-        this.driverRequested = true;
+      if (!this.busy) {
+        // Match with a driver
+        if (this.isNotMatched()) {
+          this.busy = true;
 
-        g.dispatcher.send({
-          from: 'customer',
-          data: {
-            customerId: this.customerId,
-            name: this.name,
-            location: this.location,
-          },
-        });
+          g.dispatcher.send({
+            from: 'customer',
+            data: {
+              customerId: this.customerId,
+              name: this.name,
+              location: this.location,
+            },
+          });
+        }
       }
 
       await wait(refreshInterval);
@@ -118,6 +123,7 @@ export default class Customer {
 
   public handleDispatcherResult(driverId: string): void {
     this.driverId = driverId;
+    this.busy = false;
     this.updateDB();
   }
 }

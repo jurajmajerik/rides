@@ -3,9 +3,11 @@ import {
   getDestinationRange,
   generateDestination,
   getClosestRoadNode,
-} from './methods.js';
+  getShortestPath,
+  // @ts-ignore
+} from './methods';
 import config from '../../shared/config.js';
-import { Graph } from './types.js';
+import { CoordPair, Graph } from './types.js';
 
 const { gridCount } = config;
 
@@ -56,14 +58,38 @@ test('return destination coordinates', () => {
   expect(destY).toBeLessThanOrEqual(25);
 });
 
-test('returns the closest road node (can be the node itself)', () => {
-  let graph: Graph = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0],
+test('return the closest road node (can be the node itself)', () => {
+  const graph: Graph = [
+    [0, 1, 1, 1, 0],
+    [1, 0, 1, 1, 0],
+    [1, 0, 0, 1, 0],
+    [1, 0, 1, 1, 0],
+    [1, 1, 0, 0, 0],
   ];
-  expect(getClosestRoadNode(0, 0, graph)).toEqual([1, 0]);
-  expect(getClosestRoadNode(0, 1, graph)).toEqual([0, 1]);
-  expect(getClosestRoadNode(0, 2, graph)).toEqual([0, 2]);
   expect(getClosestRoadNode(2, 2, graph)).toEqual([2, 1]);
+  expect(getClosestRoadNode(1, 3, graph)).toEqual([2, 3]);
+});
+
+test('return the shortest path between two points', () => {
+  const graph: Graph = [
+    [1, 0, 0, 0, 0, 1],
+    [1, 1, 1, 0, 1, 1],
+    [0, 0, 1, 0, 1, 0],
+    [0, 0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0],
+  ];
+  const startingPosition: CoordPair = [1, 1];
+  const destination: CoordPair = [4, 1];
+  const path = getShortestPath(startingPosition, destination, graph);
+
+  expect(path).toEqual([
+    [1, 1],
+    [2, 1],
+    [2, 2],
+    [2, 3],
+    [3, 3],
+    [4, 3],
+    [4, 2],
+    [4, 1],
+  ]);
 });

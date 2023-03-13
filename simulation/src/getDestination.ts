@@ -1,9 +1,10 @@
 import { wait } from '../../shared/utils.js';
 import { generateDestination } from './methods.js';
+import { CoordPair } from './types.js';
 
 interface Message {
   customerId: string;
-  location: [number, number];
+  location: CoordPair;
 }
 
 const queue: Message[] = [];

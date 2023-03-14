@@ -34,7 +34,7 @@ export default class Driver {
       VALUES (
         '${this.driverId}',
         '${this.location[0]}:${this.location[1]}',
-        ${this.path ? `'${this.path}'` : null},
+        ${this.path ? `'${JSON.stringify(this.path)}'` : null},
         ${this.customerId ? `'${this.customerId}'` : null}
       )
       ON CONFLICT (driver_id)

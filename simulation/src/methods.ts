@@ -1,7 +1,7 @@
 import obstacles from '../../shared/obstacles.js';
 import { getRandomInt } from '../../shared/utils.js';
 import config from '../../shared/config.js';
-import { CoordPair, Graph, Obstacles, Path } from './types.js';
+import { Coord, CoordPair, Graph, Obstacles, Path } from './types.js';
 
 const { gridCount } = config;
 
@@ -156,32 +156,28 @@ export const getShortestPath = (
     [0, -1],
   ];
 
-  const [y, x]: CoordPair = startingPosition;
-  let queue: [CoordPair, CoordPair[]][] = [[[y, x], [[y, x]]]];
-  const seen = new Set([`${y}:${x}`]);
+  const [col, row]: CoordPair = startingPosition;
+  let queue: [Coord, Coord, CoordPair[]][] = [[row, col, [startingPosition]]];
+  const seen = new Set([`${row}:${col}`]);
 
   while (queue.length) {
     const nextQueue = [];
     for (let i = 0; i < queue.length; i++) {
-      const [coordPair, currPath] = queue[i];
-      const [currY, currX] = coordPair;
+      const [row, col, currPath] = queue[i];
 
-      if (currX === destination[0] && currY === destination[1]) {
+      if (row === destination[1] && col === destination[0]) {
         return currPath;
       }
 
       for (let j = 0; j < directions.length; j++) {
         const [dx, dy]: [number, number] = directions[j];
 
-        const nextY: number = currY + dy;
-        const nextX: number = currX + dx;
+        const nextRow = row + dy;
+        const nextCol = col + dx;
 
-        if (isValid(nextY, nextX) && !seen.has(`${nextY}:${nextX}`)) {
-          seen.add(`${nextY}:${nextX}`);
-          nextQueue.push([
-            [nextY, nextX],
-            [...currPath, [nextX, nextY]],
-          ]);
+        if (isValid(nextRow, nextCol) && !seen.has(`${nextRow}:${nextCol}`)) {
+          seen.add(`${nextRow}:${nextCol}`);
+          nextQueue.push([nextRow, nextCol, [...currPath, [nextCol, nextRow]]]);
         }
       }
     }

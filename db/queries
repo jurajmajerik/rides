@@ -13,5 +13,6 @@ CREATE TABLE drivers (
   driver_id uuid UNIQUE,
   location VARCHAR(5) NOT NULL,
   path TEXT,
+  path_index INTEGER,
   customer_id uuid UNIQUE
 );

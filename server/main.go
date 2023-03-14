@@ -13,6 +13,7 @@ type Driver struct {
 	DriverId string `json:"driverId"`
 	Location string `json:"location"`
 	Path     string `json:"path"`
+	PathIndex int `json:"pathIndex"`
 	CustomerId string `json:"customerId"`
 }
 
@@ -27,7 +28,17 @@ type Customer struct {
 }
 
 func getDrivers(w http.ResponseWriter, req *http.Request) {
-	rows, err := db.Connection.Query("SELECT id, driver_id, location, path, customer_id FROM drivers")
+	rows, err := db.Connection.Query(`
+		SELECT
+			id,
+			driver_id,
+			location,
+			path,
+			path_index,
+			customer_id 
+		FROM drivers
+		`,
+	)
 	if err != nil {
 		http.Error(w, "Failed to get drivers: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -38,7 +49,14 @@ func getDrivers(w http.ResponseWriter, req *http.Request) {
 
 	for rows.Next() {
 		var driver Driver
-		rows.Scan(&driver.DriverId, &driver.Id, &driver.Location, &driver.Path, &driver.CustomerId)
+		rows.Scan(
+			&driver.Id,
+			&driver.DriverId,
+			&driver.Location,
+			&driver.Path,
+			&driver.PathIndex,
+			&driver.CustomerId,
+		)
 		drivers = append(drivers, driver)
 	}
 
@@ -49,8 +67,17 @@ func getDrivers(w http.ResponseWriter, req *http.Request) {
 }
 
 func getCustomers(w http.ResponseWriter, req *http.Request) {
-	rows, err := db.Connection.Query(
-		"SELECT id, customer_id, name, active, location, destination, driver_id FROM customers where active = true",
+	rows, err := db.Connection.Query(`
+		SELECT 
+			id, 
+			customer_id, 
+			name, 
+			active, 
+			location, 
+			destination, 
+			driver_id 
+		FROM customers where active = true
+		`,
 	)
 	if err != nil {
 		http.Error(w, "Failed to get customers: "+err.Error(), http.StatusInternalServerError)

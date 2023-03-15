@@ -102,7 +102,7 @@ const GeoMap = () => {
     return <Car key={id} actual={actual} path={path} />;
   });
 
-  const mapElems = cars.map(({ path, pathIndex }) => {
+  const pathElems = cars.map(({ path, pathIndex }) => {
     return path.slice(pathIndex).map((coordPair) => {
       const [x, y] = coordPair;
       return (
@@ -115,7 +115,6 @@ const GeoMap = () => {
           cy={y * squareSize + squareSize / 2}
           fill={'gray'}
           stroke={'gray'}
-          // onClick={() => console.log(`${x}:${y}`)}
         />
       );
     });
@@ -153,7 +152,7 @@ const GeoMap = () => {
           viewBox={`0 0 ${gridSize} ${gridSize}`}
         >
           {obstacleElems}
-          {mapElems}
+          {pathElems}
           {carElems}
           {customerElems}
           {destElems}

@@ -72,20 +72,6 @@ export default class Driver {
             destination: this.customerLocation,
           });
         }
-
-        // Move to next location on the path
-        if (
-          this.path &&
-          !(
-            this.location[0] === this.path[this.path.length - 1][0] &&
-            this.location[1] === this.path[this.path.length - 1][1]
-          )
-        ) {
-          this.pathIndex++;
-          this.location = this.path[this.pathIndex];
-
-          this.updateDB();
-        }
       }
     }
   }

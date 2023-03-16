@@ -8,9 +8,12 @@ CREATE TABLE customers (
   driver_id uuid UNIQUE
 );
 
+CREATE TYPE status_enum AS ENUM ('idle', 'pickup', 'enroute');
 CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   driver_id uuid UNIQUE,
+  name VARCHAR(255) UNIQUE NOT NULL,
+  status status_enum NOT NULL,
   location VARCHAR(5) NOT NULL,
   path TEXT,
   path_index INTEGER,

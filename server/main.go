@@ -11,6 +11,8 @@ import (
 type Driver struct {
 	Id       string `json:"id"`
 	DriverId string `json:"driverId"`
+	Name        string `json:"name"`
+	Status 		  string `json:"status"`
 	Location string `json:"location"`
 	Path     string `json:"path"`
 	PathIndex int `json:"pathIndex"`
@@ -32,6 +34,8 @@ func getDrivers(w http.ResponseWriter, req *http.Request) {
 		SELECT
 			id,
 			driver_id,
+			name, 
+			status, 
 			location,
 			path,
 			path_index,
@@ -52,6 +56,8 @@ func getDrivers(w http.ResponseWriter, req *http.Request) {
 		rows.Scan(
 			&driver.Id,
 			&driver.DriverId,
+			&driver.Name,
+			&driver.Status,
 			&driver.Location,
 			&driver.Path,
 			&driver.PathIndex,

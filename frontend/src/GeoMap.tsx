@@ -43,7 +43,8 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
     const cars = [];
     for (const driver of drivers) {
       const { driverId, pathIndex, location } = driver;
-      const path = JSON.parse(driver.path) as [number, number][];
+      let path = [];
+      if (driver.path) path = JSON.parse(driver.path) as [number, number][];
       const [x, y] = location.split(':');
       cars.push({
         id: driverId,

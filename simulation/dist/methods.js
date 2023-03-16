@@ -111,27 +111,23 @@ export const getShortestPath = (startingPosition, destination, graph = getGraph(
         [0, 1],
         [0, -1],
     ];
-    const [y, x] = startingPosition;
-    let queue = [[[y, x], [[y, x]]]];
-    const seen = new Set([`${y}:${x}`]);
+    const [col, row] = startingPosition;
+    let queue = [[row, col, [startingPosition]]];
+    const seen = new Set([`${row}:${col}`]);
     while (queue.length) {
         const nextQueue = [];
         for (let i = 0; i < queue.length; i++) {
-            const [coordPair, currPath] = queue[i];
-            const [currY, currX] = coordPair;
-            if (currX === destination[0] && currY === destination[1]) {
+            const [row, col, currPath] = queue[i];
+            if (row === destination[1] && col === destination[0]) {
                 return currPath;
             }
             for (let j = 0; j < directions.length; j++) {
                 const [dx, dy] = directions[j];
-                const nextY = currY + dy;
-                const nextX = currX + dx;
-                if (isValid(nextY, nextX) && !seen.has(`${nextY}:${nextX}`)) {
-                    seen.add(`${nextY}:${nextX}`);
-                    nextQueue.push([
-                        [nextY, nextX],
-                        [...currPath, [nextX, nextY]],
-                    ]);
+                const nextRow = row + dy;
+                const nextCol = col + dx;
+                if (isValid(nextRow, nextCol) && !seen.has(`${nextRow}:${nextCol}`)) {
+                    seen.add(`${nextRow}:${nextCol}`);
+                    nextQueue.push([nextRow, nextCol, [...currPath, [nextCol, nextRow]]]);
                 }
             }
         }

@@ -25,7 +25,7 @@ const main = async () => {
             const matchedDriver = drivers.pop();
             const { driverId } = matchedDriver;
             console.log(`Matched ${matchedDriver.name} <> ${name} | distance: ${getStraightLineDistance(location, matchedDriver.location).toFixed(0)}`);
-            process.send({ customerId, driverId });
+            process.send({ customerId, driverId, location });
         }
         if (customerQueue.length)
             continue;

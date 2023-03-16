@@ -10,16 +10,18 @@ const roadNodes = getRoadNodes();
 export default class Customer {
   private busy = false;
 
-  private customerId: string;
-  private name: string;
-  private active = false;
-  private location: CoordPair | null = null;
-  private destination: CoordPair | null = null;
+  public customerId: string;
+  public name: string;
+  public active = false;
+  public location: CoordPair | null = null;
+  public destination: CoordPair | null = null;
   private driverId: string | null = null;
 
   constructor({ customerId, name }: { customerId: string; name: string }) {
     this.customerId = customerId;
     this.name = name;
+
+    // this.deactivate = this.deactivate.bind(this);
     this.handleDestinationResult = this.handleDestinationResult.bind(this);
 
     this.simulate();
@@ -54,6 +56,16 @@ export default class Customer {
     );
   }
 
+  public deactivate(): void {
+    g.activeCustomers.delete(this.customerId);
+
+    this.active = false;
+    this.location = null;
+    this.destination = null;
+    this.driverId = null;
+    this.updateDB();
+  }
+
   private async simulate(): Promise<void> {
     while (true) {
       // Active and waiting for the destination
@@ -86,7 +98,6 @@ export default class Customer {
             location,
           });
         } else {
-          // Just became inactive -> clear state
           g.activeCustomers.delete(this.customerId);
 
           this.active = false;
@@ -100,7 +111,6 @@ export default class Customer {
         // Match with a driver
         if (this.isNotMatched()) {
           this.busy = true;
-
           g.dispatcher.send({
             from: 'customer',
             data: {

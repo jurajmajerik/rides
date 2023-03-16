@@ -11,8 +11,16 @@ export default class Customer {
         this.location = null;
         this.destination = null;
         this.driverId = null;
+        this.deactivate = () => {
+            g.activeCustomers.delete(this.customerId);
+            this.active = false;
+            this.location = null;
+            this.destination = null;
+            this.updateDB();
+        };
         this.customerId = customerId;
         this.name = name;
+        // this.deactivate = this.deactivate.bind(this);
         this.handleDestinationResult = this.handleDestinationResult.bind(this);
         this.simulate();
     }
@@ -66,7 +74,6 @@ export default class Customer {
                     });
                 }
                 else {
-                    // Just became inactive -> clear state
                     g.activeCustomers.delete(this.customerId);
                     this.active = false;
                     this.location = null;
@@ -78,13 +85,10 @@ export default class Customer {
                 // Match with a driver
                 if (this.isNotMatched()) {
                     this.busy = true;
+                    console.log('e', this);
                     g.dispatcher.send({
                         from: 'customer',
-                        data: {
-                            customerId: this.customerId,
-                            name: this.name,
-                            location: this.location,
-                        },
+                        entity: this,
                     });
                 }
             }

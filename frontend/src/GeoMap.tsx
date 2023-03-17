@@ -42,12 +42,13 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
 
     const cars = [];
     for (const driver of drivers) {
-      const { driverId, pathIndex, location } = driver;
+      const { driverId, status, pathIndex, location } = driver;
       let path = [];
       if (driver.path) path = JSON.parse(driver.path) as [number, number][];
       const [x, y] = location.split(':');
       cars.push({
         id: driverId,
+        status,
         actual: [parseInt(x), parseInt(y)],
         path,
         pathIndex,
@@ -73,7 +74,20 @@ const GeoMap = () => {
 
   const [cars, setCars] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [paths, setPaths] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  const handleSetPaths = ({ driverId, path, animationPathIndex }) => {
+    const newPaths = [...paths];
+    const newPathItem = { driverId, path, animationPathIndex };
+    const indexToUpdate = paths.findIndex((item) => item.driverId === driverId);
+    if (indexToUpdate === -1) {
+      newPaths.push(newPathItem);
+    } else {
+      newPaths.splice(indexToUpdate, 1, newPathItem);
+    }
+    setPaths(newPaths);
+  };
 
   useEffect(() => {
     previousUpdateAtRef.current = Date.now();
@@ -99,16 +113,24 @@ const GeoMap = () => {
     );
   }
 
-  const carElems = cars.map(({ id, actual, path }) => {
-    return <Car key={id} actual={actual} path={path} />;
+  const carElems = cars.map(({ driverId, actual, path }) => {
+    return (
+      <Car
+        key={driverId}
+        driverId={driverId}
+        actual={actual}
+        path={path}
+        handleSetPaths={handleSetPaths}
+      />
+    );
   });
 
-  const pathElems = cars.map(({ path, pathIndex }) => {
-    return path.slice(pathIndex).map((coordPair) => {
+  const pathElems = paths.map(({ driverId, animationPathIndex, path }) => {
+    return path.slice(animationPathIndex).map((coordPair) => {
       const [x, y] = coordPair;
       return (
         <circle
-          key={`${x}:${y}`}
+          key={`${driverId}:${x}:${y}`}
           width={squareSize / 4}
           height={squareSize / 4}
           r={squareSize / 6}
@@ -121,9 +143,28 @@ const GeoMap = () => {
     });
   });
 
-  const customerElems = customers.map(({ location }) => {
+  const seenCustomers = new Set();
+  const customerElems = cars
+    .filter(({ status }) => status === 'pickup')
+    .map(({ path }) => {
+      // TEMP FIX FOR NO PATH
+      if (!path || path.length === 0) return null;
+
+      const [x, y] = path[path.length - 1];
+      seenCustomers.add(`${x}:${y}`);
+      return (
+        <CustomerIcon
+          key={`${x}:${y}`}
+          x={x * squareSize - squareSize / 2}
+          y={y * squareSize - squareSize / 2}
+        />
+      );
+    });
+
+  customers.forEach(({ location }) => {
     const [x, y] = location.split(':');
-    return (
+    if (seenCustomers.has(`${x}:${y}`)) return;
+    customerElems.push(
       <CustomerIcon
         key={`${x}:${y}`}
         x={x * squareSize - squareSize / 2}
@@ -132,16 +173,20 @@ const GeoMap = () => {
     );
   });
 
-  const destElems = customers.map(({ destination }) => {
-    const [x, y] = destination.split(':');
-    return (
-      <DestIcon
-        key={`${x}:${y}`}
-        x={x * squareSize - squareSize / +5}
-        y={y * squareSize - squareSize / 2 - 8}
-      />
-    );
-  });
+  const destElems = cars
+    .filter(({ status }) => status === 'enroute')
+    .map(({ path }) => {
+      // TEMP FIX FOR NO PATH
+      if (!path || path.length === 0) return null;
+      const [x, y] = path[path.length - 1];
+      return (
+        <DestIcon
+          key={`${x}:${y}`}
+          x={x * squareSize - squareSize / +5}
+          y={y * squareSize - squareSize / 2 - 8}
+        />
+      );
+    });
 
   return (
     <div className="map">

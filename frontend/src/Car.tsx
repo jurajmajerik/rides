@@ -19,8 +19,10 @@ const {
 } = config;
 
 interface Props {
+  driverId: string;
   path: [number, number][];
   actual: [number, number];
+  handleSetPaths: Function;
 }
 
 interface State {
@@ -33,18 +35,22 @@ export default class Car extends React.Component<Props, State> {
   private latestUpdateAt = 0;
   private rotateBusy = false;
   private moveBusy = false;
+  private animationPathIndex = 0;
 
   constructor(props: Props) {
     super(props);
     const { path, actual } = props;
 
-    let pathIndex = path.findIndex(([x, y]) => {
-      return x === actual[0] && y === actual[1];
-    });
-    if (pathIndex === 0) pathIndex = 1;
+    let rotation = 0;
+    if (path.length > 1) {
+      let pathIndex = path.findIndex(([x, y]) => {
+        return x === actual[0] && y === actual[1];
+      });
+      if (pathIndex === 0) pathIndex = 1;
+      rotation = getRotation(path, pathIndex);
+    }
 
-    const rotation: number = getRotation(path, pathIndex);
-
+    // TODO: DONT SET PATH TO STATE
     this.state = {
       position: actual,
       rotation,
@@ -84,6 +90,21 @@ export default class Car extends React.Component<Props, State> {
     this.rotateBusy = false;
   }
 
+  didPathChange(path: [number, number][]) {
+    if (!this.state.path && path.length) return true;
+    return !(
+      this.state.path[this.state.path.length - 1][0] ===
+        path[path.length - 1][0] &&
+      this.state.path[this.state.path.length - 1][1] ===
+        path[path.length - 1][1]
+    );
+  }
+
+  // isFullCoordinate() {
+  //   const [x, y] = this.state.position;
+  //   return x % 1 === 0 && y % 1 === 0;
+  // }
+
   async move(
     actual: [number, number],
     path: [number, number][],
@@ -92,6 +113,16 @@ export default class Car extends React.Component<Props, State> {
     while (this.moveBusy) {
       await wait(100);
       if (receivedAt !== this.latestUpdateAt) return;
+    }
+
+    if (this.didPathChange(path)) {
+      console.log('NEW PATH');
+      this.animationPathIndex = 0;
+      this.props.handleSetPaths({
+        driverId: this.props.driverId,
+        path,
+        animationPathIndex: this.animationPathIndex,
+      });
     }
 
     this.moveBusy = true;
@@ -125,12 +156,33 @@ export default class Car extends React.Component<Props, State> {
       const [nextX, nextY] = section[i];
       while (currX !== nextX) {
         currX = advanceCoord(currX, nextX, increment);
+
+        if (currX % 1 === 0 && this.state.position[1] % 1 === 0) {
+          this.animationPathIndex += 1;
+          this.props.handleSetPaths({
+            driverId: this.props.driverId,
+            path,
+            animationPathIndex: this.animationPathIndex,
+          });
+        }
+
         this.setState({ position: [currX, this.state.position[1]], path });
         await wait(refreshInterval);
       }
 
       while (currY !== nextY) {
         currY = advanceCoord(currY, nextY, increment);
+
+        if (this.state.position[0] % 1 === 0 && currY % 1 === 0) {
+          this.animationPathIndex += 1;
+          console.log(this.animationPathIndex);
+          this.props.handleSetPaths({
+            driverId: this.props.driverId,
+            path,
+            animationPathIndex: this.animationPathIndex,
+          });
+        }
+
         this.setState({ position: [this.state.position[0], currY], path });
         await wait(refreshInterval);
       }
@@ -151,6 +203,7 @@ export default class Car extends React.Component<Props, State> {
     const { position, rotation } = this.state;
 
     const [x, y] = position;
+
     return (
       <CarIcon
         x={parseFloat((x * squareSize - 20).toFixed(2))}

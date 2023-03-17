@@ -33,7 +33,6 @@ export default class Driver {
   }
 
   private async updateDB(): Promise<void> {
-    console.log(this.status);
     return g.db.query(
       `
       INSERT INTO drivers (driver_id, name, status, location, path, path_index, customer_id)
@@ -48,6 +47,8 @@ export default class Driver {
       )
       ON CONFLICT (driver_id)
       DO UPDATE SET
+      name = EXCLUDED.name,
+      status = EXCLUDED.status,
       location = EXCLUDED.location,
       path = EXCLUDED.path,
       path_index = EXCLUDED.path_index,
@@ -105,15 +106,16 @@ export default class Driver {
         } else if (this.path && this.isDestinationReached()) {
           if (this.status === 'pickup') {
             // Customer reached, request route towards customer's destination
+            await wait(3000);
+
             this.busy = true;
             this.status = 'enroute';
             const customerDestination =
               g.customerInstances[this.customerId].destination;
             this.requestPath(customerDestination);
-
-            await wait(3000);
           } else if (this.status === 'enroute') {
             // Customer's destination reached, deactivate customer, reset state
+            await wait(5000);
             g.customerInstances[this.customerId].deactivate();
 
             // Reset state
@@ -124,8 +126,6 @@ export default class Driver {
             this.pathIndex = null;
 
             this.updateDB();
-
-            await wait(3000);
           }
         }
       }

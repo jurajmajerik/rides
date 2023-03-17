@@ -6,7 +6,6 @@ import { wait } from '../../shared/utils';
 import config from '../../shared/config';
 import CustomerIcon from './CustomerIcon';
 import DestIcon from './DestIcon';
-import { type } from 'os';
 
 const { gridSize, squareSize, fetchInterval } = config;
 
@@ -86,7 +85,6 @@ const GeoMap = () => {
       newPaths.push(newPathItem);
     } else {
       newPaths.splice(indexToUpdate, 1, newPathItem);
-      // newPaths[indexToUpdate] = newPathItem;
     }
     setPaths(newPaths);
   };
@@ -110,7 +108,6 @@ const GeoMap = () => {
         y={y * squareSize}
         fill={color}
         stroke={color}
-        // onClick={() => console.log(`${x}:${y}`)}
       />
     );
   }
@@ -147,24 +144,9 @@ const GeoMap = () => {
     </>
   );
 
-  const pathElems = paths.map(({ driverId, animationPathIndex, path }) => {
-    return <Path key={`p-${driverId}`} path={path.slice(animationPathIndex)} />;
-    // return path.slice(animationPathIndex).map((coordPair) => {
-    //   const [x, y] = coordPair;
-    //   return (
-    //     <circle
-    //       key={`${driverId}:${x}:${y}`}
-    //       width={squareSize / 4}
-    //       height={squareSize / 4}
-    //       r={squareSize / 6}
-    //       cx={x * squareSize + squareSize / 2}
-    //       cy={y * squareSize + squareSize / 2}
-    //       fill={'gray'}
-    //       stroke={'gray'}
-    //     />
-    //   );
-    // });
-  });
+  const pathElems = paths.map(({ driverId, animationPathIndex, path }) => (
+    <Path key={`p-${driverId}`} path={path.slice(animationPathIndex)} />
+  ));
 
   const seenCustomers = new Set();
   const customerElems = cars

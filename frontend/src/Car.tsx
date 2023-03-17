@@ -100,11 +100,6 @@ export default class Car extends React.Component<Props, State> {
     );
   }
 
-  // isFullCoordinate() {
-  //   const [x, y] = this.state.position;
-  //   return x % 1 === 0 && y % 1 === 0;
-  // }
-
   async move(
     actual: [number, number],
     path: [number, number][],

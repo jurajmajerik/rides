@@ -6,6 +6,7 @@ import { wait } from '../../shared/utils';
 import config from '../../shared/config';
 import CustomerIcon from './CustomerIcon';
 import DestIcon from './DestIcon';
+import { type } from 'os';
 
 const { gridSize, squareSize, fetchInterval } = config;
 
@@ -47,7 +48,7 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
       if (driver.path) path = JSON.parse(driver.path) as [number, number][];
       const [x, y] = location.split(':');
       cars.push({
-        id: driverId,
+        driverId,
         status,
         actual: [parseInt(x), parseInt(y)],
         path,
@@ -85,6 +86,7 @@ const GeoMap = () => {
       newPaths.push(newPathItem);
     } else {
       newPaths.splice(indexToUpdate, 1, newPathItem);
+      // newPaths[indexToUpdate] = newPathItem;
     }
     setPaths(newPaths);
   };
@@ -101,7 +103,7 @@ const GeoMap = () => {
     const [x, y] = key.split(':');
     obstacleElems.push(
       <rect
-        key={`${x}:${y}`}
+        key={`o-${x}:${y}`}
         width={squareSize}
         height={squareSize}
         x={x * squareSize}
@@ -116,7 +118,7 @@ const GeoMap = () => {
   const carElems = cars.map(({ driverId, actual, path }) => {
     return (
       <Car
-        key={driverId}
+        key={`car-${driverId}`}
         driverId={driverId}
         actual={actual}
         path={path}
@@ -125,22 +127,43 @@ const GeoMap = () => {
     );
   });
 
+  const Path = ({ path }) => (
+    <>
+      {path.map((coordPair) => {
+        const [x, y] = coordPair;
+        return (
+          <circle
+            key={`p-${x}:${y}`}
+            width={squareSize / 4}
+            height={squareSize / 4}
+            r={squareSize / 6}
+            cx={x * squareSize + squareSize / 2}
+            cy={y * squareSize + squareSize / 2}
+            fill={'gray'}
+            stroke={'gray'}
+          />
+        );
+      })}
+    </>
+  );
+
   const pathElems = paths.map(({ driverId, animationPathIndex, path }) => {
-    return path.slice(animationPathIndex).map((coordPair) => {
-      const [x, y] = coordPair;
-      return (
-        <circle
-          key={`${driverId}:${x}:${y}`}
-          width={squareSize / 4}
-          height={squareSize / 4}
-          r={squareSize / 6}
-          cx={x * squareSize + squareSize / 2}
-          cy={y * squareSize + squareSize / 2}
-          fill={'gray'}
-          stroke={'gray'}
-        />
-      );
-    });
+    return <Path key={`p-${driverId}`} path={path.slice(animationPathIndex)} />;
+    // return path.slice(animationPathIndex).map((coordPair) => {
+    //   const [x, y] = coordPair;
+    //   return (
+    //     <circle
+    //       key={`${driverId}:${x}:${y}`}
+    //       width={squareSize / 4}
+    //       height={squareSize / 4}
+    //       r={squareSize / 6}
+    //       cx={x * squareSize + squareSize / 2}
+    //       cy={y * squareSize + squareSize / 2}
+    //       fill={'gray'}
+    //       stroke={'gray'}
+    //     />
+    //   );
+    // });
   });
 
   const seenCustomers = new Set();
@@ -154,7 +177,7 @@ const GeoMap = () => {
       seenCustomers.add(`${x}:${y}`);
       return (
         <CustomerIcon
-          key={`${x}:${y}`}
+          key={`c1-${x}:${y}`}
           x={x * squareSize - squareSize / 2}
           y={y * squareSize - squareSize / 2}
         />
@@ -166,7 +189,7 @@ const GeoMap = () => {
     if (seenCustomers.has(`${x}:${y}`)) return;
     customerElems.push(
       <CustomerIcon
-        key={`${x}:${y}`}
+        key={`c2-${x}:${y}`}
         x={x * squareSize - squareSize / 2}
         y={y * squareSize - squareSize / 2}
       />
@@ -181,7 +204,7 @@ const GeoMap = () => {
       const [x, y] = path[path.length - 1];
       return (
         <DestIcon
-          key={`${x}:${y}`}
+          key={`d-${x}:${y}`}
           x={x * squareSize - squareSize / +5}
           y={y * squareSize - squareSize / 2 - 8}
         />

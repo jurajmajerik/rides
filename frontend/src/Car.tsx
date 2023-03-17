@@ -116,7 +116,6 @@ export default class Car extends React.Component<Props, State> {
     }
 
     if (this.didPathChange(path)) {
-      console.log('NEW PATH');
       this.animationPathIndex = 0;
       this.props.handleSetPaths({
         driverId: this.props.driverId,
@@ -175,7 +174,6 @@ export default class Car extends React.Component<Props, State> {
 
         if (this.state.position[0] % 1 === 0 && currY % 1 === 0) {
           this.animationPathIndex += 1;
-          console.log(this.animationPathIndex);
           this.props.handleSetPaths({
             driverId: this.props.driverId,
             path,

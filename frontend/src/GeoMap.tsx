@@ -112,12 +112,13 @@ const GeoMap = () => {
     );
   }
 
-  const carElems = cars.map(({ driverId, actual, path }) => {
+  const carElems = cars.map(({ driverId, actual, path, pathIndex }) => {
     return (
       <Car
         key={`car-${driverId}`}
         driverId={driverId}
         actual={actual}
+        pathIndex={pathIndex}
         path={path}
         handleSetPaths={handleSetPaths}
       />

@@ -21,6 +21,7 @@ const {
 interface Props {
   driverId: string;
   path: [number, number][];
+  pathIndex: number;
   actual: [number, number];
   handleSetPaths: Function;
 }

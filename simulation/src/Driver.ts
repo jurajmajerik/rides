@@ -75,7 +75,7 @@ export default class Driver {
     });
   }
 
-  requestPath(destination) {
+  requestRoute(destination) {
     g.routePlanner.send({
       driverId: this.driverId,
       startingPosition: this.location,
@@ -95,8 +95,7 @@ export default class Driver {
         } else if (this.customerId && !this.path) {
           // Request path to the customer
           this.busy = true;
-          this.status = 'pickup';
-          this.requestPath(this.customerLocation);
+          this.requestRoute(this.customerLocation);
         } else if (this.path && !this.isDestinationReached()) {
           // Move to next location on the path
           this.pathIndex++;
@@ -109,10 +108,9 @@ export default class Driver {
             await wait(3000);
 
             this.busy = true;
-            this.status = 'enroute';
             const customerDestination =
               g.customerInstances[this.customerId].destination;
-            this.requestPath(customerDestination);
+            this.requestRoute(customerDestination);
           } else if (this.status === 'enroute') {
             // Customer's destination reached, deactivate customer, reset state
             await wait(5000);
@@ -143,6 +141,16 @@ export default class Driver {
   }
 
   public handleRoutePlannerResult(path: Path): void {
+    let newStatus;
+    if (this.status === 'idle') newStatus = 'pickup';
+    else if (this.status === 'pickup') newStatus = 'enroute';
+
+    if (!this.status) {
+      throw `STATUS IS NULL ${this}`;
+    }
+
+    this.status = newStatus;
+
     this.path = path;
     this.pathIndex = 0;
     this.updateDB();

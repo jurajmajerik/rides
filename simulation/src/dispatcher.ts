@@ -39,6 +39,11 @@ process.on('message', ({ from, data }: Message) => {
 const main = async () => {
   await wait(5000);
 
+  setInterval(() => {
+    console.log(`customers`, customerQueue);
+    console.log(`drivers`, drivers);
+  }, 5000);
+
   while (true) {
     await wait(500);
     if (customerQueue.length && drivers.length) {
@@ -50,6 +55,9 @@ const main = async () => {
           getStraightLineDistance(driverA.location, location)
         );
       });
+
+      console.log(`customers`, customerQueue);
+      console.log(`drivers`, drivers);
 
       const matchedDriver = drivers.pop();
       const { driverId } = matchedDriver;

@@ -42,7 +42,7 @@ const main = async () => {
   setInterval(() => {
     console.log(`customers`, customerQueue);
     console.log(`drivers`, drivers);
-  }, 5000);
+  }, 60000);
 
   while (true) {
     await wait(500);
@@ -56,8 +56,8 @@ const main = async () => {
         );
       });
 
-      console.log(`customers`, customerQueue);
-      console.log(`drivers`, drivers);
+      // console.log(`customers`, customerQueue);
+      // console.log(`drivers`, drivers);
 
       const matchedDriver = drivers.pop();
       const { driverId } = matchedDriver;

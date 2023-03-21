@@ -147,11 +147,12 @@ export default class Driver {
 
   public handleRoutePlannerResult(path: Path): void {
     let newStatus;
-    if (this.status === 'idle') newStatus = 'pickup';
-    else if (this.status === 'pickup') newStatus = 'enroute';
-
-    if (!this.status) {
-      throw `STATUS IS NULL ${this}`;
+    if (this.status === 'idle') {
+      newStatus = 'pickup';
+    } else if (this.status === 'pickup') {
+      newStatus = 'enroute';
+    } else {
+      console.error(`ERROR: STATUS ABOUT TO BE UNDEFINED, ${this}`);
     }
 
     this.status = newStatus;

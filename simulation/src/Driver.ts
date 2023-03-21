@@ -111,15 +111,17 @@ export default class Driver {
             this.requestRoute(customerDestination);
           } else if (this.status === 'enroute') {
             // Customer's destination reached, reset state, deactivate customer
+            await wait(3000);
+
+            g.customerInstances[this.customerId].deactivate();
+
             this.status = 'idle';
             this.customerId = null;
             this.path = null;
             this.pathIndex = null;
             this.updateDB();
 
-            g.customerInstances[this.customerId].deactivate();
-
-            await wait(5000);
+            await wait(2000);
           }
         }
       }

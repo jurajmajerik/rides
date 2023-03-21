@@ -21,6 +21,7 @@ export default class Customer {
     this.customerId = customerId;
     this.name = name;
 
+    this.deactivate = this.deactivate.bind(this);
     this.handleDestinationResult = this.handleDestinationResult.bind(this);
 
     this.simulate();
@@ -66,28 +67,26 @@ export default class Customer {
       await wait(200);
 
       if (!this.busy) {
-        // Activate customer
-        if (!this.active && g.activeCustomers.size < maxActiveCustomers) {
-          let newActive = false;
-          newActive = decide(5);
-          if (newActive) {
-            this.active = true;
-            this.updateDB();
+        if (!this.active) {
+          if (g.activeCustomers.size < maxActiveCustomers) {
+            let newActive = false;
+            newActive = decide(5);
+            if (newActive) {
+              this.active = true;
+              this.updateDB();
+            }
           }
         } else if (this.active && !this.location) {
-          // Set location
           const location = roadNodes[getRandomInt(0, roadNodes.length - 1)];
           this.location = location;
           g.activeCustomers.set(this.customerId, location);
         } else if (this.active && !this.destination) {
-          // Request destination
           this.busy = true;
           g.getDestination.send({
             customerId: this.customerId,
             location: this.location,
           });
         } else if (this.active && !this.driverId) {
-          // Request matching
           this.busy = true;
           g.dispatcher.send({
             from: 'customer',

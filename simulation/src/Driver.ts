@@ -33,28 +33,33 @@ export default class Driver {
   }
 
   private async updateDB(): Promise<void> {
-    return g.db.query(
-      `
-      INSERT INTO drivers (driver_id, name, status, location, path, path_index, customer_id)
-      VALUES (
-        '${this.driverId}',
-        '${this.name}',
-        '${this.status}',
-        '${this.location[0]}:${this.location[1]}',
-        ${this.path ? `'${JSON.stringify(this.path)}'` : null},
-        ${this.pathIndex ? `'${this.pathIndex}'` : null},
-        ${this.customerId ? `'${this.customerId}'` : null}
-      )
-      ON CONFLICT (driver_id)
-      DO UPDATE SET
-      name = EXCLUDED.name,
-      status = EXCLUDED.status,
-      location = EXCLUDED.location,
-      path = EXCLUDED.path,
-      path_index = EXCLUDED.path_index,
-      customer_id = EXCLUDED.customer_id
-      `
-    );
+    try {
+      g.db.query(
+        `
+        INSERT INTO drivers (driver_id, name, status, location, path, path_index, customer_id)
+        VALUES (
+          '${this.driverId}',
+          '${this.name}',
+          '${this.status}',
+          '${this.location[0]}:${this.location[1]}',
+          ${this.path ? `'${JSON.stringify(this.path)}'` : null},
+          ${this.pathIndex ? `'${this.pathIndex}'` : null},
+          ${this.customerId ? `'${this.customerId}'` : null}
+        )
+        ON CONFLICT (driver_id)
+        DO UPDATE SET
+        name = EXCLUDED.name,
+        status = EXCLUDED.status,
+        location = EXCLUDED.location,
+        path = EXCLUDED.path,
+        path_index = EXCLUDED.path_index,
+        customer_id = EXCLUDED.customer_id
+        `
+      );
+    } catch (error) {
+      console.log(`HERE!!! ${error}`, this);
+    }
+    return;
   }
 
   isDestinationReached(): boolean {

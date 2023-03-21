@@ -1,11 +1,8 @@
 import g from './global.js';
 import { wait, getRandomInt } from '../../shared/utils.js';
 import { getRoadNodes } from './methods.js';
-import config from '../../shared/config.js';
-import Customer from './Customer.js';
 import { CoordPair, Path } from './types.js';
 
-const { refreshInterval } = config;
 const roadNodes = getRoadNodes();
 
 export default class Driver {
@@ -33,39 +30,35 @@ export default class Driver {
   }
 
   private async updateDB(): Promise<void> {
-    try {
-      g.db.query(
-        `
-        INSERT INTO drivers (driver_id, name, status, location, path, path_index, customer_id)
-        VALUES (
-          '${this.driverId}',
-          '${this.name}',
-          '${this.status}',
-          '${this.location[0]}:${this.location[1]}',
-          ${this.path ? `'${JSON.stringify(this.path)}'` : null},
-          ${this.pathIndex ? `'${this.pathIndex}'` : null},
-          ${this.customerId ? `'${this.customerId}'` : null}
-        )
-        ON CONFLICT (driver_id)
-        DO UPDATE SET
-        name = EXCLUDED.name,
-        status = EXCLUDED.status,
-        location = EXCLUDED.location,
-        path = EXCLUDED.path,
-        path_index = EXCLUDED.path_index,
-        customer_id = EXCLUDED.customer_id
-        `
-      );
-    } catch (error) {
-      console.log(`HERE!!! ${error}`, this);
-    }
-    return;
+    return g.db.query(
+      `
+      INSERT INTO drivers (driver_id, name, status, location, path, path_index, customer_id)
+      VALUES (
+        '${this.driverId}',
+        '${this.name}',
+        '${this.status}',
+        '${this.location[0]}:${this.location[1]}',
+        ${this.path ? `'${JSON.stringify(this.path)}'` : null},
+        ${this.pathIndex ? `'${this.pathIndex}'` : null},
+        ${this.customerId ? `'${this.customerId}'` : null}
+      )
+      ON CONFLICT (driver_id)
+      DO UPDATE SET
+      name = EXCLUDED.name,
+      status = EXCLUDED.status,
+      location = EXCLUDED.location,
+      path = EXCLUDED.path,
+      path_index = EXCLUDED.path_index,
+      customer_id = EXCLUDED.customer_id
+      `
+    );
   }
 
   isDestinationReached(): boolean {
+    const { path, location } = this;
     return (
-      this.location[0] === this.path[this.path.length - 1][0] &&
-      this.location[1] === this.path[this.path.length - 1][1]
+      location[0] === path[path.length - 1][0] &&
+      location[1] === path[path.length - 1][1]
     );
   }
 
@@ -117,18 +110,16 @@ export default class Driver {
               g.customerInstances[this.customerId].destination;
             this.requestRoute(customerDestination);
           } else if (this.status === 'enroute') {
-            // Customer's destination reached, deactivate customer, reset state
-            await wait(5000);
-            g.customerInstances[this.customerId].deactivate();
-
-            // Reset state
-            this.busy = false;
+            // Customer's destination reached, reset state, deactivate customer
             this.status = 'idle';
             this.customerId = null;
             this.path = null;
             this.pathIndex = null;
-
             this.updateDB();
+
+            g.customerInstances[this.customerId].deactivate();
+
+            await wait(5000);
           }
         }
       }
@@ -152,7 +143,11 @@ export default class Driver {
     } else if (this.status === 'pickup') {
       newStatus = 'enroute';
     } else {
-      console.error(`ERROR: STATUS ABOUT TO BE UNDEFINED, ${this}`);
+      console.error(
+        `ERROR: STATUS ABOUT TO BE UNDEFINED (${this.status}), ${JSON.stringify(
+          this
+        )}`
+      );
     }
 
     this.status = newStatus;

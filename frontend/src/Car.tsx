@@ -21,9 +21,7 @@ const {
 interface Props {
   driverId: string;
   path: [number, number][];
-  pathIndex: number;
   actual: [number, number];
-  handleSetPaths: Function;
 }
 
 interface State {
@@ -92,7 +90,8 @@ export default class Car extends React.Component<Props, State> {
   }
 
   didPathChange(path: [number, number][]) {
-    if (!this.state.path && path.length) return true;
+    // Sometimes path is []
+    if (!this.state.path || !path.length) return true;
     return !(
       this.state.path[this.state.path.length - 1][0] ===
         path[path.length - 1][0] &&
@@ -113,11 +112,6 @@ export default class Car extends React.Component<Props, State> {
 
     if (this.didPathChange(path)) {
       this.animationPathIndex = 0;
-      this.props.handleSetPaths({
-        driverId: this.props.driverId,
-        path,
-        animationPathIndex: this.animationPathIndex,
-      });
     }
 
     this.moveBusy = true;
@@ -154,11 +148,6 @@ export default class Car extends React.Component<Props, State> {
 
         if (currX % 1 === 0 && this.state.position[1] % 1 === 0) {
           this.animationPathIndex += 1;
-          this.props.handleSetPaths({
-            driverId: this.props.driverId,
-            path,
-            animationPathIndex: this.animationPathIndex,
-          });
         }
 
         this.setState({ position: [currX, this.state.position[1]], path });
@@ -170,11 +159,6 @@ export default class Car extends React.Component<Props, State> {
 
         if (this.state.position[0] % 1 === 0 && currY % 1 === 0) {
           this.animationPathIndex += 1;
-          this.props.handleSetPaths({
-            driverId: this.props.driverId,
-            path,
-            animationPathIndex: this.animationPathIndex,
-          });
         }
 
         this.setState({ position: [this.state.position[0], currY], path });

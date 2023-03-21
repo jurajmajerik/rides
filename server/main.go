@@ -82,7 +82,7 @@ func getCustomers(w http.ResponseWriter, req *http.Request) {
 			location, 
 			destination, 
 			driver_id 
-		FROM customers where active = true AND driver_id IS NULL
+		FROM customers where active = true AND driver_id IS NULL AND (location IS NOT NULL AND location != 'null') 
 		`,
 	)
 	if err != nil {

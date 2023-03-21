@@ -63,7 +63,16 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
 
 const loadCustomers = async (setCustomers) => {
   while (true) {
-    const customers = await api.get('/customers');
+    let customers = await api.get('/customers');
+    customers = customers.filter((c) => {
+      if (!c.location) console.log('no location', c);
+      return c.location;
+    });
+    customers = customers.map((c) => {
+      const { location } = c;
+      const [x, y] = location.split(':');
+      return { ...c, location: [parseInt(x), parseInt(y)] };
+    });
     setCustomers(customers);
     await wait(fetchInterval);
   }
@@ -74,20 +83,7 @@ const GeoMap = () => {
 
   const [cars, setCars] = useState([]);
   const [customers, setCustomers] = useState([]);
-  const [paths, setPaths] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  const handleSetPaths = ({ driverId, path, animationPathIndex }) => {
-    const newPaths = [...paths];
-    const newPathItem = { driverId, path, animationPathIndex };
-    const indexToUpdate = paths.findIndex((item) => item.driverId === driverId);
-    if (indexToUpdate === -1) {
-      newPaths.push(newPathItem);
-    } else {
-      newPaths.splice(indexToUpdate, 1, newPathItem);
-    }
-    setPaths(newPaths);
-  };
 
   useEffect(() => {
     previousUpdateAtRef.current = Date.now();
@@ -118,36 +114,10 @@ const GeoMap = () => {
         key={`car-${driverId}`}
         driverId={driverId}
         actual={actual}
-        pathIndex={pathIndex}
         path={path}
-        handleSetPaths={handleSetPaths}
       />
     );
   });
-
-  const Path = ({ path }) => (
-    <>
-      {path.map((coordPair) => {
-        const [x, y] = coordPair;
-        return (
-          <circle
-            key={`p-${x}:${y}`}
-            width={squareSize / 4}
-            height={squareSize / 4}
-            r={squareSize / 6}
-            cx={x * squareSize + squareSize / 2}
-            cy={y * squareSize + squareSize / 2}
-            fill={'gray'}
-            stroke={'gray'}
-          />
-        );
-      })}
-    </>
-  );
-
-  const pathElems = paths.map(({ driverId, animationPathIndex, path }) => (
-    <Path key={`p-${driverId}`} path={path.slice(animationPathIndex)} />
-  ));
 
   const seenCustomers = new Set();
   const customerElems = cars
@@ -168,7 +138,7 @@ const GeoMap = () => {
     });
 
   customers.forEach(({ location }) => {
-    const [x, y] = location.split(':');
+    const [x, y] = location;
     if (seenCustomers.has(`${x}:${y}`)) return;
     customerElems.push(
       <CustomerIcon
@@ -204,7 +174,6 @@ const GeoMap = () => {
           viewBox={`0 0 ${gridSize} ${gridSize}`}
         >
           {obstacleElems}
-          {pathElems}
           {carElems}
           {customerElems}
           {destElems}

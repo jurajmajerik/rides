@@ -39,7 +39,7 @@ export default class Driver {
       VALUES (
         '${this.driverId}',
         '${this.name}',
-        ${this.status ? `'${this.status}'` : null},
+        '${this.status}',
         '${this.location[0]}:${this.location[1]}',
         ${this.path ? `'${JSON.stringify(this.path)}'` : null},
         ${this.pathIndex ? `'${this.pathIndex}'` : null},

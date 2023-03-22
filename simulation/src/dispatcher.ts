@@ -29,9 +29,17 @@ const drivers: { driverId: string; name: string; location: CoordPair }[] = [];
 process.on('message', ({ from, data }: Message) => {
   if (from === 'customer') {
     const { customerId, name, location } = data as CustomerData;
+
+    const found = customerQueue.find((c) => c.customerId === customerId);
+    if (found) console.error('DUPLICATE CUSTOMER TO BE ADDED', customerId);
+
     customerQueue.push({ customerId, name, location });
   } else if (from === 'driver') {
     const { driverId, name, location } = data as DriverData;
+
+    const found = drivers.find((d) => d.driverId === driverId);
+    if (found) console.error('DUPLICATE DRIVER TO BE ADDED', driverId);
+
     drivers.push({ driverId, name, location });
   }
 });
@@ -39,10 +47,10 @@ process.on('message', ({ from, data }: Message) => {
 const main = async () => {
   await wait(5000);
 
-  setInterval(() => {
-    console.log(`customers`, customerQueue);
-    console.log(`drivers`, drivers);
-  }, 60000);
+  // setInterval(() => {
+  //   console.log(`customers`, customerQueue);
+  //   console.log(`drivers`, drivers);
+  // }, 60000);
 
   while (true) {
     await wait(500);
@@ -62,14 +70,14 @@ const main = async () => {
       const matchedDriver = drivers.pop();
       const { driverId } = matchedDriver;
 
-      console.log(
-        `Matched ${
-          matchedDriver.name
-        } <> ${name} | distance: ${getStraightLineDistance(
-          location,
-          matchedDriver.location
-        ).toFixed(0)}`
-      );
+      // console.log(
+      //   `Matched ${
+      //     matchedDriver.name
+      //   } <> ${name} | distance: ${getStraightLineDistance(
+      //     location,
+      //     matchedDriver.location
+      //   ).toFixed(0)}`
+      // );
 
       process.send({ customerId, driverId, location });
     }

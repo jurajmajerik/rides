@@ -78,9 +78,9 @@ test('return the shortest path between two points', () => {
     [0, 0, 1, 1, 1, 0],
     [0, 0, 0, 0, 0, 0],
   ];
-  const startingPosition: CoordPair = [1, 1];
-  const destination: CoordPair = [4, 1];
-  const path = getShortestPath(startingPosition, destination, graph);
+  let startingPosition: CoordPair = [1, 1];
+  let destination: CoordPair = [4, 1];
+  let path = getShortestPath(startingPosition, destination, graph);
 
   expect(path).toEqual([
     [1, 1],
@@ -92,4 +92,9 @@ test('return the shortest path between two points', () => {
     [4, 2],
     [4, 1],
   ]);
+
+  startingPosition = [94, 98];
+  destination = [1, 38];
+  path = getShortestPath(startingPosition, destination);
+  console.log(path);
 });

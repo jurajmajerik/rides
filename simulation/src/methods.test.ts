@@ -92,9 +92,4 @@ test('return the shortest path between two points', () => {
     [4, 2],
     [4, 1],
   ]);
-
-  startingPosition = [94, 98];
-  destination = [1, 38];
-  path = getShortestPath(startingPosition, destination);
-  console.log(path);
 });

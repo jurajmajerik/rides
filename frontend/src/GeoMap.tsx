@@ -108,7 +108,29 @@ const GeoMap = () => {
     );
   }
 
-  const carElems = cars.map(({ driverId, actual, path, pathIndex }) => {
+  const pathElems = cars.map(({ driverId, path, status }) => {
+    let points = '';
+
+    path.forEach(([x, y]) => {
+      points += `${x * squareSize + squareSize / 2},${
+        y * squareSize + squareSize / 2
+      } `;
+    });
+
+    return (
+      <polyline
+        key={`path-${driverId}`}
+        points={points}
+        style={{
+          fill: 'none',
+          stroke: `${status === 'enroute' ? '#363636' : '#9c9a9a'}`,
+          strokeWidth: 3,
+        }}
+      />
+    );
+  });
+
+  const carElems = cars.map(({ driverId, actual, path }) => {
     return (
       <Car
         key={`car-${driverId}`}
@@ -174,6 +196,7 @@ const GeoMap = () => {
           viewBox={`0 0 ${gridSize} ${gridSize}`}
         >
           {obstacleElems}
+          {pathElems}
           {carElems}
           {customerElems}
           {destElems}

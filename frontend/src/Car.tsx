@@ -89,17 +89,6 @@ export default class Car extends React.Component<Props, State> {
     this.rotateBusy = false;
   }
 
-  didPathChange(path: [number, number][]) {
-    // Sometimes path is []
-    if (!this.state.path || !path.length) return true;
-    return !(
-      this.state.path[this.state.path.length - 1][0] ===
-        path[path.length - 1][0] &&
-      this.state.path[this.state.path.length - 1][1] ===
-        path[path.length - 1][1]
-    );
-  }
-
   async move(
     actual: [number, number],
     path: [number, number][],
@@ -108,10 +97,6 @@ export default class Car extends React.Component<Props, State> {
     while (this.moveBusy) {
       await wait(100);
       if (receivedAt !== this.latestUpdateAt) return;
-    }
-
-    if (this.didPathChange(path)) {
-      this.animationPathIndex = 0;
     }
 
     this.moveBusy = true;

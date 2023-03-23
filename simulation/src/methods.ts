@@ -2,7 +2,7 @@ import obstacles from '../../shared/obstacles.js';
 import { getRandomInt } from '../../shared/utils.js';
 import config from '../../shared/config.js';
 import { getObstaclesMap } from '../../shared/methods.js';
-import { Coord, CoordPair, Graph, Obstacles, Path } from './types.js';
+import { Coord, CoordPair, Graph, Path } from './types.js';
 
 const { gridCount } = config;
 
@@ -62,7 +62,7 @@ export const getClosestRoadNode = (
   graph: Graph = getGraph()
 ): CoordPair => {
   const isValid = (y, x) =>
-    y > 0 && y < graph.length - 1 && x > 0 && x < graph[y].length - 1;
+    y >= 0 && y < graph.length && x >= 0 && x < graph[y].length;
 
   if (isValid(y, x) && graph[y][x] === 1) return [x, y];
 
@@ -127,10 +127,10 @@ export const getShortestPath = (
   graph: Graph = getGraph()
 ): Path => {
   const isValid = (y, x) =>
-    y > 0 &&
-    y < graph.length - 1 &&
-    x > 0 &&
-    x < graph[y].length - 1 &&
+    y >= 0 &&
+    y < graph.length &&
+    x >= 0 &&
+    x < graph[y].length &&
     graph[y][x] === 1;
 
   const directions: [number, number][] = [

@@ -82,18 +82,20 @@ test('return the closest road node (can be the node itself)', () => {
 });
 
 test('return the shortest path between two points', () => {
-  const graph: Graph = [
+  let graph: Graph = [
     [1, 0, 0, 0, 0, 1],
     [1, 1, 1, 0, 1, 1],
     [0, 0, 1, 0, 1, 0],
     [0, 0, 1, 1, 1, 0],
     [0, 0, 0, 0, 0, 0],
   ];
-  let startingPosition: CoordPair = [1, 1];
-  let destination: CoordPair = [4, 1];
+  let startingPosition: CoordPair = [0, 0];
+  let destination: CoordPair = [5, 0];
   let path = getShortestPath(startingPosition, destination, graph);
 
   expect(path).toEqual([
+    [0, 0],
+    [0, 1],
     [1, 1],
     [2, 1],
     [2, 2],
@@ -102,5 +104,27 @@ test('return the shortest path between two points', () => {
     [4, 3],
     [4, 2],
     [4, 1],
+    [5, 1],
+    [5, 0],
+  ]);
+
+  graph = [
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 1, 1],
+  ];
+  startingPosition = [4, 0];
+  destination = [3, 4];
+  path = getShortestPath(startingPosition, destination, graph);
+
+  expect(path).toEqual([
+    [4, 0],
+    [4, 1],
+    [4, 2],
+    [4, 3],
+    [4, 4],
+    [3, 4],
   ]);
 });

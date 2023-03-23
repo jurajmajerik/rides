@@ -158,13 +158,13 @@ const GeoMap = () => {
 
   const destElems = cars
     .filter(({ status }) => status === 'enroute')
-    .map(({ path }) => {
+    .map(({ driverId, path }) => {
       // TEMP FIX FOR NO PATH
       if (!path || path.length === 0) return null;
       const [x, y] = path[path.length - 1];
       return (
         <DestIcon
-          key={`d-${x}:${y}`}
+          key={`d-${driverId}-${x}:${y}`}
           x={x * squareSize - squareSize / +5}
           y={y * squareSize - squareSize / 2 - 8}
         />

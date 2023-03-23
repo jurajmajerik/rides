@@ -1,9 +1,6 @@
 import g from './global.js';
 import { wait, getRandomInt } from '../../shared/utils.js';
-import { getRoadNodes } from './methods.js';
 import { CoordPair, Path } from './types.js';
-
-const roadNodes = getRoadNodes();
 
 export default class Driver {
   private busy = false;
@@ -20,7 +17,7 @@ export default class Driver {
   constructor({ driverId, name }: { driverId: string; name: string }) {
     this.driverId = driverId;
     this.name = name;
-    this.location = roadNodes[getRandomInt(0, roadNodes.length - 1)];
+    this.location = g.roadNodes[getRandomInt(0, g.roadNodes.length - 1)];
 
     this.handleDispatcherResult = this.handleDispatcherResult.bind(this);
     this.handleRoutePlannerResult = this.handleRoutePlannerResult.bind(this);

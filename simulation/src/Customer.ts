@@ -1,11 +1,9 @@
 import g from './global.js';
 import { wait, getRandomInt, decide } from '../../shared/utils.js';
 import { CoordPair } from './types.js';
-import { getRoadNodes } from './methods.js';
 import config from '../../shared/config.js';
 
 const { maxActiveCustomers } = config;
-const roadNodes = getRoadNodes();
 
 export default class Customer {
   private busy = false;
@@ -77,7 +75,7 @@ export default class Customer {
             }
           }
         } else if (this.active && !this.location) {
-          const location = roadNodes[getRandomInt(0, roadNodes.length - 1)];
+          const location = g.roadNodes[getRandomInt(0, g.roadNodes.length - 1)];
           this.location = location;
           g.activeCustomers.set(this.customerId, location);
         } else if (this.active && !this.destination) {

@@ -1,29 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import Car from './Car';
-import obstacles from '../../shared/obstacles';
 import { api } from './api';
 import { wait } from '../../shared/utils';
 import config from '../../shared/config';
+import { getObstaclesMap } from '../../shared/methods';
 import CustomerIcon from './CustomerIcon';
 import DestIcon from './DestIcon';
 
 const { gridSize, squareSize, fetchInterval } = config;
-
-const obstaclesMap = (() => {
-  const obstaclesMap = new Map();
-  obstacles.forEach(([xStart, xEnd, yStart, yEnd, color]) => {
-    let x = xStart;
-    while (x <= xEnd) {
-      let y = yStart;
-      while (y <= yEnd) {
-        obstaclesMap.set(`${x}:${y}`, color || '#c1c3c7');
-        y += 1;
-      }
-      x += 1;
-    }
-  });
-  return obstaclesMap;
-})();
+const obstaclesMap = getObstaclesMap();
 
 const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
   while (true) {

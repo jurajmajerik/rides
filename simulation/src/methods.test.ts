@@ -13,17 +13,26 @@ const { gridCount } = config;
 
 test('return a graph represented as n x n matrix', () => {
   let gridCount = 3;
-  let obstaclesSet = new Set(['0:0', '1:1', '2:2']);
+  let obstaclesMap = new Map();
+  obstaclesMap.set('0:0', '#');
+  obstaclesMap.set('1:1', '#');
+  obstaclesMap.set('2:2', '#');
 
   let expected = [
     [0, 1, 1],
     [1, 0, 1],
     [1, 1, 0],
   ];
-  expect(buildGraph(obstaclesSet, gridCount)).toEqual(expected);
+  expect(buildGraph(obstaclesMap, gridCount)).toEqual(expected);
 
   gridCount = 6;
-  obstaclesSet = new Set(['0:2', '0:3', '1:2', '1:3', '5:5', '4:5']);
+  obstaclesMap = new Map();
+  obstaclesMap.set('0:2', '#');
+  obstaclesMap.set('0:3', '#');
+  obstaclesMap.set('1:2', '#');
+  obstaclesMap.set('1:3', '#');
+  obstaclesMap.set('5:5', '#');
+  obstaclesMap.set('4:5', '#');
 
   expected = [
     [1, 1, 1, 1, 1, 1],
@@ -33,7 +42,7 @@ test('return a graph represented as n x n matrix', () => {
     [1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 0, 0],
   ];
-  expect(buildGraph(obstaclesSet, gridCount)).toEqual(expected);
+  expect(buildGraph(obstaclesMap, gridCount)).toEqual(expected);
 });
 
 test('return a range of possible destinations for a starting coordinate', () => {
@@ -56,6 +65,8 @@ test('return destination coordinates', () => {
   expect(destX).toBeLessThanOrEqual(25);
   expect(destY).toBeGreaterThanOrEqual(0);
   expect(destY).toBeLessThanOrEqual(25);
+
+  [destX, destY] = generateDestination([6, 71]);
 });
 
 test('return the closest road node (can be the node itself)', () => {

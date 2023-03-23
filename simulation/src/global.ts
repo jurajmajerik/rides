@@ -3,6 +3,7 @@ import { CoordPair } from './types.js';
 import dbInit from './dbInit.js';
 import Driver from './Driver.js';
 import Customer from './Customer.js';
+import { getRoadNodes } from './methods.js';
 import { drivers, customers } from './data.js';
 
 export interface Global {
@@ -13,6 +14,7 @@ export interface Global {
   getDestination: ChildProcess;
   routePlanner: ChildProcess;
   activeCustomers: Map<string, CoordPair>;
+  roadNodes: CoordPair[];
   init: () => Promise<void>;
 }
 
@@ -24,6 +26,7 @@ const g: Global = {
   dispatcher: null,
   routePlanner: null,
   activeCustomers: null,
+  roadNodes: null,
   init: null,
 };
 
@@ -33,6 +36,7 @@ const init = async () => {
   g.dispatcher = fork('dispatcher.js');
   g.routePlanner = fork('routePlanner.js');
   g.activeCustomers = new Map();
+  g.roadNodes = getRoadNodes();
 
   g.driverInstances = {};
   drivers.forEach(({ driverId, name }) => {

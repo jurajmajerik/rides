@@ -7,7 +7,7 @@ export const getObstaclesMap = () => {
     while (x <= xEnd) {
       let y = yStart;
       while (y <= yEnd) {
-        obstaclesMap.set(`${x}:${y}`, color || '#c1c3c7');
+        obstaclesMap.set(`${x}:${y}`, color || '#d7d8de');
         y += 1;
       }
       x += 1;

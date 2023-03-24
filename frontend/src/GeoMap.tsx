@@ -83,10 +83,10 @@ const GeoMap = () => {
     obstacleElems.push(
       <rect
         key={`o-${x}:${y}`}
-        width={squareSize}
-        height={squareSize}
-        x={x * squareSize}
-        y={y * squareSize}
+        width={squareSize + squareSize / 2}
+        height={squareSize + squareSize / 2}
+        x={x * squareSize - squareSize / 2}
+        y={y * squareSize - squareSize / 2}
         fill={color}
         stroke={color}
       />
@@ -97,8 +97,8 @@ const GeoMap = () => {
     let points = '';
 
     path.forEach(([x, y]) => {
-      points += `${x * squareSize + squareSize / 2},${
-        y * squareSize + squareSize / 2
+      points += `${x * squareSize + squareSize / 4},${
+        y * squareSize + squareSize / 4
       } `;
     });
 
@@ -109,7 +109,7 @@ const GeoMap = () => {
         style={{
           fill: 'none',
           stroke: `${status === 'enroute' ? '#363636' : '#9c9a9a'}`,
-          strokeWidth: 3,
+          strokeWidth: 2,
         }}
       />
     );
@@ -131,6 +131,7 @@ const GeoMap = () => {
     .filter(({ status }) => status === 'pickup')
     .map(({ path }) => {
       // TEMP FIX FOR NO PATH
+      if (!path || path.length === 0) throw new Error('NOPATH');
       if (!path || path.length === 0) return null;
 
       const [x, y] = path[path.length - 1];
@@ -138,8 +139,8 @@ const GeoMap = () => {
       return (
         <CustomerIcon
           key={`c1-${x}:${y}`}
-          x={x * squareSize - squareSize / 2}
-          y={y * squareSize - squareSize / 2}
+          x={x * squareSize - squareSize * 0.75}
+          y={y * squareSize - squareSize * 0.75}
         />
       );
     });

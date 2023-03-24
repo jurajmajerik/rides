@@ -10,6 +10,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     environment:
       SERVER_ENV: ${SERVER_ENV}
+    restart: on-failure
     deploy:
       resources:
         limits:
@@ -33,6 +34,7 @@ services:
       - app-db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: on-failure
     deploy:
       resources:
         limits:

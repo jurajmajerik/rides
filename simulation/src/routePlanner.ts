@@ -23,15 +23,6 @@ const main = async () => {
       const { driverId, startingPosition, destination } = queue.shift();
       let path = getShortestPath(startingPosition, destination);
 
-      if (!path) {
-        console.error(
-          'SENDING NO PATH',
-          `${path} ${JSON.stringify(path)} ${JSON.stringify(
-            startingPosition
-          )} ${JSON.stringify(destination)}`
-        );
-      }
-
       process.send({ driverId, path });
     }
 

@@ -42,7 +42,7 @@ const main = async () => {
   while (true) {
     await wait(500);
     if (customerQueue.length && drivers.length) {
-      const { customerId, location, name } = customerQueue.shift();
+      const { customerId, location } = customerQueue.shift();
 
       drivers.sort((driverA, driverB) => {
         return (

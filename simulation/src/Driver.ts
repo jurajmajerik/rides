@@ -71,9 +71,6 @@ export default class Driver {
   }
 
   requestRoute(destination) {
-    if (this.status !== 'idle' && this.status !== 'pickup') {
-      console.trace('REQUESTING WHEN STATUS', this.status);
-    }
     g.routePlanner.send({
       driverId: this.driverId,
       startingPosition: this.location,

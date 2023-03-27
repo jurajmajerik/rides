@@ -61,10 +61,14 @@ export default class Customer {
   }
 
   private async simulate(): Promise<void> {
+    // Refresh every 200ms
     while (true) {
       await wait(200);
 
+      // Only make new decisions if not currently waiting for a result
+      // of an asynchronous operation
       if (!this.busy) {
+        // Not active, reactivate with some probability
         if (!this.active) {
           if (g.activeCustomers.size < maxActiveCustomers) {
             let newActive = false;
@@ -75,16 +79,19 @@ export default class Customer {
             }
           }
         } else if (this.active && !this.location) {
+          // No location yet -> set location, request destination
+          this.busy = true;
+
           const location = g.roadNodes[getRandomInt(0, g.roadNodes.length - 1)];
           this.location = location;
           g.activeCustomers.set(this.customerId, location);
-        } else if (this.active && !this.destination) {
-          this.busy = true;
+
           g.getDestination.send({
             customerId: this.customerId,
             location: this.location,
           });
         } else if (this.active && !this.driverId) {
+          // Match with a driver
           this.busy = true;
           g.dispatcher.send({
             from: 'customer',

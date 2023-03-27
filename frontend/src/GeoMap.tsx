@@ -130,8 +130,6 @@ const GeoMap = () => {
   const customerElems = cars
     .filter(({ status }) => status === 'pickup')
     .map(({ path }) => {
-      // TEMP FIX FOR NO PATH
-      if (!path || path.length === 0) throw new Error('NOPATH');
       if (!path || path.length === 0) return null;
 
       const [x, y] = path[path.length - 1];
@@ -160,14 +158,12 @@ const GeoMap = () => {
   const destElems = cars
     .filter(({ status }) => status === 'enroute')
     .map(({ driverId, path }) => {
-      // TEMP FIX FOR NO PATH
-      if (!path || path.length === 0) return null;
       const [x, y] = path[path.length - 1];
       return (
         <DestIcon
           key={`d-${driverId}-${x}:${y}`}
-          x={x * squareSize - squareSize / +5}
-          y={y * squareSize - squareSize / 2 - 8}
+          x={x * squareSize - 5}
+          y={y * squareSize - 15}
         />
       );
     });

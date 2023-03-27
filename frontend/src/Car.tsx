@@ -27,14 +27,12 @@ interface Props {
 interface State {
   position: [number, number];
   rotation: number;
-  path: [number, number][];
 }
 
 export default class Car extends React.Component<Props, State> {
   private latestUpdateAt = 0;
   private rotateBusy = false;
   private moveBusy = false;
-  private animationPathIndex = 0;
 
   constructor(props: Props) {
     super(props);
@@ -49,11 +47,9 @@ export default class Car extends React.Component<Props, State> {
       rotation = getRotation(path, pathIndex);
     }
 
-    // TODO: DONT SET PATH TO STATE
     this.state = {
       position: actual,
       rotation,
-      path,
     };
   }
 
@@ -131,22 +127,14 @@ export default class Car extends React.Component<Props, State> {
       while (currX !== nextX) {
         currX = advanceCoord(currX, nextX, increment);
 
-        if (currX % 1 === 0 && this.state.position[1] % 1 === 0) {
-          this.animationPathIndex += 1;
-        }
-
-        this.setState({ position: [currX, this.state.position[1]], path });
+        this.setState({ position: [currX, this.state.position[1]] });
         await wait(refreshInterval);
       }
 
       while (currY !== nextY) {
         currY = advanceCoord(currY, nextY, increment);
 
-        if (this.state.position[0] % 1 === 0 && currY % 1 === 0) {
-          this.animationPathIndex += 1;
-        }
-
-        this.setState({ position: [this.state.position[0], currY], path });
+        this.setState({ position: [this.state.position[0], currY] });
         await wait(refreshInterval);
       }
     }

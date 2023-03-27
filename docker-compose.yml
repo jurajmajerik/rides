@@ -39,7 +39,7 @@ services:
       resources:
         limits:
           cpus: '0.3'
-          memory: 200M
+          memory: 400M
 
 volumes:
   app-db:

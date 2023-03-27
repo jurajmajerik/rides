@@ -108,8 +108,8 @@ const GeoMap = () => {
         points={points}
         style={{
           fill: 'none',
-          stroke: `${status === 'enroute' ? '#363636' : '#9c9a9a'}`,
-          strokeWidth: 2,
+          stroke: `${status === 'enroute' ? '#454545' : '#adaaaa'}`,
+          strokeWidth: 4,
         }}
       />
     );

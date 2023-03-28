@@ -40,6 +40,7 @@ services:
 
   grafana:
     image: grafana/grafana-oss:latest
+    user: "0:0"
     container_name: grafana
     ports:
       - "3000:3000"

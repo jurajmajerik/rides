@@ -46,7 +46,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana_prod.ini:/etc/grafana/grafana.ini
-      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/grafana/ssl:/etc/grafana/ssl
     restart: unless-stopped
 
 volumes:

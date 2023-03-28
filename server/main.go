@@ -124,7 +124,7 @@ func main() {
 	db.InitDB()
 	defer db.Connection.Close()
 
-	grafanaURL, _ := url.Parse("http://host.docker.internal:3000")
+	grafanaURL, _ := url.Parse("http://178.62.242.234:3000")
 	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
 
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))

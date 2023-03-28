@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
@@ -19,6 +20,7 @@ services:
     restart: unless-stopped
     volumes:
       - '/:/host:ro,rslave'
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0     
     container_name: cadvisor
@@ -35,6 +37,7 @@ services:
       - /dev/kmsg
     restart: unless-stopped
     privileged: true
+
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
@@ -42,6 +45,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini
     restart: unless-stopped
 
 volumes:

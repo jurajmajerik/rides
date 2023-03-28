@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"strings"
 	"os"
 )
 
@@ -120,9 +123,20 @@ func main() {
 	db.InitDB()
 	defer db.Connection.Close()
 
+	grafanaURL, _ := url.Parse("http://host.docker.internal:3000")
+	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
+
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
 	http.HandleFunc("/drivers", getDrivers)
 	http.HandleFunc("/customers", getCustomers)
+
+	http.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
+    // Modify the incoming request URL to remove the "/grafana" prefix.
+    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
+
+    // Forward the request to Grafana.
+    grafanaProxy.ServeHTTP(w, r)
+	})
 
 	serverEnv := os.Getenv("SERVER_ENV")
 

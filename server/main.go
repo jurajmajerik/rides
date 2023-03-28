@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strings"
 	"os"
+	"fmt"
 )
 
 type Driver struct {
@@ -133,6 +134,8 @@ func main() {
 	http.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
     // Modify the incoming request URL to remove the "/grafana" prefix.
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
+
+		fmt.Println("RECEIVED Grafana proxy", r.URL.Path)
 
     // Forward the request to Grafana.
     grafanaProxy.ServeHTTP(w, r)

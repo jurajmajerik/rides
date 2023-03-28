@@ -10,17 +10,31 @@ msg () {
 msg "Pulling from Github"
 git pull
 
-msg "Building images"
+msg "App | Building images"
 sudo docker compose build
 
-msg "Stopping containers"
+msg "App | Stopping containers"
 sudo docker compose down --remove-orphans
 
-msg "Starting containers"
+msg "App | Starting containers"
 sudo docker compose up -d
 
-msg "Pruning stale Docker images"
+# Prometheus + Grafana
+cd $HOME/rides/monitor
+
+msg "Monitor | Building images"
+sudo docker compose -f ./docker-compose-linux.yml build
+
+msg "Monitor | Stopping containers"
+sudo docker compose -f ./docker-compose-linux.yml down --remove-orphans
+
+msg "Monitor | Starting containers"
+sudo docker compose -f ./docker-compose-linux.yml up -d
+
+msg "Monitor | Pruning stale Docker images"
 sudo docker image prune -f
+
+cd $HOME/rides
 
 duration=$SECONDS
 

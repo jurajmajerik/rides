@@ -10,6 +10,8 @@ services:
     restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.external-url=/prometheus/"
+      - "--web.route-prefix=/prometheus/"
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest

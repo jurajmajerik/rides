@@ -8,6 +8,7 @@ services:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
+      - ./.env:/app/.env
     environment:
       SERVER_ENV: ${SERVER_ENV}
     restart: on-failure

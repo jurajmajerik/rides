@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strings"
 	"os"
+	"fmt"
 )
 
 type Driver struct {
@@ -125,6 +126,7 @@ func getGrafanaProxy() *httputil.ReverseProxy {
 		baseURL = "http://" + os.Getenv("SERVER_IP")
 	}
 	grafanaURL, _ := url.Parse(baseURL + ":3000")
+	fmt.Println("Grafana URL: " + grafanaURL.String())
 	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
 	return grafanaProxy
 }

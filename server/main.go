@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"strings"
 	"os"
-	"fmt"
 )
 
 type Driver struct {
@@ -120,29 +119,34 @@ func getCustomers(w http.ResponseWriter, req *http.Request) {
 	w.Write(ridesBytes)
 }
 
+func getGrafanaProxy() *httputil.ReverseProxy {
+	baseURL := "http://host.docker.internal"
+	if os.Getenv("SERVER_ENV") == "PROD" {
+		baseURL = "http://" + os.Getenv("SERVER_IP")
+	}
+	grafanaURL, _ := url.Parse(baseURL + ":3000")
+	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
+	return grafanaProxy
+}
+
 func main() {
+	
 	db.InitDB()
 	defer db.Connection.Close()
-
-	grafanaURL, _ := url.Parse("http://178.62.242.234:3000")
-	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
-
+	
+	grafanaProxy := getGrafanaProxy()
+	
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
 	http.HandleFunc("/drivers", getDrivers)
 	http.HandleFunc("/customers", getCustomers)
-
+	
 	http.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
-    // Modify the incoming request URL to remove the "/grafana" prefix.
+		// Modify the incoming request URL to remove the "/grafana" prefix.
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
-
-		fmt.Println("RECEIVED Grafana proxy", r.URL.Path)
-
-    // Forward the request to Grafana.
     grafanaProxy.ServeHTTP(w, r)
 	})
-
+	
 	serverEnv := os.Getenv("SERVER_ENV")
-
 	if serverEnv == "DEV" {
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	} else if serverEnv == "PROD" {

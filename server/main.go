@@ -123,8 +123,6 @@ func getCustomers(w http.ResponseWriter, req *http.Request) {
 }
 
 func getGrafanaProxy() *httputil.ReverseProxy {
-	godotenv.Load("../.env")
-
 	baseURL := "http://host.docker.internal"
 	if os.Getenv("SERVER_ENV") == "PROD" {
 		baseURL = "http://" + os.Getenv("SERVER_IP")

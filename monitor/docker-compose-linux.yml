@@ -46,7 +46,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana_prod.ini:/etc/grafana/grafana.ini
+      - ./grafana.ini:/etc/grafana/grafana.ini
       - /etc/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
 

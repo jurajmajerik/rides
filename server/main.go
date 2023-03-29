@@ -160,13 +160,13 @@ func main() {
 	http.HandleFunc("/drivers", getDrivers)
 	http.HandleFunc("/customers", getCustomers)
 	
-	http.HandleFunc("/grafana", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
     grafanaProxy.ServeHTTP(w, r)
 	})
 
-	http.HandleFunc("/prometheus", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/prometheus/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/prometheus")
 		// don't overwrite if asking for /metrics!

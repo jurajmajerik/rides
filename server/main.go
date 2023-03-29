@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strings"
 	"os"
+	"path/filepath"
 	"fmt"
 
 	"github.com/joho/godotenv"
@@ -136,15 +137,20 @@ func getGrafanaProxy() *httputil.ReverseProxy {
 }
 
 func main() {
-  err := godotenv.Load("~/rides/.env")
+	wd, err := os.Getwd()
+	if err != nil {
+			fmt.Println("Error getting working directory:", err)
+			return
+	}
+
+	err = godotenv.Load(filepath.Join(wd, "rides", ".env"))
   if err != nil {
     log.Fatal(err)
   }
-	fmt.Println("here", os.Environ())
 
 	db.InitDB()
 	defer db.Connection.Close()
-	
+
 	grafanaProxy := getGrafanaProxy()
 	
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))

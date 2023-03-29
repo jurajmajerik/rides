@@ -14,7 +14,7 @@ scrape_configs:
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     static_configs:
-      - targets: ['178.62.242.234:9090/prometheus']
+      - targets: ['localhost:9090/prometheus']
 
   # Example job for node_exporter
   - job_name: 'node_exporter'

@@ -10,6 +10,8 @@ import (
 	"strings"
 	"os"
 	"fmt"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Driver struct {

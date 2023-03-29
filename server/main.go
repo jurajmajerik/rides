@@ -140,7 +140,7 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
-	fmt.Println(os.Environ())
+	fmt.Println("here", os.Environ())
 
 	db.InitDB()
 	defer db.Connection.Close()

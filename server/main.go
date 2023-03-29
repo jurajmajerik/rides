@@ -166,9 +166,9 @@ func main() {
     grafanaProxy.ServeHTTP(w, r)
 	})
 
-	http.HandleFunc("/prom/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/prom_ui/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
-    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/prom")
+    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/prom_ui")
     prometheusProxy.ServeHTTP(w, r)
 	})
 	

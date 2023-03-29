@@ -11,7 +11,7 @@ import (
 	"os"
 	"fmt"
 
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/joho/godotenv"
 )
 
 type Driver struct {
@@ -134,7 +134,8 @@ func getGrafanaProxy() *httputil.ReverseProxy {
 }
 
 func main() {
-	
+	godotenv.Load("../.env")
+
 	db.InitDB()
 	defer db.Connection.Close()
 	

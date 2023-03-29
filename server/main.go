@@ -136,7 +136,7 @@ func getGrafanaProxy() *httputil.ReverseProxy {
 }
 
 func main() {
-  err := godotenv.Load("../.env")
+  err := godotenv.Load("~/rides/.env")
   if err != nil {
     log.Fatal(err)
   }

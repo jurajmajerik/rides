@@ -133,6 +133,17 @@ func getGrafanaProxy() *httputil.ReverseProxy {
 	return grafanaProxy
 }
 
+func getPrometheusProxy() *httputil.ReverseProxy {
+	baseURL := "http://host.docker.internal"
+	if os.Getenv("SERVER_ENV") == "PROD" {
+		baseURL = "http://" + os.Getenv("SERVER_IP")
+	}
+	prometheusURL, _ := url.Parse(baseURL + ":9090")
+	fmt.Println("Prometheus URL: " + prometheusURL.String())
+	prometheusProxy := httputil.NewSingleHostReverseProxy(prometheusURL)
+	return prometheusProxy
+}
+
 func main() {
 	err := godotenv.Load("../.env")
   if err != nil {
@@ -143,6 +154,7 @@ func main() {
 	defer db.Connection.Close()
 
 	grafanaProxy := getGrafanaProxy()
+	prometheusProxy := getPrometheusProxy()
 	
 	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
 	http.HandleFunc("/drivers", getDrivers)
@@ -152,6 +164,12 @@ func main() {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
     grafanaProxy.ServeHTTP(w, r)
+	})
+
+	http.HandleFunc("/prometheus/", func(w http.ResponseWriter, r *http.Request) {
+		// Modify the incoming request URL to remove the "/grafana" prefix.
+    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/prometheus")
+    prometheusProxy.ServeHTTP(w, r)
 	})
 	
 	serverEnv := os.Getenv("SERVER_ENV")

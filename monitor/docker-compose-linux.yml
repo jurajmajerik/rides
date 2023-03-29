@@ -2,7 +2,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    network: host
+    network_mode: host
     ports:
       - "9090:9090"
     volumes:

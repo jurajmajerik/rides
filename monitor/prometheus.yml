@@ -17,5 +17,6 @@ scrape_configs:
      - targets: ['cadvisor:8080']
 
   - job_name: 'postgres_exporter'
+    scrape_interval: 5s
     static_configs:
      - targets: ['postgres_exporter:9187']

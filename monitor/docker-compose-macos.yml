@@ -22,6 +22,16 @@ services:
       - '/private/var:/host/private/var:ro'
     user: "0:0"
 
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.11.1
+    container_name: postgres_exporter
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
+    volumes:
+      - ./postgres_exporter.yml:/postgres_exporter.yml
+    ports:
+      - 9187:9187
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0
     container_name: cadvisor

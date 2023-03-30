@@ -26,7 +26,7 @@ services:
     image: quay.io/prometheuscommunity/postgres-exporter:v0.11.1
     container_name: postgres_exporter
     environment:
-      - DATA_SOURCE_NAME=postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
+      - DATA_SOURCE_NAME=postgresql://postgres:mysecretpassword@178.62.242.234:5432/postgres?sslmode=disable
     volumes:
       - ./postgres_exporter.yml:/postgres_exporter.yml
     ports:

@@ -30,10 +30,11 @@ services:
       - DATA_SOURCE_NAME=postgresql://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable
     volumes:
       - ./postgres_exporter.yml:/postgres_exporter.yml
+      - ./queries.yml:/queries.yml
     ports:
       - 9187:9187
     command:
-      - '--extend.query-path=/postgres_exporter.yml'
+      - '--extend.query-path=/queries.yml'
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0     

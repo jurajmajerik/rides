@@ -1,0 +1,6 @@
+pg_stat_activity:
+  query: "SELECT COUNT(*) AS active_connections, now() as timestamp FROM pg_stat_activity WHERE state = 'active'"
+  metrics:
+    - active_connections:
+        usage: "COUNTER"
+        description: "Number of active connections"

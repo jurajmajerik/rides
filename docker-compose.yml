@@ -15,7 +15,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.3'
+          cpus: '0.2'
           memory: 100M
   simulation:
     build:
@@ -25,7 +25,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.3'
+          cpus: '0.2'
           memory: 200M
   db:
     image: postgres:15.1-alpine
@@ -35,12 +35,17 @@ services:
       - app-db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command:
+      - "-c"
+      - "shared_buffers=64MB"
+      - "-c"
+      - "effective_cache-size=64MB"
     restart: on-failure
     deploy:
       resources:
         limits:
-          cpus: '0.3'
-          memory: 400M
+          cpus: '0.2'
+          memory: 300M
 
 volumes:
   app-db:

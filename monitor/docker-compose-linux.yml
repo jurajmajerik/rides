@@ -54,7 +54,7 @@ services:
 
   grafana:
     image: grafana/grafana-oss:latest
-    user: "0:0"
+    user: "1000"
     container_name: grafana
     ports:
       - "3000:3000"
@@ -64,25 +64,25 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     restart: "no"
 
-  # loki:
-  #   image: grafana/loki:latest
-  #   container_name: loki
-  #   ports:
-  #     - "3100:3100"
-  #   command: -config.file=/etc/loki/local-config.yaml
-  #   volumes:
-  #     - ./loki-local-config.yaml:/etc/loki/local-config.yaml
-  #   restart: "no"
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-local-config.yaml:/etc/loki/local-config.yaml
+    restart: "no"
 
-  # promtail:
-  #   image: grafana/promtail:latest
-  #   container_name: promtail
-  #   volumes:
-  #     - /var/log:/var/log
-  #     - /var/lib/docker/containers:/var/lib/docker/containers
-  #     - ./promtail-config.yaml:/etc/promtail/config.yml
-  #   command: -config.file=/etc/promtail/config.yml
-  #   restart: "no"
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./promtail-config.yaml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    restart: "no"
 
 volumes:
   prometheus-data:

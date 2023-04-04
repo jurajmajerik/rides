@@ -63,10 +63,6 @@ services:
       - ./grafana.ini:/etc/grafana/grafana.ini
       - /etc/letsencrypt:/etc/letsencrypt
     # restart: unless-stopped
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
 
   loki:
     image: grafana/loki:latest

@@ -45,16 +45,6 @@ services:
     restart: unless-stopped
     privileged: true
 
-  loki:
-    image: grafana/loki:latest
-    container_name: loki
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - ./loki-local-config.yaml:/etc/loki/local-config.yaml
-    restart: unless-stopped
-
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
@@ -68,6 +58,16 @@ services:
       driver: loki
       options:
         loki-url: "http://loki:3100/loki/api/v1/push"
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-local-config.yaml:/etc/loki/local-config.yaml
+    restart: unless-stopped
 
   promtail:
     image: grafana/promtail:latest

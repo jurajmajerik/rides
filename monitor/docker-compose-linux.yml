@@ -7,7 +7,7 @@ services:
     volumes:
       - ./prometheus-prod.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
-    # restart: unless-stopped
+    restart: no
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--web.external-url=/prometheus/"
@@ -19,7 +19,7 @@ services:
     command:
       - '--path.rootfs=/host'
     pid: host
-    # restart: unless-stopped
+    restart: no
     volumes:
       - '/:/host:ro,rslave'
 
@@ -49,7 +49,7 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-    # restart: unless-stopped
+    restart: no
     privileged: true
 
   grafana:
@@ -62,27 +62,27 @@ services:
       - grafana-data:/var/lib/grafana
       - ./grafana.ini:/etc/grafana/grafana.ini
       - /etc/letsencrypt:/etc/letsencrypt
-    # restart: unless-stopped
+    restart: no
 
-  loki:
-    image: grafana/loki:latest
-    container_name: loki
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - ./loki-local-config.yaml:/etc/loki/local-config.yaml
-    # restart: unless-stopped
+  # loki:
+  #   image: grafana/loki:latest
+  #   container_name: loki
+  #   ports:
+  #     - "3100:3100"
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   volumes:
+  #     - ./loki-local-config.yaml:/etc/loki/local-config.yaml
+  #   restart: no
 
-  promtail:
-    image: grafana/promtail:latest
-    container_name: promtail
-    volumes:
-      - /var/log:/var/log
-      - /var/lib/docker/containers:/var/lib/docker/containers
-      - ./promtail-config.yaml:/etc/promtail/config.yml
-    command: -config.file=/etc/promtail/config.yml
-    # restart: unless-stopped
+  # promtail:
+  #   image: grafana/promtail:latest
+  #   container_name: promtail
+  #   volumes:
+  #     - /var/log:/var/log
+  #     - /var/lib/docker/containers:/var/lib/docker/containers
+  #     - ./promtail-config.yaml:/etc/promtail/config.yml
+  #   command: -config.file=/etc/promtail/config.yml
+  #   restart: no
 
 volumes:
   prometheus-data:

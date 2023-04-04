@@ -17,7 +17,9 @@ scrape_configs:
       job: varlogs
       __path__: /var/log/*log
 
-- job_name: container-logs
+- job_name: docker
+  pipeline_stages:
+    - docker: {}
   static_configs:
   - targets:
       - localhost

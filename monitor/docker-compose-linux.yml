@@ -7,7 +7,7 @@ services:
     volumes:
       - ./prometheus-prod.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
-    restart: unless-stopped
+    # restart: unless-stopped
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--web.external-url=/prometheus/"
@@ -19,7 +19,7 @@ services:
     command:
       - '--path.rootfs=/host'
     pid: host
-    restart: unless-stopped
+    # restart: unless-stopped
     volumes:
       - '/:/host:ro,rslave'
 
@@ -49,7 +49,7 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-    restart: unless-stopped
+    # restart: unless-stopped
     privileged: true
 
   grafana:
@@ -62,7 +62,7 @@ services:
       - grafana-data:/var/lib/grafana
       - ./grafana.ini:/etc/grafana/grafana.ini
       - /etc/letsencrypt:/etc/letsencrypt
-    restart: unless-stopped
+    # restart: unless-stopped
     logging:
       driver: loki
       options:
@@ -76,7 +76,7 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
       - ./loki-local-config.yaml:/etc/loki/local-config.yaml
-    restart: unless-stopped
+    # restart: unless-stopped
 
   promtail:
     image: grafana/promtail:latest
@@ -86,7 +86,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers
       - ./promtail-config.yaml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
-    restart: unless-stopped
+    # restart: unless-stopped
 
 volumes:
   prometheus-data:

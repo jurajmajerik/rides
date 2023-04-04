@@ -11,7 +11,7 @@ services:
       - ./.env:/app/.env
     environment:
       SERVER_ENV: ${SERVER_ENV}
-    restart: on-failure
+    # restart: on-failure
     deploy:
       resources:
         limits:
@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: ./simulation/Dockerfile
-    restart: on-failure
+    # restart: on-failure
     deploy:
       resources:
         limits:
@@ -40,7 +40,7 @@ services:
       - "shared_buffers=64MB"
       - "-c"
       - "effective_cache-size=64MB"
-    restart: on-failure
+    # restart: on-failure
     deploy:
       resources:
         limits:

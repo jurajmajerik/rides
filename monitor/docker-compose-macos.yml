@@ -54,6 +54,10 @@ services:
       - grafana-data:/var/lib/grafana
       - ./grafana.ini:/etc/grafana/grafana.ini
     restart: unless-stopped
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://<user_id>:<password>@logs-prod-us-central1.grafana.net/loki/api/v1/push"
 
   loki:
     image: grafana/loki:latest
@@ -73,10 +77,6 @@ services:
       - ./promtail-config.yaml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        tag: "{{.Name}}/{{.ID}}"
 
 volumes:
   prometheus-data:

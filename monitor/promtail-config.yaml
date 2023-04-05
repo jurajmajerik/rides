@@ -38,3 +38,5 @@ scrape_configs:
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'
         target_label: 'container'
+      - source_labels: ['level']
+        target_label: 'level'

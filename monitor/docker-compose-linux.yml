@@ -79,7 +79,6 @@ services:
     container_name: promtail
     volumes:
       - /var/log:/var/log
-      - /var/lib/docker/containers:/var/lib/docker/containers
       - ./promtail-config.yaml:/etc/promtail/config.yml
       - /run/docker.sock:/run/docker.sock
     command: -config.file=/etc/promtail/config.yml

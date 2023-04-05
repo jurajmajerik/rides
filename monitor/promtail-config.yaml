@@ -21,6 +21,19 @@ scrape_configs:
     docker_sd_configs:
       - host: unix:///run/docker.sock
         refresh_interval: 5s
+    pipeline_stages:
+    - match:
+        selector: '{job="docker"}'
+        stages:
+        - regex:
+            expression: '.*level=(?P<level>[a-zA-Z]+).*ts=(?P<timestamp>[T\d-:.Z]*).*msg=(?P<msg>[a-zA-Z]+).*err=(?P<err>[a-zA-Z]+)'
+        - labels:
+            level:
+            msg:
+            err:
+        - timestamp:
+            format: RFC3339Nano
+            source: timestamp
     relabel_configs:
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'

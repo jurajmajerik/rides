@@ -31,8 +31,6 @@ func InitDB() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(user, password, host, dbname, port)
-
 	connStr := fmt.Sprintf(
 		"user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
 		user, password, host, port, dbname,

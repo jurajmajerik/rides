@@ -5,15 +5,24 @@ import config from '../../shared/config.js';
 const { gridCount } = config;
 test('return a graph represented as n x n matrix', () => {
     let gridCount = 3;
-    let obstaclesSet = new Set(['0:0', '1:1', '2:2']);
+    let obstaclesMap = new Map();
+    obstaclesMap.set('0:0', '#');
+    obstaclesMap.set('1:1', '#');
+    obstaclesMap.set('2:2', '#');
     let expected = [
         [0, 1, 1],
         [1, 0, 1],
         [1, 1, 0],
     ];
-    expect(buildGraph(obstaclesSet, gridCount)).toEqual(expected);
+    expect(buildGraph(obstaclesMap, gridCount)).toEqual(expected);
     gridCount = 6;
-    obstaclesSet = new Set(['0:2', '0:3', '1:2', '1:3', '5:5', '4:5']);
+    obstaclesMap = new Map();
+    obstaclesMap.set('0:2', '#');
+    obstaclesMap.set('0:3', '#');
+    obstaclesMap.set('1:2', '#');
+    obstaclesMap.set('1:3', '#');
+    obstaclesMap.set('5:5', '#');
+    obstaclesMap.set('4:5', '#');
     expected = [
         [1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1],
@@ -22,7 +31,7 @@ test('return a graph represented as n x n matrix', () => {
         [1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 0, 0],
     ];
-    expect(buildGraph(obstaclesSet, gridCount)).toEqual(expected);
+    expect(buildGraph(obstaclesMap, gridCount)).toEqual(expected);
 });
 test('return a range of possible destinations for a starting coordinate', () => {
     expect(getDestinationRange(0)).toEqual([50, 100]);
@@ -41,6 +50,7 @@ test('return destination coordinates', () => {
     expect(destX).toBeLessThanOrEqual(25);
     expect(destY).toBeGreaterThanOrEqual(0);
     expect(destY).toBeLessThanOrEqual(25);
+    [destX, destY] = generateDestination([6, 71]);
 });
 test('return the closest road node (can be the node itself)', () => {
     const graph = [
@@ -54,17 +64,19 @@ test('return the closest road node (can be the node itself)', () => {
     expect(getClosestRoadNode(1, 3, graph)).toEqual([2, 3]);
 });
 test('return the shortest path between two points', () => {
-    const graph = [
+    let graph = [
         [1, 0, 0, 0, 0, 1],
         [1, 1, 1, 0, 1, 1],
         [0, 0, 1, 0, 1, 0],
         [0, 0, 1, 1, 1, 0],
         [0, 0, 0, 0, 0, 0],
     ];
-    const startingPosition = [1, 1];
-    const destination = [4, 1];
-    const path = getShortestPath(startingPosition, destination, graph);
+    let startingPosition = [0, 0];
+    let destination = [5, 0];
+    let path = getShortestPath(startingPosition, destination, graph);
     expect(path).toEqual([
+        [0, 0],
+        [0, 1],
         [1, 1],
         [2, 1],
         [2, 2],
@@ -73,6 +85,26 @@ test('return the shortest path between two points', () => {
         [4, 3],
         [4, 2],
         [4, 1],
+        [5, 1],
+        [5, 0],
+    ]);
+    graph = [
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 1, 1],
+    ];
+    startingPosition = [4, 0];
+    destination = [3, 4];
+    path = getShortestPath(startingPosition, destination, graph);
+    expect(path).toEqual([
+        [4, 0],
+        [4, 1],
+        [4, 2],
+        [4, 3],
+        [4, 4],
+        [3, 4],
     ]);
 });
 //# sourceMappingURL=methods.test.js.map

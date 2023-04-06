@@ -21,6 +21,8 @@ services:
     build:
       context: .
       dockerfile: ./simulation/Dockerfile
+    volumes:
+      - ./.env:/app/.env
     restart: unless-stopped
     deploy:
       resources:

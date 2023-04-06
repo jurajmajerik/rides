@@ -1,43 +1,41 @@
 package db
 
 import (
+	"os"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
-	"os"
+	"strconv"
 
 	_ "github.com/lib/pq"
+	"github.com/joho/godotenv"
 )
 
 // Global DB variable
 var Connection *sql.DB
 
-type Config struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Host     string `json:"host"`
-	Port     int    `json:"port"`
-	DBname   string `json:"dbname"`
-}
-
 // initDB creates a new instance of DB
 func InitDB() {
-	configFile, err := os.Open("../dbconfig.json")
-	if err != nil {
-		log.Fatal("Error opening dbconfig.json:", err)
-	}
-	defer configFile.Close()
+	err := godotenv.Load("../.env")
+  if err != nil {
+    log.Fatal(err)
+  }
 
-	var config Config
-	jsonParser := json.NewDecoder(configFile)
-	if err = jsonParser.Decode(&config); err != nil {
-		log.Fatal("Error decoding dbconfig.json", err)
+	user := os.Getenv("POSTGRES_USER")
+	password := os.Getenv("POSTGRES_PASSWORD")
+	host := os.Getenv("POSTGRES_HOST")
+	dbname := os.Getenv("POSTGRES_DBNAME")
+	portStr := os.Getenv("POSTGRES_PORT")
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	fmt.Println(user, password, host, dbname, port)
 
 	connStr := fmt.Sprintf(
 		"user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
-		config.User, config.Password, config.Host, config.Port, config.DBname,
+		user, password, host, port, dbname,
 	)
 
 	var connErr error

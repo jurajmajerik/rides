@@ -1,9 +1,7 @@
 import g from './global.js';
 import { wait, getRandomInt, decide } from '../../shared/utils.js';
-import { getRoadNodes } from './methods.js';
 import config from '../../shared/config.js';
-const { maxActiveCustomers, refreshInterval } = config;
-const roadNodes = getRoadNodes();
+const { maxActiveCustomers } = config;
 export default class Customer {
     constructor({ customerId, name }) {
         this.busy = false;
@@ -11,21 +9,11 @@ export default class Customer {
         this.location = null;
         this.destination = null;
         this.driverId = null;
-        this.deactivate = () => {
-            g.activeCustomers.delete(this.customerId);
-            this.active = false;
-            this.location = null;
-            this.destination = null;
-            this.updateDB();
-        };
         this.customerId = customerId;
         this.name = name;
-        // this.deactivate = this.deactivate.bind(this);
+        this.deactivate = this.deactivate.bind(this);
         this.handleDestinationResult = this.handleDestinationResult.bind(this);
         this.simulate();
-    }
-    isNotMatched() {
-        return this.active && this.destination && !this.driverId;
     }
     async updateDB() {
         return g.db.query(`
@@ -47,56 +35,61 @@ export default class Customer {
       driver_id = EXCLUDED.driver_id
       `);
     }
+    deactivate() {
+        g.activeCustomers.delete(this.customerId);
+        this.active = false;
+        this.location = null;
+        this.destination = null;
+        this.driverId = null;
+        this.updateDB();
+    }
     async simulate() {
+        // Refresh every 200ms
         while (true) {
-            // Active and waiting for the destination
-            if (this.active && !this.destination) {
-                await wait(refreshInterval);
-                continue;
-            }
-            // Decide on the new active status
-            let newActive = this.active;
-            // If inactive, decide if to become active
-            if (!this.active && g.activeCustomers.size < maxActiveCustomers) {
-                newActive = decide(5);
-            }
-            // Change of active status
-            if (this.active !== newActive) {
-                this.active = newActive;
-                if (newActive) {
-                    // Became active -> decide on the destination
-                    const location = roadNodes[getRandomInt(0, roadNodes.length - 1)];
+            await wait(200);
+            // Only make new decisions if not currently waiting for a result
+            // of an asynchronous operation
+            if (!this.busy) {
+                // Not active, reactivate with some probability
+                if (!this.active) {
+                    if (g.activeCustomers.size < maxActiveCustomers) {
+                        let newActive = false;
+                        newActive = decide(5);
+                        if (newActive) {
+                            this.active = true;
+                            this.updateDB();
+                        }
+                    }
+                }
+                else if (this.active && !this.location) {
+                    // No location yet -> set location, request destination
+                    this.busy = true;
+                    const location = g.roadNodes[getRandomInt(0, g.roadNodes.length - 1)];
                     this.location = location;
                     g.activeCustomers.set(this.customerId, location);
                     g.getDestination.send({
                         customerId: this.customerId,
-                        location,
+                        location: this.location,
                     });
                 }
-                else {
-                    g.activeCustomers.delete(this.customerId);
-                    this.active = false;
-                    this.location = null;
-                    this.destination = null;
-                    this.updateDB();
-                }
-            }
-            if (!this.busy) {
-                // Match with a driver
-                if (this.isNotMatched()) {
+                else if (this.active && !this.driverId) {
+                    // Match with a driver
                     this.busy = true;
-                    console.log('e', this);
                     g.dispatcher.send({
                         from: 'customer',
-                        entity: this,
+                        data: {
+                            customerId: this.customerId,
+                            name: this.name,
+                            location: this.location,
+                        },
                     });
                 }
             }
-            await wait(refreshInterval);
         }
     }
     handleDestinationResult(destination) {
         this.destination = destination;
+        this.busy = false;
         this.updateDB();
     }
     handleDispatcherResult(driverId) {

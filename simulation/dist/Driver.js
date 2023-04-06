@@ -1,9 +1,5 @@
 import g from './global.js';
 import { wait, getRandomInt } from '../../shared/utils.js';
-import { getRoadNodes } from './methods.js';
-import config from '../../shared/config.js';
-const { refreshInterval } = config;
-const roadNodes = getRoadNodes();
 export default class Driver {
     constructor({ driverId, name }) {
         this.busy = false;
@@ -25,8 +21,7 @@ export default class Driver {
                     else if (this.customerId && !this.path) {
                         // Request path to the customer
                         this.busy = true;
-                        this.status = 'pickup';
-                        this.requestPath(this.customerLocation);
+                        this.requestRoute(this.customerLocation);
                     }
                     else if (this.path && !this.isDestinationReached()) {
                         // Move to next location on the path
@@ -37,24 +32,21 @@ export default class Driver {
                     else if (this.path && this.isDestinationReached()) {
                         if (this.status === 'pickup') {
                             // Customer reached, request route towards customer's destination
-                            this.busy = true;
-                            this.status = 'enroute';
-                            const customerDestination = g.customerInstances[this.customerId].destination;
-                            this.requestPath(customerDestination);
                             await wait(3000);
+                            this.busy = true;
+                            const customerDestination = g.customerInstances[this.customerId].destination;
+                            this.requestRoute(customerDestination);
                         }
                         else if (this.status === 'enroute') {
-                            // Customer's destination reached, deactivate customer, reset state
-                            console.log('DEACT', g.customerInstances[this.customerId].deactivate);
+                            // Customer's destination reached, reset state, deactivate customer
+                            await wait(3000);
                             g.customerInstances[this.customerId].deactivate();
-                            // Reset state
-                            this.busy = false;
                             this.status = 'idle';
                             this.customerId = null;
                             this.path = null;
                             this.pathIndex = null;
                             this.updateDB();
-                            await wait(3000);
+                            await wait(2000);
                         }
                     }
                 }
@@ -62,7 +54,7 @@ export default class Driver {
         };
         this.driverId = driverId;
         this.name = name;
-        this.location = roadNodes[getRandomInt(0, roadNodes.length - 1)];
+        this.location = g.roadNodes[getRandomInt(0, g.roadNodes.length - 1)];
         this.handleDispatcherResult = this.handleDispatcherResult.bind(this);
         this.handleRoutePlannerResult = this.handleRoutePlannerResult.bind(this);
         this.updateDB();
@@ -74,7 +66,7 @@ export default class Driver {
       VALUES (
         '${this.driverId}',
         '${this.name}',
-        ${this.status ? `'${this.status}'` : null},
+        '${this.status}',
         '${this.location[0]}:${this.location[1]}',
         ${this.path ? `'${JSON.stringify(this.path)}'` : null},
         ${this.pathIndex ? `'${this.pathIndex}'` : null},
@@ -82,6 +74,8 @@ export default class Driver {
       )
       ON CONFLICT (driver_id)
       DO UPDATE SET
+      name = EXCLUDED.name,
+      status = EXCLUDED.status,
       location = EXCLUDED.location,
       path = EXCLUDED.path,
       path_index = EXCLUDED.path_index,
@@ -89,16 +83,21 @@ export default class Driver {
       `);
     }
     isDestinationReached() {
-        return (this.location[0] === this.path[this.path.length - 1][0] &&
-            this.location[1] === this.path[this.path.length - 1][1]);
+        const { path, location } = this;
+        return (location[0] === path[path.length - 1][0] &&
+            location[1] === path[path.length - 1][1]);
     }
     requestMatch() {
         g.dispatcher.send({
             from: 'driver',
-            entity: this,
+            data: {
+                driverId: this.driverId,
+                name: this.name,
+                location: this.location,
+            },
         });
     }
-    requestPath(destination) {
+    requestRoute(destination) {
         g.routePlanner.send({
             driverId: this.driverId,
             startingPosition: this.location,
@@ -112,6 +111,12 @@ export default class Driver {
         this.busy = false;
     }
     handleRoutePlannerResult(path) {
+        let newStatus;
+        if (this.status === 'idle')
+            newStatus = 'pickup';
+        else if (this.status === 'pickup')
+            newStatus = 'enroute';
+        this.status = newStatus;
         this.path = path;
         this.pathIndex = 0;
         this.updateDB();

@@ -1,17 +1,31 @@
-import fs from 'fs';
 //@ts-ignore
 import pg, { Client } from 'pg';
 import { wait } from '../../shared/utils.js';
+
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '../../.env' });
+
+const {
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_HOST,
+  POSTGRES_PORT,
+  POSTGRES_DBNAME,
+} = process.env;
 
 let retries = 3;
 const retryDelay = 2000;
 
 export default async function dbInit(): Promise<Client> {
   return new Promise(async (resolve, reject) => {
-    const dbConfig = JSON.parse(fs.readFileSync('../../dbconfig.json', 'utf8'));
-    const { host, port, user, password, dbname } = dbConfig;
     const { Client } = pg;
-    const db = new Client({ host, port, user, password, database: dbname });
+    const db = new Client({
+      host: POSTGRES_HOST,
+      port: POSTGRES_PORT,
+      user: POSTGRES_USER,
+      password: POSTGRES_PASSWORD,
+      database: POSTGRES_DBNAME,
+    });
 
     while (retries > 0) {
       try {

@@ -1,3 +1,11 @@
+CREATE USER ridesuser WITH PASSWORD '<password>';
+CREATE DATABASE ridesdb;
+GRANT ALL PRIVILEGES ON DATABASE ridesdb TO ridesuser;
+GRANT SELECT, INSERT, UPDATE, DELETE ON customers TO ridesuser;
+GRANT SELECT, INSERT, UPDATE, DELETE ON drivers TO ridesuser;
+GRANT USAGE, SELECT ON SEQUENCE drivers_id_seq TO ridesuser;
+GRANT USAGE, SELECT ON SEQUENCE customers_id_seq TO ridesuser;
+
 CREATE TABLE customers (
   id SERIAL PRIMARY KEY,
   customer_id uuid UNIQUE,

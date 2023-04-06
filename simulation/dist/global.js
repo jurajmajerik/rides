@@ -2,6 +2,7 @@ import { fork } from 'child_process';
 import dbInit from './dbInit.js';
 import Driver from './Driver.js';
 import Customer from './Customer.js';
+import { getRoadNodes } from './methods.js';
 import { drivers, customers } from './data.js';
 const g = {
     db: null,
@@ -11,6 +12,7 @@ const g = {
     dispatcher: null,
     routePlanner: null,
     activeCustomers: null,
+    roadNodes: null,
     init: null,
 };
 const init = async () => {
@@ -19,6 +21,7 @@ const init = async () => {
     g.dispatcher = fork('dispatcher.js');
     g.routePlanner = fork('routePlanner.js');
     g.activeCustomers = new Map();
+    g.roadNodes = getRoadNodes();
     g.driverInstances = {};
     drivers.forEach(({ driverId, name }) => {
         g.driverInstances[driverId] = new Driver({ driverId, name });

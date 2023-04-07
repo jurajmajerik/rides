@@ -26,28 +26,34 @@ export default class Customer {
   }
 
   private async updateDB(): Promise<void> {
-    return g.db.query(
-      `
-      INSERT INTO customers (customer_id, name, active, location, destination, driver_id)
-      VALUES (
-        '${this.customerId}',
-        '${this.name}',
-        ${this.active},
-        '${this.location && `${this.location[0]}:${this.location[1]}`}',
-        '${
-          this.destination && `${this.destination[0]}:${this.destination[1]}`
-        }',
-        ${this.driverId ? `'${this.driverId}'` : null}
-      )
-      ON CONFLICT (name)
-      DO UPDATE SET 
-      name = EXCLUDED.name,
-      active = EXCLUDED.active,
-      location = EXCLUDED.location,
-      destination = EXCLUDED.destination,
-      driver_id = EXCLUDED.driver_id
-      `
-    );
+    try {
+      g.db.query(
+        `
+        INSERT INTO customers (customer_id, name, active, location, destination, driver_id)
+        VALUES (
+          '${this.customerId}',
+          '${this.name}',
+          ${this.active},
+          '${this.location && `${this.location[0]}:${this.location[1]}`}',
+          '${
+            this.destination && `${this.destination[0]}:${this.destination[1]}`
+          }',
+          ${this.driverId ? `'${this.driverId}'` : null}
+        )
+        ON CONFLICT (name)
+        DO UPDATE SET 
+        name = EXCLUDED.name,
+        active = EXCLUDED.active,
+        location = EXCLUDED.location,
+        destination = EXCLUDED.destination,
+        driver_id = EXCLUDED.driver_id
+        `
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    return;
   }
 
   public deactivate(): void {

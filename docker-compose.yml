@@ -34,7 +34,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - app-db:/var/lib/postgresql/data
+      - rides-db:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command:
@@ -50,5 +50,5 @@ services:
           memory: 300M
 
 volumes:
-  app-db:
+  rides-db:
     external: true

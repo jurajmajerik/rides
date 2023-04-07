@@ -1,5 +1,8 @@
 CREATE USER ridesuser WITH PASSWORD '<password>';
 CREATE DATABASE ridesdb;
+
+-- /c ridesdb
+
 GRANT ALL PRIVILEGES ON DATABASE ridesdb TO ridesuser;
 GRANT SELECT, INSERT, UPDATE, DELETE ON customers TO ridesuser;
 GRANT SELECT, INSERT, UPDATE, DELETE ON drivers TO ridesuser;

@@ -231,12 +231,18 @@ func main() {
 		// log.Fatal(http.ListenAndServe(":8080", nil))
 		srv := &http.Server{
 			Handler: router,
-			Addr:    "127.0.0.1:8000",
+			Addr:    ":8080",
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}
+		fmt.Println(srv)
 	
-		log.Fatal(srv.ListenAndServe())
+		// log.Fatal(srv.ListenAndServe())
+		err := srv.ListenAndServe()
+		if err != nil {
+				log.Fatal(err)
+		}
+		
 	} else if serverEnv == "PROD" {
 		log.Fatal(
 			http.ListenAndServeTLS(
@@ -249,7 +255,7 @@ func main() {
 
 		srv := &http.Server{
 			Handler: router,
-			Addr:    "127.0.0.1:443",
+			Addr:    ":443",
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}

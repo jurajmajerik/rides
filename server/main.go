@@ -179,11 +179,19 @@ func main() {
 	router.HandleFunc("/api/customers", getCustomers)
 
 	router.HandleFunc("/grafana/{subpath:.*}", func(w http.ResponseWriter, r *http.Request) {
-		// Modify the incoming request URL to remove the "/grafana" prefix.
-		fmt.Println(r.URL.Host, r.URL.Scheme, r.Host)
+		url, err := url.Parse("http://localhost:3000")
+		if err != nil {
+			panic(err)
+		}
+
+		r.URL.Host = url.Host
+		r.URL.Scheme = url.Scheme
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+		r.Host = url.Host
+
+		// Modify the incoming request URL to remove the "/grafana" prefix
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
-		fmt.Println(r.URL.Path)
+
     grafanaProxy.ServeHTTP(w, r)
 	})
 

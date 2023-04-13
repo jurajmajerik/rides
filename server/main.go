@@ -159,6 +159,13 @@ func getGrafanaProxy() *httputil.ReverseProxy {
 	grafanaURL, _ := url.Parse(baseURL + ":3000")
 	fmt.Println("Grafana URL: " + grafanaURL.String())
 	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
+
+	grafanaProxy.Director = func(req *http.Request) {
+		req.URL.Scheme = "http"
+		req.URL.Host = "localhost:3000"
+		req.Host = req.URL.Host
+	}
+
 	return grafanaProxy
 }
 

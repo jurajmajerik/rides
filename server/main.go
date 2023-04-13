@@ -198,9 +198,10 @@ func main() {
 		r.URL.Host = grafanaURL.Host
 		r.URL.Scheme = grafanaURL.Scheme
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
-		fmt.Println(r.URL.Host, r.Header.Get("Host"))
 		r.Header.Set("Host", r.URL.Host)
 		r.Host = grafanaURL.Host
+
+		fmt.Println(r.URL, r.Header, r.Host)
 
 		// Modify the incoming request URL to remove the "/grafana" prefix
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")

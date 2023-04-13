@@ -175,7 +175,7 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func proxyHandler(p *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/proxy/grafana")
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
 		p.ServeHTTP(w, r)
 	}
 }
@@ -197,7 +197,7 @@ func main() {
 	router.HandleFunc("/api/drivers", getDrivers)
 	router.HandleFunc("/api/customers", getCustomers)
 
-	router.HandleFunc("/proxy/grafana/", proxyHandler(grafanaProxy))
+	router.HandleFunc("/grafana/", proxyHandler(grafanaProxy))
 	// router.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
 	// 	// Modify the incoming request URL to remove the "/grafana" prefix.
   //   r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")

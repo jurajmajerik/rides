@@ -186,17 +186,21 @@ func main() {
 	router.HandleFunc("/api/customers", getCustomers)
 
 	router.HandleFunc("/grafana/{subpath:.*}", func(w http.ResponseWriter, r *http.Request) {
-		url, err := url.Parse("http://host.docker.internal:3000")
+		baseURL := "http://host.docker.internal"
+		if os.Getenv("SERVER_ENV") == "PROD" {
+			baseURL = "http://" + os.Getenv("SERVER_IP")
+		}
+		grafanaURL, _ := url.Parse(baseURL + ":3000")
 		if err != nil {
 			panic(err)
 		}
 
-		r.URL.Host = url.Host
-		r.URL.Scheme = url.Scheme
+		r.URL.Host = grafanaURL.Host
+		r.URL.Scheme = grafanaURL.Scheme
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 		fmt.Println(r.URL.Host, r.Header.Get("Host"))
 		r.Header.Set("Host", r.URL.Host)
-		r.Host = url.Host
+		r.Host = grafanaURL.Host
 
 		// Modify the incoming request URL to remove the "/grafana" prefix
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")

@@ -183,6 +183,7 @@ func main() {
 		// r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 		fmt.Println(r.URL.Path)
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
+		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 		fmt.Println(r.URL.Path)
     grafanaProxy.ServeHTTP(w, r)
 	})

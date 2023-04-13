@@ -156,7 +156,7 @@ func main() {
 	grafanaProxy := getGrafanaProxy()
 	prometheusProxy := getPrometheusProxy()
 	
-	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
+	http.Handle("/*", http.FileServer(http.Dir("../frontend/build")))
 	http.HandleFunc("/drivers", getDrivers)
 	http.HandleFunc("/customers", getCustomers)
 	

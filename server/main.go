@@ -12,6 +12,7 @@ import (
 	"fmt"
 
 	"github.com/joho/godotenv"
+	"github.com/gorilla/mux"
 )
 
 type Driver struct {
@@ -153,6 +154,8 @@ func main() {
 	db.InitDB()
 	defer db.Connection.Close()
 
+	router := mux.NewRouter()
+
 	grafanaProxy := getGrafanaProxy()
 	prometheusProxy := getPrometheusProxy()
 	
@@ -173,7 +176,8 @@ func main() {
     prometheusProxy.ServeHTTP(w, r)
 	})
 
-	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
+	// http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("../frontend/build")))
 
 	serverEnv := os.Getenv("SERVER_ENV")
 	if serverEnv == "DEV" {

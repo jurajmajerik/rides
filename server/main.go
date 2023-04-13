@@ -125,28 +125,6 @@ func getCustomers(w http.ResponseWriter, req *http.Request) {
 	w.Write(ridesBytes)
 }
 
-func getGrafanaProxy() *httputil.ReverseProxy {
-	baseURL := "http://host.docker.internal"
-	if os.Getenv("SERVER_ENV") == "PROD" {
-		baseURL = "http://" + os.Getenv("SERVER_IP")
-	}
-	grafanaURL, _ := url.Parse(baseURL + ":3000")
-	fmt.Println("Grafana URL: " + grafanaURL.String())
-	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
-	return grafanaProxy
-}
-
-func getPrometheusProxy() *httputil.ReverseProxy {
-	baseURL := "http://host.docker.internal"
-	if os.Getenv("SERVER_ENV") == "PROD" {
-		baseURL = "http://" + os.Getenv("SERVER_IP")
-	}
-	prometheusURL, _ := url.Parse(baseURL + ":9090")
-	fmt.Println("Prometheus URL: " + prometheusURL.String())
-	prometheusProxy := httputil.NewSingleHostReverseProxy(prometheusURL)
-	return prometheusProxy
-}
-
 type spaHandler struct {
 	staticPath string
 	indexPath  string
@@ -173,6 +151,17 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
+func getGrafanaProxy() *httputil.ReverseProxy {
+	baseURL := "http://host.docker.internal"
+	if os.Getenv("SERVER_ENV") == "PROD" {
+		baseURL = "http://" + os.Getenv("SERVER_IP")
+	}
+	grafanaURL, _ := url.Parse(baseURL + ":3000")
+	fmt.Println("Grafana URL: " + grafanaURL.String())
+	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
+	return grafanaProxy
+}
+
 func main() {
 	err := godotenv.Load("../.env")
   if err != nil {
@@ -185,23 +174,15 @@ func main() {
 	router := mux.NewRouter()
 
 	grafanaProxy := getGrafanaProxy()
-	prometheusProxy := getPrometheusProxy()
 	
 	router.HandleFunc("/api/drivers", getDrivers)
 	router.HandleFunc("/api/customers", getCustomers)
 
-	router.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("here")
+	http.HandleFunc("/proxy/grafana/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
+		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
     grafanaProxy.ServeHTTP(w, r)
-	})
-
-	router.HandleFunc("/prometheus/", func(w http.ResponseWriter, r *http.Request) {
-		// Modify the incoming request URL to remove the "/grafana" prefix.
-    // r.URL.Path = strings.TrimPrefix(r.URL.Path, "/prometheus")
-		// don't overwrite if asking for /metrics!
-    prometheusProxy.ServeHTTP(w, r)
 	})
 
 	spa := spaHandler{staticPath: "../frontend/build", indexPath: "index.html"}

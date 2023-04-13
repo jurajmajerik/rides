@@ -244,14 +244,14 @@ func main() {
 		}
 		
 	} else if serverEnv == "PROD" {
-		log.Fatal(
-			http.ListenAndServeTLS(
-				":443",
-				"/etc/letsencrypt/live/rides.jurajmajerik.com/fullchain.pem",
-				"/etc/letsencrypt/live/rides.jurajmajerik.com/privkey.pem",
-				nil,
-			),
-		)
+		// log.Fatal(
+		// 	http.ListenAndServeTLS(
+		// 		":443",
+		// 		"/etc/letsencrypt/live/rides.jurajmajerik.com/fullchain.pem",
+		// 		"/etc/letsencrypt/live/rides.jurajmajerik.com/privkey.pem",
+		// 		nil,
+		// 	),
+		// )
 
 		srv := &http.Server{
 			Handler: router,

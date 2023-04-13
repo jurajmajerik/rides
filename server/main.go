@@ -178,9 +178,9 @@ func main() {
 	router.HandleFunc("/api/drivers", getDrivers)
 	router.HandleFunc("/api/customers", getCustomers)
 
-	http.HandleFunc("/proxy/grafana/", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
-		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+		// r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
     grafanaProxy.ServeHTTP(w, r)
 	})

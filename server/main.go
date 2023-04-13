@@ -202,6 +202,7 @@ func main() {
 		r.Header.Set("Origin", "http://" + os.Getenv("SERVER_IP"))
 		r.Host = grafanaURL.Host
 
+		w.Header().Del("X-Frame-Options")
 		w.Header().Set("X-Frame-Options", "ALLOW-FROM https://rides.jurajmajerik.com")
 
 		// Modify the incoming request URL to remove the "/grafana" prefix

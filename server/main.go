@@ -159,9 +159,8 @@ func main() {
 	grafanaProxy := getGrafanaProxy()
 	prometheusProxy := getPrometheusProxy()
 	
-	http.HandleFunc("/drivers", getDrivers)
-	http.HandleFunc("/customers", getCustomers)
-
+	http.HandleFunc("/api/drivers", getDrivers)
+	http.HandleFunc("/api/customers", getCustomers)
 	
 	http.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.

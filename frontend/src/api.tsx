@@ -6,7 +6,7 @@ const baseUrl: string =
 export const api: { [key: string]: any } = {};
 
 api.get = async (endpoint: string): Promise<any> => {
-  const res = await fetch(`${baseUrl}${endpoint}`);
+  const res = await fetch(`${baseUrl}/api${endpoint}`);
   if (res.json) return (await res.json()) || [];
   return res;
 };

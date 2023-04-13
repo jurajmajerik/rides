@@ -186,7 +186,7 @@ func main() {
 	router.HandleFunc("/api/customers", getCustomers)
 
 	router.HandleFunc("/grafana/{subpath:.*}", func(w http.ResponseWriter, r *http.Request) {
-		url, err := url.Parse("http://localhost:3000")
+		url, err := url.Parse("http://host.docker.internal:3000")
 		if err != nil {
 			panic(err)
 		}

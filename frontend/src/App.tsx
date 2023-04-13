@@ -1,10 +1,4 @@
-import GeoMap from './GeoMap';
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-} from 'react-router-dom';
+import { Outlet } from 'react-router';
 
 const paths = {
   map: (
@@ -35,7 +29,7 @@ const paths = {
   ),
 };
 
-const IconWrapper = ({ path }) => (
+const Icon = ({ type }) => (
   <div className="mr-2" style={{ width: '20px', height: '20px' }}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -46,27 +40,29 @@ const IconWrapper = ({ path }) => (
       className="w-6 h-6"
       style={{ width: '100%', height: '100%' }}
     >
-      {paths[path]}
+      {paths[type]}
     </svg>
   </div>
 );
 
 const Menu = () => {
-  const Li = ({ label, icon }) => (
-    <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 rounded-md cursor-pointer transition-all">
-      {icon}
-      {label}
-    </li>
+  const Li = ({ path, label }) => (
+    <a href={`/${path}`}>
+      <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 rounded-md cursor-pointer transition-all">
+        <Icon type={path} />
+        {label}
+      </li>
+    </a>
   );
 
   const config = [
     ['map', 'Map'],
-    ['system-design', 'System Design'],
     ['monitor', 'Monitor'],
+    // ['system-design', 'System Design'],
   ];
 
   const lis = config.map(([key, label]) => (
-    <Li key={key} label={label} icon={<IconWrapper path={key} />} />
+    <Li key={key} path={key} label={label} />
   ));
 
   return <ul className="p-2">{lis}</ul>;
@@ -79,22 +75,7 @@ const App = () => {
         <Menu />
       </aside>
       <div className="content">
-        <GeoMap />
-        <div className="description">
-          <p className="mt-6 space-y-7 text-sm text-zinc-600 dark:text-zinc-400">
-            <em>Rides</em>
-            &nbsp;is my take on building and visualizing a scalable system. Read
-            more at
-            <a
-              className="text-blue-500 hover:text-blue-600 transition-colors"
-              href="https://jurajmajerik.com"
-              target="_blank"
-              rel="noreferrer"
-            >
-              &nbsp;jurajmajerik.com
-            </a>
-          </p>
-        </div>
+        <Outlet />
       </div>
     </div>
   );

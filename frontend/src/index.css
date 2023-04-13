@@ -18,12 +18,16 @@ aside {
 }
 
 .content {
+  width: 100%;
+}
+
+.view-map {
   flex: 1;
   display: flex;
   flex-direction: row-reverse;
 }
 
-.description {
+.view-map .description {
   position: relative;
   flex: 1;
   display: flex;
@@ -34,7 +38,7 @@ aside {
   margin: 0 40px;
 }
 
-.map {
+.view-map .map {
   position: relative;
   border: solid 0.5px lightgray;
   flex: 0 0 auto;
@@ -59,4 +63,12 @@ aside {
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 1000;
+}
+
+#error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }

@@ -173,13 +173,6 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
-func proxyHandler(p *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
-		p.ServeHTTP(w, r)
-	}
-}
-
 func main() {
 	err := godotenv.Load("../.env")
   if err != nil {
@@ -197,12 +190,12 @@ func main() {
 	router.HandleFunc("/api/drivers", getDrivers)
 	router.HandleFunc("/api/customers", getCustomers)
 
-	router.HandleFunc("/grafana/", proxyHandler(grafanaProxy))
-	// router.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
-	// 	// Modify the incoming request URL to remove the "/grafana" prefix.
-  //   r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
-  //   grafanaProxy.ServeHTTP(w, r)
-	// })
+	router.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("here")
+		// Modify the incoming request URL to remove the "/grafana" prefix.
+    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
+    grafanaProxy.ServeHTTP(w, r)
+	})
 
 	router.HandleFunc("/prometheus/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.

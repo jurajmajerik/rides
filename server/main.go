@@ -10,6 +10,7 @@ import (
 	"strings"
 	"os"
 	"path/filepath"
+	"time"
 	"fmt"
 
 	"github.com/joho/godotenv"
@@ -227,7 +228,15 @@ func main() {
 
 	serverEnv := os.Getenv("SERVER_ENV")
 	if serverEnv == "DEV" {
-		log.Fatal(http.ListenAndServe(":8080", nil))
+		// log.Fatal(http.ListenAndServe(":8080", nil))
+		srv := &http.Server{
+			Handler: router,
+			Addr:    "127.0.0.1:8000",
+			WriteTimeout: 15 * time.Second,
+			ReadTimeout:  15 * time.Second,
+		}
+	
+		log.Fatal(srv.ListenAndServe())
 	} else if serverEnv == "PROD" {
 		log.Fatal(
 			http.ListenAndServeTLS(
@@ -237,5 +246,17 @@ func main() {
 				nil,
 			),
 		)
+
+		srv := &http.Server{
+			Handler: router,
+			Addr:    "127.0.0.1:443",
+			WriteTimeout: 15 * time.Second,
+			ReadTimeout:  15 * time.Second,
+		}
+	
+		log.Fatal(srv.ListenAndServeTLS(
+			"/etc/letsencrypt/live/rides.jurajmajerik.com/fullchain.pem",
+			"/etc/letsencrypt/live/rides.jurajmajerik.com/privkey.pem",
+		))
 	}
 }

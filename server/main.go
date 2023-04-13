@@ -156,23 +156,25 @@ func main() {
 	grafanaProxy := getGrafanaProxy()
 	prometheusProxy := getPrometheusProxy()
 	
-	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
 	http.HandleFunc("/drivers", getDrivers)
 	http.HandleFunc("/customers", getCustomers)
+
 	
 	http.HandleFunc("/grafana/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
     r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
     grafanaProxy.ServeHTTP(w, r)
 	})
-
+	
 	http.HandleFunc("/prometheus/", func(w http.ResponseWriter, r *http.Request) {
 		// Modify the incoming request URL to remove the "/grafana" prefix.
     // r.URL.Path = strings.TrimPrefix(r.URL.Path, "/prometheus")
 		// don't overwrite if asking for /metrics!
     prometheusProxy.ServeHTTP(w, r)
 	})
-	
+
+	http.Handle("/", http.FileServer(http.Dir("../frontend/build")))
+
 	serverEnv := os.Getenv("SERVER_ENV")
 	if serverEnv == "DEV" {
 		log.Fatal(http.ListenAndServe(":8080", nil))

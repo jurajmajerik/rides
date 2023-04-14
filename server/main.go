@@ -37,7 +37,7 @@ type Customer struct {
 	DriverId    string `json:"driverId"`
 }
 
-func getDrivers(w http.ResponseWriter, req *http.Request) {
+func driversHandler(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query(`
 		SELECT
 			id,
@@ -80,7 +80,7 @@ func getDrivers(w http.ResponseWriter, req *http.Request) {
 	w.Write(ridesBytes)
 }
 
-func getCustomers(w http.ResponseWriter, req *http.Request) {
+func customersHandler(w http.ResponseWriter, req *http.Request) {
 	rows, err := db.Connection.Query(`
 		SELECT 
 			id, 
@@ -124,36 +124,23 @@ func getCustomers(w http.ResponseWriter, req *http.Request) {
 	w.Write(ridesBytes)
 }
 
-type spaHandler struct {
-	staticPath string
-	indexPath  string
-}
-
-func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path, err := filepath.Abs(r.URL.Path)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	path = filepath.Join(h.staticPath, path)
-
-	_, err = os.Stat(path)
-	if os.IsNotExist(err) {
-		http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
-		return
-	} else if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
-}
-
-func getGrafanaProxy() *httputil.ReverseProxy {
+func getGrafanaHandler() func(w http.ResponseWriter, r *http.Request) {
 	grafanaURL, _ := url.Parse("http://" + os.Getenv("SERVER_IP") + ":3000" )
 	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
-	return grafanaProxy
+	
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.URL.Host = grafanaURL.Host
+		r.URL.Scheme = grafanaURL.Scheme
+		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+		r.Header.Set("Host", r.URL.Host)
+		r.Header.Set("Origin", "http://" + os.Getenv("SERVER_IP"))
+		r.Host = grafanaURL.Host
+
+		// Modify the incoming request URL to remove the "/grafana" prefix
+    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
+
+    grafanaProxy.ServeHTTP(w, r)
+	}
 }
 
 func main() {
@@ -167,28 +154,11 @@ func main() {
 
 	router := mux.NewRouter()
 
-	grafanaProxy := getGrafanaProxy()
-	
-	router.HandleFunc("/api/drivers", getDrivers)
-	router.HandleFunc("/api/customers", getCustomers)
+	router.HandleFunc("/api/drivers", driversHandler)
+	router.HandleFunc("/api/customers", customersHandler)
 
-	router.HandleFunc("/grafana/{subpath:.*}", func(w http.ResponseWriter, r *http.Request) {
-		grafanaURL, _ := url.Parse("http://" + os.Getenv("SERVER_IP") + ":3000" )
+	router.HandleFunc("/grafana/{subpath:.*}", getGrafanaHandler())
 
-		r.URL.Host = grafanaURL.Host
-		r.URL.Scheme = grafanaURL.Scheme
-		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
-		r.Header.Set("Host", r.URL.Host)
-		r.Header.Set("Origin", "http://" + os.Getenv("SERVER_IP"))
-		r.Host = grafanaURL.Host
-
-		// Modify the incoming request URL to remove the "/grafana" prefix
-    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
-
-    grafanaProxy.ServeHTTP(w, r)
-	})
-
-	// spa := spaHandler{staticPath: "../frontend/build", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		staticPath := "../frontend/build"
 		indexPath := "index.html"

@@ -7,23 +7,23 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 type Driver struct {
-	Id       string `json:"id"`
-	DriverId string `json:"driverId"`
-	Name        string `json:"name"`
-	Status 		  string `json:"status"`
-	Location string `json:"location"`
-	Path     string `json:"path"`
-	PathIndex int `json:"pathIndex"`
+	Id         string `json:"id"`
+	DriverId   string `json:"driverId"`
+	Name       string `json:"name"`
+	Status     string `json:"status"`
+	Location   string `json:"location"`
+	Path       string `json:"path"`
+	PathIndex  int    `json:"pathIndex"`
 	CustomerId string `json:"customerId"`
 }
 
@@ -125,21 +125,21 @@ func customersHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func getGrafanaHandler() func(w http.ResponseWriter, r *http.Request) {
-	grafanaURL, _ := url.Parse("http://" + os.Getenv("SERVER_IP") + ":3000" )
+	grafanaURL, _ := url.Parse("http://" + os.Getenv("SERVER_IP") + ":3000")
 	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
-	
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		r.URL.Host = grafanaURL.Host
 		r.URL.Scheme = grafanaURL.Scheme
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
 		r.Header.Set("Host", r.URL.Host)
-		r.Header.Set("Origin", "http://" + os.Getenv("SERVER_IP"))
+		r.Header.Set("Origin", "http://"+os.Getenv("SERVER_IP"))
 		r.Host = grafanaURL.Host
 
 		// Modify the incoming request URL to remove the "/grafana" prefix
-    r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
+		r.URL.Path = strings.TrimPrefix(r.URL.Path, "/grafana")
 
-    grafanaProxy.ServeHTTP(w, r)
+		grafanaProxy.ServeHTTP(w, r)
 	}
 }
 
@@ -168,9 +168,9 @@ func spaHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	err := godotenv.Load("../.env")
-  if err != nil {
-    log.Fatal(err)
-  }
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	db.InitDB()
 	defer db.Connection.Close()
@@ -185,21 +185,21 @@ func main() {
 	serverEnv := os.Getenv("SERVER_ENV")
 	if serverEnv == "DEV" {
 		srv := &http.Server{
-			Handler: router,
-			Addr:    ":8080",
+			Handler:      router,
+			Addr:         ":8080",
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}
-		
+
 		log.Fatal(srv.ListenAndServe())
 	} else if serverEnv == "PROD" {
 		srv := &http.Server{
-			Handler: router,
-			Addr:    ":443",
+			Handler:      router,
+			Addr:         ":443",
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}
-	
+
 		log.Fatal(srv.ListenAndServeTLS(
 			"/etc/letsencrypt/live/rides.jurajmajerik.com/fullchain.pem",
 			"/etc/letsencrypt/live/rides.jurajmajerik.com/privkey.pem",

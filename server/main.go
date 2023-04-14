@@ -188,8 +188,29 @@ func main() {
     grafanaProxy.ServeHTTP(w, r)
 	})
 
-	spa := spaHandler{staticPath: "../frontend/build", indexPath: "index.html"}
-	router.PathPrefix("/").Handler(spa)
+	// spa := spaHandler{staticPath: "../frontend/build", indexPath: "index.html"}
+	router.PathPrefix("/").Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		staticPath := "../frontend/build"
+		indexPath := "index.html"
+		path, err := filepath.Abs(r.URL.Path)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	
+		path = filepath.Join(staticPath, path)
+	
+		_, err = os.Stat(path)
+		if os.IsNotExist(err) {
+			http.ServeFile(w, r, filepath.Join(staticPath, indexPath))
+			return
+		} else if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	
+		http.FileServer(http.Dir(staticPath)).ServeHTTP(w, r)
+	}))
 
 	serverEnv := os.Getenv("SERVER_ENV")
 	if serverEnv == "DEV" {

@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	"fmt"
 
 	"github.com/joho/godotenv"
 	"github.com/gorilla/mux"
@@ -152,20 +151,8 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func getGrafanaProxy() *httputil.ReverseProxy {
-	baseURL := "http://host.docker.internal"
-	if os.Getenv("SERVER_ENV") == "PROD" {
-		baseURL = "http://" + os.Getenv("SERVER_IP")
-	}
-	grafanaURL, _ := url.Parse(baseURL + ":3000")
-	fmt.Println("Grafana URL: " + grafanaURL.String())
+	grafanaURL, _ := url.Parse("http://" + os.Getenv("SERVER_IP") + ":3000" )
 	grafanaProxy := httputil.NewSingleHostReverseProxy(grafanaURL)
-
-	// grafanaProxy.Director = func(req *http.Request) {
-	// 	req.URL.Scheme = "http"
-	// 	req.URL.Host = "localhost:3000"
-	// 	req.Host = req.URL.Host
-	// }
-
 	return grafanaProxy
 }
 
@@ -186,14 +173,7 @@ func main() {
 	router.HandleFunc("/api/customers", getCustomers)
 
 	router.HandleFunc("/grafana/{subpath:.*}", func(w http.ResponseWriter, r *http.Request) {
-		baseURL := "http://host.docker.internal"
-		if os.Getenv("SERVER_ENV") == "PROD" {
-			baseURL = "http://" + os.Getenv("SERVER_IP")
-		}
-		grafanaURL, _ := url.Parse(baseURL + ":3000")
-		if err != nil {
-			panic(err)
-		}
+		grafanaURL, _ := url.Parse("http://" + os.Getenv("SERVER_IP") + ":3000" )
 
 		r.URL.Host = grafanaURL.Host
 		r.URL.Scheme = grafanaURL.Scheme
@@ -219,12 +199,8 @@ func main() {
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
 		}
-
-		err := srv.ListenAndServe()
-		if err != nil {
-				log.Fatal(err)
-		}
 		
+		log.Fatal(srv.ListenAndServe())
 	} else if serverEnv == "PROD" {
 		srv := &http.Server{
 			Handler: router,

@@ -39,7 +39,7 @@ const SystemDesignView = () => <h1>System Design View</h1>;
 const MonitorView = () => (
   <div className="relative w-full h-full">
     <iframe
-      src="https://rides.jurajmajerik.com/grafana/d/VHZrYwBVk"
+      src="https://rides.jurajmajerik.com/grafana/d/VHZrYwBVk/dashboard-1?orgId=1&refresh=5s&kiosk"
       className="
       w-full
       h-full

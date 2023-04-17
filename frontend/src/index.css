@@ -14,7 +14,31 @@ code {
 
 aside {
   width: 300px;
-  border-right: solid 1px gray;
+}
+
+.bio {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100px;
+  display: flex;
+}
+
+.bio-left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10px;
+}
+
+.bio-right {
+  padding-right: 30px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .content {

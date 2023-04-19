@@ -1,2 +1,1 @@
-frontend/assets/* linguist-vendored
-simulation/dist/* linguist-vendored
+*.css linguist-vendored

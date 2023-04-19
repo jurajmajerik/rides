@@ -1,2 +1,2 @@
-frontend/assets/* linguist-vendored=false
-simulation/dist/* linguist-vendored=false
+frontend/assets/* linguist-vendored
+simulation/dist/* linguist-vendored

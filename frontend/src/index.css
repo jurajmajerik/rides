@@ -54,12 +54,13 @@ aside {
 .view-map .description {
   position: relative;
   flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  transform: translateY(-20px);
-  margin: 0 40px;
+  /* display: flex; */
+  /* height: fit-content; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  /* text-align: center; */
+  /* transform: translateY(-20px); */
+  /* margin: 0 40px; */
 }
 
 .view-map .map {

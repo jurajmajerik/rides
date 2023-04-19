@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Car from './Car';
+import ListItem from './ListItem';
 import { api } from './api';
 import { wait } from '../../shared/utils';
 import config from '../../shared/config';
@@ -10,7 +11,7 @@ import DestIcon from './DestIcon';
 const { gridSize, squareSize, fetchInterval } = config;
 const obstaclesMap = getObstaclesMap();
 
-const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
+const loadDrivers = async (previousUpdateAtRef, setCars, setRefreshing) => {
   while (true) {
     const drivers = await api.get('/drivers');
 
@@ -27,7 +28,8 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
 
     const cars = [];
     for (const driver of drivers) {
-      const { driverId, status, pathIndex, location } = driver;
+      const { driverId, status, pathIndex, location, name, customerId } =
+        driver;
       let path = [];
       if (driver.path) path = JSON.parse(driver.path) as [number, number][];
       const [x, y] = location.split(':');
@@ -37,6 +39,8 @@ const loadData = async (previousUpdateAtRef, setCars, setRefreshing) => {
         actual: [parseInt(x), parseInt(y)],
         path,
         pathIndex,
+        name,
+        customerId,
       });
     }
 
@@ -73,7 +77,7 @@ const GeoMap = () => {
   useEffect(() => {
     previousUpdateAtRef.current = Date.now();
 
-    loadData(previousUpdateAtRef, setCars, setRefreshing);
+    loadDrivers(previousUpdateAtRef, setCars, setRefreshing);
     loadCustomers(setCustomers);
   }, []);
 
@@ -168,22 +172,37 @@ const GeoMap = () => {
       );
     });
 
+  const listElems = cars
+    .filter(({ status }) => status === 'enroute' || status === 'pickup')
+    .map(({ name, customerId }) => {
+      return (
+        <ListItem
+          key={`${name}:${customerId}`}
+          driverName={name}
+          customerName={customerId.slice(0, 15)}
+        />
+      );
+    });
+
   return (
-    <div className="map">
-      <div className="map-inner">
-        <div className={`map-refresh ${refreshing ? 'active' : ''}`} />
-        <svg
-          width={gridSize}
-          height={gridSize}
-          viewBox={`0 0 ${gridSize} ${gridSize}`}
-        >
-          {obstacleElems}
-          {pathElems}
-          {carElems}
-          {customerElems}
-          {destElems}
-        </svg>
+    <div className="view-map">
+      <div className="map">
+        <div className="map-inner">
+          <div className={`map-refresh ${refreshing ? 'active' : ''}`} />
+          <svg
+            width={gridSize}
+            height={gridSize}
+            viewBox={`0 0 ${gridSize} ${gridSize}`}
+          >
+            {obstacleElems}
+            {pathElems}
+            {carElems}
+            {customerElems}
+            {destElems}
+          </svg>
+        </div>
       </div>
+      <div className="description">{listElems}</div>
     </div>
   );
 };

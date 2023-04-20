@@ -28,8 +28,15 @@ const loadDrivers = async (previousUpdateAtRef, setCars, setRefreshing) => {
 
     const cars = [];
     for (const driver of drivers) {
-      const { driverId, status, pathIndex, location, name, customerId } =
-        driver;
+      const {
+        driverId,
+        status,
+        pathIndex,
+        location,
+        name,
+        customerId,
+        customerName,
+      } = driver;
       let path = [];
       if (driver.path) path = JSON.parse(driver.path) as [number, number][];
       const [x, y] = location.split(':');
@@ -41,6 +48,7 @@ const loadDrivers = async (previousUpdateAtRef, setCars, setRefreshing) => {
         pathIndex,
         name,
         customerId,
+        customerName,
       });
     }
 
@@ -174,12 +182,12 @@ const GeoMap = () => {
 
   const listElems = cars
     .filter(({ status }) => status === 'enroute' || status === 'pickup')
-    .map(({ name, customerId }) => {
+    .map(({ name, customerName }) => {
       return (
         <ListItem
-          key={`${name}:${customerId}`}
+          key={`${name}:${customerName}`}
           driverName={name}
-          customerName={customerId.slice(0, 15)}
+          customerName={customerName}
         />
       );
     });

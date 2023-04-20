@@ -2,6 +2,8 @@ import g from './global.js';
 import { wait, getRandomInt, decide } from '../../shared/utils.js';
 import { CoordPair } from './types.js';
 import config from '../../shared/config.js';
+import firstNames from '../../shared/firstNames.js';
+import lastNames from '../../shared/lastNames.js';
 
 const { maxActiveCustomers } = config;
 
@@ -15,9 +17,11 @@ export default class Customer {
   public destination: CoordPair | null = null;
   private driverId: string | null = null;
 
-  constructor({ customerId, name }: { customerId: string; name: string }) {
+  constructor({ customerId }: { customerId: string }) {
     this.customerId = customerId;
-    this.name = name;
+    this.name = `${firstNames[getRandomInt(0, firstNames.length - 1)]} ${
+      lastNames[getRandomInt(0, lastNames.length - 1)]
+    }`;
 
     this.deactivate = this.deactivate.bind(this);
     this.handleDestinationResult = this.handleDestinationResult.bind(this);
@@ -40,7 +44,7 @@ export default class Customer {
           }',
           ${this.driverId ? `'${this.driverId}'` : null}
         )
-        ON CONFLICT (name)
+        ON CONFLICT (customer_id)
         DO UPDATE SET 
         name = EXCLUDED.name,
         active = EXCLUDED.active,
@@ -81,6 +85,9 @@ export default class Customer {
             newActive = decide(5);
             if (newActive) {
               this.active = true;
+              this.name = `${
+                firstNames[getRandomInt(0, firstNames.length - 1)]
+              } ${lastNames[getRandomInt(0, lastNames.length - 1)]}`;
               this.updateDB();
             }
           }
@@ -90,7 +97,7 @@ export default class Customer {
 
           const location = g.roadNodes[getRandomInt(0, g.roadNodes.length - 1)];
           this.location = location;
-          g.activeCustomers.set(this.customerId, location);
+          g.activeCustomers.add(this.customerId);
 
           g.getDestination.send({
             customerId: this.customerId,

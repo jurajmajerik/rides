@@ -13,7 +13,8 @@ export interface Global {
   dispatcher: ChildProcess;
   getDestination: ChildProcess;
   routePlanner: ChildProcess;
-  activeCustomers: Map<string, CoordPair>;
+  activeCustomers: Set<string>;
+  activeDrivers: Set<string>;
   roadNodes: CoordPair[];
   init: () => Promise<void>;
 }
@@ -26,6 +27,7 @@ const g: Global = {
   dispatcher: null,
   routePlanner: null,
   activeCustomers: null,
+  activeDrivers: null,
   roadNodes: null,
   init: null,
 };
@@ -35,18 +37,23 @@ const init = async () => {
   g.getDestination = fork('getDestination.js');
   g.dispatcher = fork('dispatcher.js');
   g.routePlanner = fork('routePlanner.js');
-  g.activeCustomers = new Map();
+  g.activeCustomers = new Set();
+  g.activeDrivers = new Set();
   g.roadNodes = getRoadNodes();
 
   g.driverInstances = {};
-  drivers.forEach(({ driverId, name }) => {
-    g.driverInstances[driverId] = new Driver({ driverId, name });
+  drivers.forEach(({ driverId }) => {
+    g.driverInstances[driverId] = new Driver({ driverId });
   });
 
   g.customerInstances = {};
-  customers.forEach(({ customerId, name }) => {
-    g.customerInstances[customerId] = new Customer({ customerId, name });
+  customers.forEach(({ customerId }) => {
+    g.customerInstances[customerId] = new Customer({ customerId });
   });
+
+  setInterval(() => {
+    console.log(g.activeDrivers);
+  }, 10000);
 };
 
 g.init = init;

@@ -12,6 +12,7 @@ const g = {
     dispatcher: null,
     routePlanner: null,
     activeCustomers: null,
+    activeDrivers: null,
     roadNodes: null,
     init: null,
 };
@@ -20,16 +21,20 @@ const init = async () => {
     g.getDestination = fork('getDestination.js');
     g.dispatcher = fork('dispatcher.js');
     g.routePlanner = fork('routePlanner.js');
-    g.activeCustomers = new Map();
+    g.activeCustomers = new Set();
+    g.activeDrivers = new Set();
     g.roadNodes = getRoadNodes();
     g.driverInstances = {};
-    drivers.forEach(({ driverId, name }) => {
-        g.driverInstances[driverId] = new Driver({ driverId, name });
+    drivers.forEach(({ driverId }) => {
+        g.driverInstances[driverId] = new Driver({ driverId });
     });
     g.customerInstances = {};
     customers.forEach(({ customerId, name }) => {
         g.customerInstances[customerId] = new Customer({ customerId, name });
     });
+    setInterval(() => {
+        console.log(g.activeDrivers);
+    }, 10000);
 };
 g.init = init;
 export default g;

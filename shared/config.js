@@ -6,9 +6,11 @@ const refreshInterval = 16;
 const turnDuration = refreshInterval * 8;
 const animationOverhead = 200;
 const maxActiveCustomers = 15;
+const maxActiveDrivers = 12;
 
 const config = {
   maxActiveCustomers,
+  maxActiveDrivers,
   gridSize,
   gridCount,
   fetchInterval,

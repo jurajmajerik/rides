@@ -25,6 +25,7 @@ type Driver struct {
 	Path       string `json:"path"`
 	PathIndex  int    `json:"pathIndex"`
 	CustomerId string `json:"customerId"`
+	CustomerName string `json:"customerName"`
 }
 
 type Customer struct {
@@ -47,7 +48,8 @@ func driversHandler(w http.ResponseWriter, req *http.Request) {
 			location,
 			path,
 			path_index,
-			customer_id 
+			customer_id,
+			customer_name 
 		FROM drivers
 		`,
 	)
@@ -70,6 +72,7 @@ func driversHandler(w http.ResponseWriter, req *http.Request) {
 			&driver.Path,
 			&driver.PathIndex,
 			&driver.CustomerId,
+			&driver.CustomerName,
 		)
 		drivers = append(drivers, driver)
 	}

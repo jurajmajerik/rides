@@ -8,7 +8,7 @@ GRANT ALL PRIVILEGES ON DATABASE ridesdb TO ridesuser;
 CREATE TABLE customers (
   id SERIAL PRIMARY KEY,
   customer_id uuid UNIQUE,
-  name VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(255) NOT NULL,
   active BOOLEAN,
   location VARCHAR(5) NOT NULL,
   destination VARCHAR(5) NOT NULL,
@@ -19,12 +19,13 @@ CREATE TYPE status_enum AS ENUM ('idle', 'pickup', 'enroute');
 CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   driver_id uuid UNIQUE,
-  name VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(255) NOT NULL,
   status status_enum NOT NULL,
   location VARCHAR(5) NOT NULL,
   path TEXT,
   path_index INTEGER,
-  customer_id uuid UNIQUE
+  customer_id uuid UNIQUE,
+  customer_name VARCHAR(255)
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON customers TO ridesuser;

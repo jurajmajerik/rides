@@ -29,7 +29,7 @@ const lastNames = [
   "Nowak",
   "Petrov",
   "Kovačević",
-  "O\'Connor",
+  "O''Connor",
   "Ivanov",
   "Wagner",
   "Fernandez",

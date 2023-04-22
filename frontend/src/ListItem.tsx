@@ -45,11 +45,11 @@ const ListItem = ({ driverName, customerName }) => (
     <div className="flex">
       <div className="flex-1 p-1 border-1 border-slate-200 flex">
         <CustomerIcon />
-        <div className="ml-2">{customerName}</div>
+        <div className="ml-2">{customerName.split(' ')[0]}</div>
       </div>
       <div className="flex-1 p-1 border-1 border-slate-200 flex">
         <Icon />
-        <div className="ml-2">{driverName}</div>
+        <div className="ml-2">{driverName.split(' ')[0]}</div>
       </div>
     </div>
   </div>

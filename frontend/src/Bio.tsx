@@ -1,26 +1,32 @@
 const Bio = () => (
-  <div className="bio">
-    <div className="bio-left">
+  <div
+    className="absolute left-0 right-0 bottom-0 flex w-full"
+    style={{ height: '100px' }}
+  >
+    <div className="flex-1 ml-auto">
       <img
         width="50px"
         height="50px"
         className="
-        ml-4
+        ml-auto
         rounded-full
         bg-zinc-100
         object-cover
         dark:bg-zinc-800
         border-2
         border-slate-200
+        mr-8
       "
         src={require('../assets/images/bio.jpg')}
         alt="profile"
       />
     </div>
-    <div className="bio-right">
-      <div className="text-center">
-        <p className="font-semibold text-slate-800">Juraj Majerik</p>
-        <div className="text-zinc-600 mt-1">
+    <div className="flex-1">
+      <div style={{ transform: 'translateX(-50px)' }}>
+        <p className="text-center font-semibold text-slate-800">
+          Juraj Majerik
+        </p>
+        <div className="text-center text-zinc-600 mt-1">
           <a
             href="https://twitter.com/JurajMajerik"
             target="_blank"

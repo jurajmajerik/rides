@@ -6,7 +6,10 @@ import '../assets/css/all.min.css';
 const App = () => {
   return (
     <div className="App">
-      <aside className="p-2 border-r-2 border-slate-200 relative">
+      <aside
+        className="p-2 border-r-2 border-slate-200 relative"
+        style={{ width: '400px' }}
+      >
         <Nav />
         <Bio />
       </aside>

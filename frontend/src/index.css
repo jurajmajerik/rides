@@ -12,35 +12,6 @@ code {
   display: flex;
 }
 
-aside {
-  width: 300px;
-}
-
-.bio {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100px;
-  display: flex;
-}
-
-.bio-left {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-left: 10px;
-}
-
-.bio-right {
-  padding-right: 30px;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .content {
   width: 100%;
 }
@@ -59,15 +30,6 @@ aside {
   overflow: auto;
   height: 100%;
   max-height: 100%;
-  /* max-height: 1vh; */
-  /* min-height: 1vh; */
-  /* display: flex; */
-  /* height: fit-content; */
-  /* justify-content: center; */
-  /* align-items: center; */
-  /* text-align: center; */
-  /* transform: translateY(-20px); */
-  /* margin: 0 40px; */
 }
 
 .view-map .map {
@@ -124,7 +86,7 @@ aside {
 
 .blink {
   animation-name: blink;
-  animation-duration: 0.2s; /* Adjust duration as needed */
+  animation-duration: 0.2s;
   animation-timing-function: ease-in-out;
-  animation-iteration-count: 2; /* Number of times to blink */
+  animation-iteration-count: 2;
 }

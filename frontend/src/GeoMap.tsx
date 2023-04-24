@@ -28,27 +28,14 @@ const loadDrivers = async (previousUpdateAtRef, setCars, setRefreshing) => {
 
     const cars = [];
     for (const driver of drivers) {
-      const {
-        driverId,
-        status,
-        pathIndex,
-        location,
-        name,
-        customerId,
-        customerName,
-      } = driver;
+      const { location } = driver;
       let path = [];
       if (driver.path) path = JSON.parse(driver.path) as [number, number][];
       const [x, y] = location.split(':');
       cars.push({
-        driverId,
-        status,
+        ...driver,
         actual: [parseInt(x), parseInt(y)],
         path,
-        pathIndex,
-        name,
-        customerId,
-        customerName,
       });
     }
 
@@ -182,15 +169,30 @@ const GeoMap = () => {
 
   const listElems = cars
     .filter(({ status }) => status === 'enroute' || status === 'pickup')
-    .map(({ name, customerName }) => {
-      return (
-        <ListItem
-          key={`${name}:${customerName}`}
-          driverName={name}
-          customerName={customerName}
-        />
-      );
-    });
+    .sort((a, b) => (a.name < b.name ? -1 : 0))
+    .map(
+      ({
+        driverId,
+        customerId,
+        name,
+        customerName,
+        status,
+        path,
+        pathIndex,
+      }) => {
+        return (
+          <ListItem
+            key={`${driverId}:${customerId}`}
+            driverId={driverId}
+            customerId={customerId}
+            driverName={name}
+            customerName={customerName}
+            progress={(pathIndex / (path.length - 1)) * 100}
+            status={status}
+          />
+        );
+      }
+    );
 
   return (
     <div className="view-map">
@@ -210,7 +212,7 @@ const GeoMap = () => {
           </svg>
         </div>
       </div>
-      <div className="description">{listElems}</div>
+      <div className="list">{listElems}</div>
     </div>
   );
 };

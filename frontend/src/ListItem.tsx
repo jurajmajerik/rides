@@ -40,18 +40,50 @@ const CustomerIcon = () => (
   </svg>
 );
 
-const ListItem = ({ driverName, customerName }) => (
-  <div className="w-full p-2 border-b-2 border-slate-200 text-slate-800 text-sm">
-    <div className="flex">
-      <div className="flex-1 p-1 border-1 border-slate-200 flex">
-        <CustomerIcon />
-        <div className="ml-2">{customerName.split(' ')[0]}</div>
+const ListItem = ({
+  driverId,
+  customerId,
+  driverName,
+  customerName,
+  progress,
+  status,
+}) => {
+  const tagClasses = {
+    pickup:
+      'm-auto mt-3 w-20 rounded text-xs p-0.5 font-semibold bg-sky-200 text-sky-600 text-center uppercase status-tag',
+    enroute:
+      'm-auto mt-3 w-20 rounded text-xs p-0.5 font-semibold bg-emerald-200 text-emerald-600 text-center uppercase status-tag',
+  };
+
+  return (
+    <div className="w-full p-2 border-b-2 border-slate-200 text-slate-800 text-sm">
+      <div className="flex mt-2">
+        <div className="flex-1 p-1 mr-1 border-1 border-slate-200 flex justify-end">
+          <div className="mr-2 font-semibold">{customerName.split(' ')[0]}</div>
+          <CustomerIcon />
+        </div>
+        <div className="flex-1 p-1 ml-1 border-1 border-slate-200 flex">
+          <Icon />
+          <div className="ml-2 font-semibold">{driverName.split(' ')[0]}</div>
+        </div>
       </div>
-      <div className="flex-1 p-1 border-1 border-slate-200 flex">
-        <Icon />
-        <div className="ml-2">{driverName.split(' ')[0]}</div>
+      <div
+        key={`${driverId}:${customerId}:${status}`}
+        className={tagClasses[status]}
+      >
+        {status}
+      </div>
+      <div className="m-2 mt-3 bg-gray-200 rounded-full h-1 dark:bg-gray-700">
+        <div
+          key={`${driverId}:${customerId}:${status}`}
+          className="bg-slate-800 h-1 rounded-full"
+          style={{
+            width: `${progress}%`,
+            transition: 'width 1.2s ease-in-out',
+          }}
+        ></div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 export default ListItem;

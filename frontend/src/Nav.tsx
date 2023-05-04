@@ -56,7 +56,7 @@ const Nav = () => {
   const Li = ({ path, label }) => (
     <NavLink
       to={`/${path}`}
-      className={({ isActive, isPending }) => {
+      className={({ isActive }) => {
         let className = 'inline-flex w-full rounded-md ';
         if (isActive) {
           className += 'bg-blue-50 text-blue-700';
@@ -84,7 +84,7 @@ const Nav = () => {
   ));
 
   return (
-    <ul className="p-2">
+    <ul className="mb-4">
       {lis}
       <a href="https://jurajmajerik.com/" target="_blank" rel="noreferrer">
         <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all">

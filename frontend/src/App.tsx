@@ -8,7 +8,7 @@ const App = () => {
     <div className="App">
       <aside
         className=" border-r-2 border-slate-200 relative"
-        style={{ width: '400px' }}
+        style={{ width: '400px', minWidth: '400px' }}
       >
         <div
           className="absolute left-0 right-0 top-0"

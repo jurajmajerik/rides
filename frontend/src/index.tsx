@@ -14,6 +14,7 @@ import disableReactDevTools from './disableReactDevTools.js';
 disableReactDevTools();
 
 const SystemDesignView = () => <h1>System Design View</h1>;
+const Docs = () => <h1>Docs View</h1>;
 
 const MonitorView = () => (
   <div className="relative w-full h-full">
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: 'monitor',
         element: <MonitorView />,
+      },
+      {
+        path: 'docs',
+        element: <Docs />,
       },
       // {
       //   path: 'system-design',

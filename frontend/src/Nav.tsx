@@ -76,6 +76,7 @@ const Nav = () => {
   const config = [
     ['map', 'Map'],
     ['monitor', 'Monitor'],
+    // ['docs', 'Docs'],
     // ['system-design', 'System Design'],
   ];
 

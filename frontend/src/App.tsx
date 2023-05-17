@@ -1,9 +1,11 @@
 import { Outlet } from 'react-router';
+import { useTour } from '@reactour/tour';
 import Nav from './Nav';
 import Bio from './Bio';
 import '../assets/css/all.min.css';
 
 const App = () => {
+  const { isOpen, currentStep, steps, setIsOpen, setCurrentStep } = useTour();
   return (
     <div className="App">
       <aside
@@ -19,7 +21,16 @@ const App = () => {
             style={{ bottom: '100px' }}
           >
             <Nav />
-            <div className="relative h-full w-full">
+            {/* <button onClick={() => setIsOpen(true)}>Open Tour</button> */}
+            {/* <button
+              onClick={() => {
+                setCurrentStep(1);
+                setIsOpen((o) => !o);
+              }}
+            >
+              Open Tour
+            </button> */}
+            <div className="relative h-full w-full second-step">
               <div
                 className="absolute pt-5 pb-5 border-t-2 w-full"
                 // style={{ top: '45%', transform: 'translateY(-45%)' }}

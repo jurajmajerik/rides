@@ -6,9 +6,7 @@ import '../assets/css/all.min.css';
 
 const App = () => {
   const { isOpen, currentStep, steps, setIsOpen, setCurrentStep } = useTour();
-  setTimeout(() => {
-    setIsOpen(true);
-  }, 1000);
+
   return (
     <div className="App">
       <aside

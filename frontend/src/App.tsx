@@ -6,6 +6,9 @@ import '../assets/css/all.min.css';
 
 const App = () => {
   const { isOpen, currentStep, steps, setIsOpen, setCurrentStep } = useTour();
+  setTimeout(() => {
+    setIsOpen(true);
+  }, 1000);
   return (
     <div className="App">
       <aside
@@ -48,7 +51,7 @@ const App = () => {
                   system. My motivation was to implement various system design
                   concepts, including{' '}
                   <span className="font-bold">containerization</span>,{' '}
-                  <span className="font-bold">multiprocessing</span> or{' '}
+                  <span className="font-bold">multiprocessing</span> and{' '}
                   <span className="font-bold">monitoring</span>.
                 </p>
                 <p className="text-sm mt-4">

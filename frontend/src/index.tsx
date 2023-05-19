@@ -9,6 +9,7 @@ import {
   createBrowserRouter,
   redirect,
   RouterProvider,
+  useNavigate,
 } from 'react-router-dom';
 import disableReactDevTools from './disableReactDevTools.js';
 
@@ -37,6 +38,9 @@ const steps = [
   {
     selector: '.second-step',
     content: 'This is my second step',
+    action: (elem) => {
+      // return redirect('monitor');
+    },
   },
   // ...
 ];
@@ -72,9 +76,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <TourProvider steps={steps}>
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
-  </TourProvider>
+  // <TourProvider steps={steps}>
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
+  // </TourProvider>
 );

@@ -1,63 +1,80 @@
-import React, { useState } from 'react';
-import { Outlet } from 'react-router';
-import { useTour } from '@reactour/tour';
-import {
-  createBrowserRouter,
-  redirect,
-  RouterProvider,
-  useNavigate,
-} from 'react-router-dom';
+import { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { TourProvider } from '@reactour/tour';
 import Nav from './Nav';
 import Bio from './Bio';
 import '../assets/css/all.min.css';
+import GeoMap from './GeoMap';
+import MonitorView from './MonitorView';
+import TourStart from './TourStart';
 
 const steps = [
   {
-    selector: '.first-step',
-    content: 'This is my first step',
+    selector: "[data-tour='map']",
+    content: (
+      <>
+        <p className="text-sm">
+          The map visualizes the <strong>real-time state</strong> of the system.
+          The server handles all calculations, including location updates,
+          pick-ups, drop-offs, and customer requests. The client polls for the
+          data in short intervals.
+        </p>
+        <p className="pt-2 text-sm">
+          The road network is implemented as a <strong>graph</strong> using an
+          adjacency matrix. <strong>Breadth-First Search</strong> is used to
+          find the shortest paths.
+        </p>
+      </>
+    ),
+    highlightedSelectors: ["[data-tour='map']"],
   },
   {
-    selector: '.second-step',
-    content: 'This is my second step',
-    action: (elem) => {
-      // return redirect('monitor');
-    },
+    selector: "[data-tour='list']",
+    content: (
+      <p className="text-sm">
+        Customers are matched to the nearest available drivers. To keep the
+        simulation performant, expensive calculations such as this one are
+        offloaded to <strong>parallel processes</strong>.
+      </p>
+    ),
+    highlightedSelectors: ["[data-tour='list']"],
   },
-  // ...
+  {
+    selector: "[data-tour='monitor']",
+    content: (
+      <p className="text-sm">
+        The system is fully containerized with <strong>Docker</strong> and
+        observable using <strong>Prometheus</strong> and{' '}
+        <strong>Grafana</strong>. This setup proved useful when diagnosing
+        various memory issues and concurrency bugs.
+      </p>
+    ),
+    highlightedSelectors: ["[data-tour='monitor']"],
+  },
 ];
 
-const TourWrapper = ({ children }) => {
+const App = () => {
   const redirect = useNavigate();
   const [step, setStep] = useState(0);
 
-  const setTourStep = (step) => {
-    console.log('scs');
-    switch (step) {
-      case 0:
-        redirect('/');
-        break;
-      case 1:
-        redirect('/monitor');
-        break;
-      default:
-        break;
-    }
+  const setCurrentStep = (step) => {
+    const redirects = {
+      0: '/map',
+      1: '/map',
+      2: '/monitor',
+    };
+    redirect(redirects[step]);
     setStep(step);
   };
 
   return (
-    <TourProvider currentStep={0} steps={steps} setCurrentStep={setTourStep}>
-      {children}
-    </TourProvider>
-  );
-};
-
-const App = () => {
-  const { setIsOpen } = useTour();
-
-  return (
-    <TourWrapper>
+    <TourProvider
+      steps={steps}
+      currentStep={step}
+      setCurrentStep={setCurrentStep}
+      beforeClose={() => redirect('/map')}
+    >
       <div className="App">
         <aside
           className=" border-r-2 border-slate-200 relative"
@@ -72,27 +89,16 @@ const App = () => {
               style={{ bottom: '100px' }}
             >
               <Nav />
-              {/* <button onClick={() => setIsOpen(true)}>Open Tour</button> */}
-              {/* <button
-                onClick={() => {
-                  setCurrentStep(0);
-                  setIsOpen((o) => !o);
-                }}
-              >
-                Open Tour
-              </button> */}
-              <div className="relative h-full w-full second-step">
-                <div
-                  className="absolute pt-5 pb-5 border-t-2 w-full"
-                  // style={{ top: '45%', transform: 'translateY(-45%)' }}
-                >
-                  <p className="text-sm">
+              <div className="relative h-full w-full">
+                <div className="absolute pt-5 pb-5 border-t-2 w-full">
+                  <TourStart setStep={setStep} />
+                  <p className="text-sm pt-5">
                     <span className="font-mono bg-blue-50 text-blue-700 rounded px-1 py-0.5">
                       rides
                     </span>{' '}
                     is a full-stack simulation of a ride-hailing app such as{' '}
                     <span className="font-bold">Uber</span> or{' '}
-                    <span className="font-bold">Lyft</span>.
+                    <span className="font-bold">Bolt</span>.
                   </p>
                   <p className="text-sm mt-4">
                     This project is my take on building and visualizing a
@@ -100,15 +106,15 @@ const App = () => {
                     system design concepts, including{' '}
                     <span className="font-bold">containerization</span>,{' '}
                     <span className="font-bold">multiprocessing</span> and{' '}
-                    <span className="font-bold">monitoring</span>.
+                    <span className="font-bold">observability</span>.
                   </p>
-                  <p className="text-sm mt-4">
+                  {/* <p className="text-sm mt-4">
                     Other notable topics include the graph theory, deployment
                     pipelines, security and visual design.
-                  </p>
+                  </p> */}
                   <p className="text-sm mt-4">
-                    So far, this project took me around 300 hours of work. Read
-                    how I'm building it on
+                    This project took me approximately 300 hours of work. Read
+                    about the journey of building it on
                     <a
                       className="text-blue-500 hover:text-blue-600 transition-colors"
                       href="https://jurajmajerik.com"
@@ -126,10 +132,14 @@ const App = () => {
           <Bio />
         </aside>
         <div className="content">
-          <Outlet />
+          <Routes>
+            <Route path="/" element={<Navigate replace to="/map" />} />
+            <Route path="/map" element={<GeoMap />} />
+            <Route path="/monitor" element={<MonitorView />} />
+          </Routes>
         </div>
       </div>
-    </TourWrapper>
+    </TourProvider>
   );
 };
 

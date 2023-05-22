@@ -196,7 +196,7 @@ const GeoMap = () => {
 
   return (
     <div className="view-map">
-      <div className="map">
+      <div data-tour="map" className="map">
         <div className="map-inner">
           <div className={`map-refresh ${refreshing ? 'active' : ''}`} />
           <svg
@@ -212,7 +212,9 @@ const GeoMap = () => {
           </svg>
         </div>
       </div>
-      <div className="list">{listElems}</div>
+      <div data-tour="list" className="list">
+        {listElems}
+      </div>
     </div>
   );
 };

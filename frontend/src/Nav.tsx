@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useTour } from '@reactour/tour';
 
 const paths = {
   map: (
@@ -66,7 +67,10 @@ const Nav = () => {
         return className;
       }}
     >
-      <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all">
+      <li
+        id={path}
+        className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all"
+      >
         <Icon type={path} />
         {label}
       </li>

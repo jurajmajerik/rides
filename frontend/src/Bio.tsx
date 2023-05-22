@@ -1,6 +1,6 @@
 const Bio = () => (
   <div
-    className="absolute left-0 right-0 bottom-0 flex w-full"
+    className="absolute left-0 right-0 bottom-0 flex w-full bg-white"
     style={{ height: '100px' }}
   >
     <div className="flex-1 ml-auto">

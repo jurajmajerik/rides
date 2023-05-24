@@ -46,10 +46,10 @@ const ListItem = ({
         ></span>
         <span>{status}</span>
       </div>
-      <div className="m-2 mt-3 bg-gray-200 rounded-full h-1 dark:bg-gray-700">
+      <div className="m-2 mt-3 bg-gray-200 rounded-full h-0.5 dark:bg-gray-700">
         <div
           key={`${driverId}:${customerId}:${status}`}
-          className="bg-slate-800 h-1 rounded-full"
+          className="bg-slate-800 h-0.5 rounded-full"
           style={{
             width: `${progress}%`,
             transition: 'width 1.2s ease-in-out',

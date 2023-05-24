@@ -50,9 +50,13 @@ const ListItem = ({
 }) => {
   const tagClasses = {
     pickup:
-      'm-auto mt-3 w-20 rounded text-xs p-0.5 font-semibold bg-sky-200 text-sky-600 text-center uppercase status-tag',
+      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-200 text-slate-700 text-center uppercase status-tag',
     enroute:
-      'm-auto mt-3 w-20 rounded text-xs p-0.5 font-semibold bg-emerald-200 text-emerald-600 text-center uppercase status-tag',
+      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-200 text-zinc-700 text-center uppercase status-tag',
+  };
+  const statusClasses = {
+    pickup: 'bg-cyan-500 inline-block mr-2',
+    enroute: 'bg-emerald-500 inline-block mr-2',
   };
 
   return (
@@ -71,7 +75,16 @@ const ListItem = ({
         key={`${driverId}:${customerId}:${status}`}
         className={tagClasses[status]}
       >
-        {status}
+        <span
+          className={statusClasses[status]}
+          style={{
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            transform: 'translateY(-1px)',
+          }}
+        ></span>
+        <span>{status}</span>
       </div>
       <div className="m-2 mt-3 bg-gray-200 rounded-full h-1 dark:bg-gray-700">
         <div

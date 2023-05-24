@@ -10,9 +10,9 @@ const ListItem = ({
 }) => {
   const tagClasses = {
     pickup:
-      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-200 text-slate-700 text-center uppercase status-tag',
+      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-150 text-slate-700 text-center uppercase status-tag',
     enroute:
-      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-200 text-zinc-700 text-center uppercase status-tag',
+      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-150 text-zinc-700 text-center uppercase status-tag',
   };
   const statusClasses = {
     pickup: 'bg-cyan-500 inline-block mr-2',

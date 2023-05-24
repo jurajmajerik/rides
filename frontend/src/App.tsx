@@ -8,6 +8,7 @@ import '../assets/css/all.min.css';
 import GeoMap from './GeoMap';
 import MonitorView from './MonitorView';
 import TourStart from './TourStart';
+import DocsView from './DocsView';
 
 const steps = [
   {
@@ -136,6 +137,7 @@ const App = () => {
             <Route path="/" element={<Navigate replace to="/map" />} />
             <Route path="/map" element={<GeoMap />} />
             <Route path="/monitor" element={<MonitorView />} />
+            <Route path="/system-design" element={<DocsView />} />
           </Routes>
         </div>
       </div>

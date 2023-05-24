@@ -5,8 +5,7 @@ import { api } from './api';
 import { wait } from '../../shared/utils';
 import config from '../../shared/config';
 import { getObstaclesMap } from '../../shared/methods';
-import CustomerIcon from './CustomerIcon';
-import DestIcon from './DestIcon';
+import { MapCustomerIcon, MapDestIcon } from './Icons';
 
 const { gridSize, squareSize, fetchInterval } = config;
 const obstaclesMap = getObstaclesMap();
@@ -134,7 +133,7 @@ const GeoMap = () => {
       const [x, y] = path[path.length - 1];
       seenCustomers.add(`${x}:${y}`);
       return (
-        <CustomerIcon
+        <MapCustomerIcon
           key={`c1-${x}:${y}`}
           x={x * squareSize - squareSize * 0.75}
           y={y * squareSize - squareSize * 0.75}
@@ -146,7 +145,7 @@ const GeoMap = () => {
     const [x, y] = location;
     if (seenCustomers.has(`${x}:${y}`)) return;
     customerElems.push(
-      <CustomerIcon
+      <MapCustomerIcon
         key={`c2-${x}:${y}`}
         x={x * squareSize - squareSize / 2}
         y={y * squareSize - squareSize / 2}
@@ -159,7 +158,7 @@ const GeoMap = () => {
     .map(({ driverId, path }) => {
       const [x, y] = path[path.length - 1];
       return (
-        <DestIcon
+        <MapDestIcon
           key={`d-${driverId}-${x}:${y}`}
           x={x * squareSize - 5}
           y={y * squareSize - 15}

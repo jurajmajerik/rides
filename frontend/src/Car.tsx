@@ -1,5 +1,5 @@
 import React from 'react';
-import CarIcon from './CarIcon';
+import { CarIcon } from './Icons';
 import { wait } from '../../shared/utils';
 import {
   advanceCoord,

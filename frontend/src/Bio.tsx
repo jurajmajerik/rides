@@ -15,14 +15,14 @@ const Bio = () => (
         dark:bg-zinc-800
         border-2
         border-slate-200
-        mr-8
+        mr-7
       "
         src={require('../assets/images/bio.jpg')}
         alt="profile"
       />
     </div>
     <div className="flex-1">
-      <div style={{ transform: 'translateX(-50px)' }}>
+      <div style={{ transform: 'translateX(-60px)' }}>
         <p className="text-center font-semibold text-slate-800">
           Juraj Majerik
         </p>

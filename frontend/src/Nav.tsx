@@ -59,7 +59,7 @@ const Nav = () => {
       className={({ isActive }) => {
         let className = 'inline-flex w-full rounded-md ';
         if (isActive) {
-          className += 'bg-blue-50 text-blue-700';
+          className += 'bg-blue-50x text-blue-700';
         } else {
           className += 'text-slate-800';
         }
@@ -68,7 +68,7 @@ const Nav = () => {
     >
       <li
         id={path}
-        className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all rounded-md"
+        className="inline-flex w-full p-2 text-sm font-semibold hover:text-blue-700 hover:bg-blue-50x cursor-pointer transition-all rounded-md"
       >
         <Icon type={path} />
         {label}
@@ -90,7 +90,7 @@ const Nav = () => {
     <ul className="mb-4">
       {lis}
       <a href="https://jurajmajerik.com/" target="_blank" rel="noreferrer">
-        <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all rounded-md">
+        <li className="inline-flex w-full p-2 text-sm font-semibold hover:text-blue-700 hover:bg-blue-50x cursor-pointer transition-all rounded-md">
           <Icon type="blog" />
           Blog
         </li>

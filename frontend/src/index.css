@@ -91,3 +91,23 @@ code {
   animation-timing-function: ease-in-out;
   animation-iteration-count: 2;
 }
+
+.docs h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.docs h3 {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.docs p {
+  margin-top: 15px;
+}
+
+.docs ul li {
+  list-style-position: inside;
+  list-style-type: disc;
+}

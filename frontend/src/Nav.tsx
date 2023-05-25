@@ -79,7 +79,7 @@ const Nav = () => {
   const config = [
     ['map', 'Map'],
     ['monitor', 'Monitor'],
-    // ['system-design', 'System Design'],
+    ['system-design', 'System Design'],
   ];
 
   const lis = config.map(([key, label]) => (

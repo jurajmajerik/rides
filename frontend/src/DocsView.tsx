@@ -5,7 +5,7 @@ Rides simulates the basic flow of a ride-hailing app. It consists of three compo
 
 - The __simulation engine__ (Node.js) generates a new state of the system and updates the database.
 - The __database__ (PostgreSQL) persists the state.
-- The **web server** (Go) queries the state for presentation on the client.
+- The **web server** (Go) exposes the state via a RESTful API to the client.
 
 The system is running on a single machine with 2 GiB of memory.
 `;

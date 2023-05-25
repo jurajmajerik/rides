@@ -114,7 +114,7 @@ const App = () => {
                     pipelines, security and visual design.
                   </p> */}
                   <p className="text-sm mt-4">
-                    This project took me approximately 300 hours of work. Read
+                    This project took approximately 300 hours of work. Read
                     about the journey of building it on
                     <a
                       className="text-blue-500 hover:text-blue-600 transition-colors"

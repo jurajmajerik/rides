@@ -68,7 +68,7 @@ const Nav = () => {
     >
       <li
         id={path}
-        className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all"
+        className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all rounded-md"
       >
         <Icon type={path} />
         {label}
@@ -90,7 +90,7 @@ const Nav = () => {
     <ul className="mb-4">
       {lis}
       <a href="https://jurajmajerik.com/" target="_blank" rel="noreferrer">
-        <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all">
+        <li className="inline-flex w-full p-2 text-sm font-semibold hover:bg-blue-50 cursor-pointer transition-all rounded-md">
           <Icon type="blog" />
           Blog
         </li>

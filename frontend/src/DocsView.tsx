@@ -1,6 +1,6 @@
 const DocsView = () => {
   return (
-    <div className="p-6">
+    <div className="p-6 overflow-auto h-full">
       <h1>Design Document</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

@@ -68,7 +68,7 @@ const Nav = () => {
     >
       <li
         id={path}
-        className="inline-flex w-full p-2 text-sm font-semibold hover:text-blue-700 hover:bg-blue-50x cursor-pointer transition-all rounded-md"
+        className="inline-flex w-full p-2 text-sm text-zinc-600 font-semibold hover:text-blue-700 hover:bg-blue-50x cursor-pointer transition-all rounded-md"
       >
         <Icon type={path} />
         {label}

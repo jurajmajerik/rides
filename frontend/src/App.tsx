@@ -78,7 +78,7 @@ const App = () => {
     >
       <div className="App">
         <aside
-          className=" border-r-2 border-slate-200 relative"
+          className="text-zinc-600 border-r-2 border-slate-200 relative"
           style={{ width: '400px', minWidth: '400px' }}
         >
           <div

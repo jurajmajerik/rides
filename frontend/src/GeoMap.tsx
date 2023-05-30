@@ -100,16 +100,32 @@ const GeoMap = () => {
       } `;
     });
 
+    const first = path[0];
+
     return (
-      <polyline
-        key={`path-${driverId}`}
-        points={points}
-        style={{
-          fill: 'none',
-          stroke: `${status === 'enroute' ? '#454545' : '#adaaaa'}`,
-          strokeWidth: 4,
-        }}
-      />
+      <>
+        {first && (
+          <rect
+            key={`start-${driverId}`}
+            width={8}
+            height={8}
+            x={first[0] * squareSize - squareSize / 7}
+            y={first[1] * squareSize - squareSize / 7}
+            style={{
+              fill: `${status === 'enroute' ? '#454545' : '#adaaaa'}`,
+            }}
+          />
+        )}
+        <polyline
+          key={`path-${driverId}`}
+          points={points}
+          style={{
+            fill: 'none',
+            stroke: `${status === 'enroute' ? '#454545' : '#adaaaa'}`,
+            strokeWidth: 4,
+          }}
+        />
+      </>
     );
   });
 
@@ -160,7 +176,7 @@ const GeoMap = () => {
       return (
         <MapDestIcon
           key={`d-${driverId}-${x}:${y}`}
-          x={x * squareSize - 5}
+          x={x * squareSize - 4.5}
           y={y * squareSize - 15}
         />
       );

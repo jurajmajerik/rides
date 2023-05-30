@@ -157,8 +157,8 @@ export default class Car extends React.Component<Props, State> {
 
     return (
       <CarIcon
-        x={parseFloat((x * squareSize - 22).toFixed(2))}
-        y={parseFloat((y * squareSize - 22).toFixed(2))}
+        x={parseFloat((x * squareSize - 22.5).toFixed(2))}
+        y={parseFloat((y * squareSize - 22.5).toFixed(2))}
         rotation={rotation}
       />
     );

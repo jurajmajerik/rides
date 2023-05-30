@@ -51,9 +51,13 @@ export const steps = [
           drop-offs, and customer requests. The client polls for the data in
           short intervals.
         </p>
-        <p className="pt-2 text-sm">
+        {/* <p className="pt-2 text-sm">
           The road network is implemented as a graph using an adjacency matrix.
           Breadth-First Search is used to find the shortest paths.
+        </p> */}
+        <p className="pt-2 text-sm">
+          The <em>grey</em> paths lead from the driver to the customer. The{' '}
+          <em>black</em> paths lead to the final destinations.
         </p>
         <p className="mt-4">
           <Link

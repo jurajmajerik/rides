@@ -7,12 +7,6 @@ code {
     monospace;
 }
 
-.App {
-}
-
-aside {
-}
-
 .content {
   width: 100%;
 }
@@ -43,25 +37,14 @@ aside {
 
 @media only screen and (max-width: 768px) {
   .view-map {
-    /* position: fixed; */
-    /* bottom: 0%; */
     width: 100%;
     max-width: 100%;
-    /* flex: 1; */
-    /* display: flex; */
-    /* flex-direction: row-reverse; */
-    /* max-height: 100%; */
-    /* height: 100%; */
   }
 
   .view-map .list {
     position: relative;
     width: 100%;
     max-width: 100%;
-    /* flex: 1; */
-    /* overflow: auto; */
-    /* height: 100%; */
-    /* max-height: 100%; */
   }
 
   .view-map .map {
@@ -69,9 +52,6 @@ aside {
     max-width: 100%;
     position: relative;
     border: solid 0.5px lightgray;
-    /* flex: 0 0 auto; */
-    /* width: 100vh; */
-    /* height: 100%; */
   }
 }
 

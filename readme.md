@@ -1,6 +1,3 @@
-import ReactMarkdown from 'react-markdown';
-const markdown1 = `
-# System design
 Rides simulates the basic flow of a ride-hailing app. It consists of five main components:
 
 - The __simulation engine__ generates the system's state and updates the database.
@@ -10,9 +7,9 @@ Rides simulates the basic flow of a ride-hailing app. It consists of five main c
 - The __monitoring & logging__ stack provides observability of the system.
 
 Technologies used include __Node.js__ (simulation), __Go__ (web server) and __PostgreSQL__. The frontend is written in __React__. All JavaScript is typed with __TypeScript__. Monitoring is implemented with __Prometheus and Grafana__. All backend components are containerized with __Docker__.
-`;
 
-const markdown2 = `
+![alt text](https://raw.githubusercontent.com/jurajmajerik/rides/master/frontend/assets/images/diagram-6.png)
+
 The system is running on a single machine with 2 GiB of memory. The distributed nature of the system is already somewhat simulated by using containers. My plan eventually is to spread it across multiple virtual servers, thus achieving a true distributed system.
 
 ### Simulation engine
@@ -55,24 +52,3 @@ The frontend application is written in React. The frontend polls the server for 
 ## Monitoring & logging
 
 Monitoring & logging stack is implemented with Prometheus & Grafana. It provides observability of the system parameters such as disk space and memory, as well as container-specific metrics.
-`;
-
-const DocsView = () => {
-  return (
-    <div
-      data-tour="docs"
-      className="p-6 overflow-auto h-full docs text-slate-800"
-    >
-      <ReactMarkdown children={markdown1} />
-      <p className="pt-10 pb-10">
-        <img
-          className="m-auto"
-          style={{ maxWidth: '800px' }}
-          src={require('../assets/images/diagram-6.png')}
-        />
-      </p>
-      <ReactMarkdown children={markdown2} />
-    </div>
-  );
-};
-export default DocsView;

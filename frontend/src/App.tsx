@@ -171,7 +171,7 @@ const App = () => {
                   <p className="text-sm mt-4">
                     This project is my take on building and visualizing a
                     scalable system. My motivation was to implement various
-                    system design concepts, including{' '}
+                    concepts from the domain of system design, including{' '}
                     <span className="font-bold">containerization</span>,{' '}
                     <span className="font-bold">multiprocessing</span> and{' '}
                     <span className="font-bold">observability</span>.

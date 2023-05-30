@@ -52,7 +52,8 @@ const init = async () => {
   });
 
   setInterval(() => {
-    console.log(g.activeDrivers);
+    console.log(`Active drivers: ${g.activeDrivers.size}`);
+    console.log(`Active customers: ${g.activeCustomers.size}`);
   }, 10000);
 };
 

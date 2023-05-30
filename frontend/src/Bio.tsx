@@ -26,27 +26,27 @@ const Bio = () => (
         <p className="text-center font-semibold text-slate-800">
           Juraj Majerik
         </p>
-        <div className="text-center text-zinc-600 mt-1">
+        <div className="text-center text-slate-800 mt-1">
           <a
             href="https://twitter.com/JurajMajerik"
             target="_blank"
             rel="noreferrer"
           >
-            <i className="fa-brands fa-twitter hover:text-zinc-700" />
+            <i className="fa-brands fa-twitter hover:text-slate-700" />
           </a>
           <a
             href="https://github.com/jurajmajerik"
             target="_blank"
             rel="noreferrer"
           >
-            <i className="fa-brands fa-github ml-2 hover:text-zinc-700" />
+            <i className="fa-brands fa-github ml-2 hover:text-slate-700" />
           </a>
           <a
             href="https://www.linkedin.com/in/jurajmajerik/"
             target="_blank"
             rel="noreferrer"
           >
-            <i className="fa-brands fa-linkedin ml-2 hover:text-zinc-700" />
+            <i className="fa-brands fa-linkedin ml-2 hover:text-slate-700" />
           </a>
         </div>
       </div>

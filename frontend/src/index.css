@@ -92,7 +92,17 @@ code {
   animation-iteration-count: 2;
 }
 
+.docs {
+  color: #1e293b;
+}
+
+.docs h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
 .docs h2 {
+  margin-top: 20px;
   font-size: 20px;
   font-weight: 600;
 }
@@ -105,6 +115,10 @@ code {
 
 .docs p {
   margin-top: 15px;
+}
+
+.docs ul {
+  margin-top: 10px;
 }
 
 .docs ul li {

@@ -12,7 +12,7 @@ const ListItem = ({
     pickup:
       'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-150 text-slate-700 text-center uppercase status-tag',
     enroute:
-      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-150 text-zinc-700 text-center uppercase status-tag',
+      'm-auto mt-3 w-24 rounded text-xs p-0.5 font-semibold bg-zinc-150 text-slate-700 text-center uppercase status-tag',
   };
   const statusClasses = {
     pickup: 'bg-cyan-500 inline-block mr-2',
@@ -20,7 +20,7 @@ const ListItem = ({
   };
 
   return (
-    <div className="w-full p-2 border-b-2 border-slate-200 text-zinc-600 text-sm">
+    <div className="w-full p-2 border-b-2 border-slate-200 text-slate-800 text-sm">
       <div className="flex mt-2">
         <div className="flex-1 p-1 mr-1 border-1 border-slate-200 flex justify-end">
           <div className="mr-2 font-semibold">{customerName.split(' ')[0]}</div>

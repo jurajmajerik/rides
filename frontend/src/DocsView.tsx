@@ -15,7 +15,7 @@ Technologies used include __Node.js__ (simulation), __Go__ (web server) and __Po
 const markdown2 = `
 The system is running on a single machine with 2 GiB of memory. The distributed nature of the system is already somewhat simulated by using containers. My plan eventually is to spread it across multiple virtual servers, thus achieving a true distributed system.
 
-### Simulation engine
+## Simulation engine
 
 The key components of the simulation are the __*Driver*__ and __*Customer*__ instances. These instances make periodical decisions in an infinite loop. These decisions include, among others:
 

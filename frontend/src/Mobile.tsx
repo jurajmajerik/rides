@@ -2,8 +2,8 @@ const Mobile = () => (
   <div className="block lg:hidden text-sm p-4 text-slate-700">
     <p>Dear mobile reader,</p>
     <p className="mt-4">
-      You got me. This app is not yet responsive. To get the full experience,
-      please view this page on a large screen.
+      You got me: this app is not yet responsive. To get the full experience,
+      please view it on a large screen.
     </p>
     <div className="w-full inline-flex mt-10" style={{ height: '100px' }}>
       <div className="w-1/2">

@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 const markdown1 = `
 # System design
-Rides simulates the basic flow of a ride-hailing app. It consists of five main components:
+Rides simulates the basic flow of a ridesharing app. It consists of five main components:
 
 - The __simulation engine__ generates the system's state and updates the database.
 - The __database__ persists the state.

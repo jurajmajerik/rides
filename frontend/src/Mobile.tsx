@@ -1,11 +1,34 @@
 const Mobile = () => (
   <div className="block lg:hidden text-sm p-4 text-slate-700">
-    <p>Dear mobile reader,</p>
-    <p className="mt-4">
-      You got me: this app is not yet responsive. To get the full experience,
-      please view it on a large screen.
+    <p className="text-sm pt-5">
+      <span className="font-mono bg-blue-50 text-blue-700 rounded px-1 py-0.5">
+        rides
+      </span>{' '}
+      is a full-stack simulation of a ride-hailing app such as{' '}
+      <span className="font-bold">Uber</span> or{' '}
+      <span className="font-bold">Bolt</span>.
     </p>
-    <div className="w-full inline-flex mt-10" style={{ height: '100px' }}>
+    <p className="text-sm mt-4">
+      This project is my take on building and visualizing a scalable system. My
+      motivation was to implement various concepts from the domain of system
+      design, including <span className="font-bold">containerization</span>,{' '}
+      <span className="font-bold">multiprocessing</span> and{' '}
+      <span className="font-bold">observability</span>.
+    </p>
+    <p className="text-sm mt-4">
+      This project took approximately 300 hours of work. Read about the journey
+      of building it on
+      <a
+        className="text-blue-600 hover:text-blue-700 transition-colors"
+        href="https://jurajmajerik.com"
+        target="_blank"
+        rel="noreferrer"
+      >
+        &nbsp;my blog
+      </a>
+      .
+    </p>
+    <div className="w-full inline-flex mt-14" style={{ height: '100px' }}>
       <div className="w-1/2">
         <img
           width="50px"
@@ -53,6 +76,10 @@ const Mobile = () => (
         </div>
       </div>
     </div>
+    <p className="p-3 mt-2 bg-blue-600 text-white rounded">
+      A note to mobile users: this app is not yet optimized for small screens.
+      To get the full experience, please view it on a large screen.
+    </p>
   </div>
 );
 export default Mobile;

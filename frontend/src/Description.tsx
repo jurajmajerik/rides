@@ -8,9 +8,7 @@ const Description = ({ setStep }) => (
         <span className="font-mono bg-blue-50 text-blue-700 rounded px-1 py-0.5">
           rides
         </span>{' '}
-        is a full-stack simulation of a ridesharing app such as{' '}
-        <span className="font-bold">Uber</span> or{' '}
-        <span className="font-bold">Bolt</span>.
+        is a full-stack simulation of a ridesharing app.
       </p>
       <p className="text-sm mt-4">
         This project is my take on building and visualizing a scalable system.

@@ -5,8 +5,9 @@ CREATE DATABASE ridesdb;
 
 GRANT ALL PRIVILEGES ON DATABASE ridesdb TO ridesuser;
 
+CREATE TYPE status_enum AS ENUM ('idle', 'pickup', 'enroute');
 CREATE TABLE customers (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   customer_id uuid UNIQUE,
   name VARCHAR(255) NOT NULL,
   active BOOLEAN,
@@ -15,9 +16,8 @@ CREATE TABLE customers (
   driver_id uuid UNIQUE
 );
 
-CREATE TYPE status_enum AS ENUM ('idle', 'pickup', 'enroute');
 CREATE TABLE drivers (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   driver_id uuid UNIQUE,
   name VARCHAR(255) NOT NULL,
   status status_enum NOT NULL,
